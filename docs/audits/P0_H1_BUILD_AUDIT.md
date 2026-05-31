@@ -21,6 +21,7 @@ stilus-import-baseline
 ## Build Command
 
 make clean
+
 make all 2>&1 | tee build.log
 
 ## Result
