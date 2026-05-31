@@ -1,0 +1,392 @@
+# Serbian translations for Airpad package.
+# Copyright (C) 2020 Nikola Hadžić
+# This file is distributed under the same license as the Airpad package.
+# Никола Хаџић <nikola.hadzic.000@protonmail.com>, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Airpad 1.0\n"
+"Report-Msgid-Bugs-To: nikola.hadzic.000@protonmail.com\n"
+"POT-Creation-Date: 2022-09-06 14:25+0200\n"
+"PO-Revision-Date: 2020-12-22 09:29+0100\n"
+"Last-Translator:  Никола Хаџић <nikola.hadzic.000@protonmail.com>\n"
+"Language-Team: Serbian <(nothing)>\n"
+"Language: sr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: ../src/dialog.c:43
+#, c-format
+msgid "Reading from file \"%s\" failed: %s"
+msgstr "Неуспело читање из датотеке „%s“: %s"
+
+#: ../src/dialog.c:45
+#, c-format
+msgid "Reading from file (name unknown) failed: %s"
+msgstr "Неуспело читање из датотеке (име непознато): %s"
+
+#: ../src/dialog.c:54
+#, c-format
+msgid "Writing to file \"%s\" failed: %s"
+msgstr "Неуспело писање у датотеку „%s“: %s"
+
+#: ../src/dialog.c:56
+#, c-format
+msgid "Writing to file (name unknown) failed: %s"
+msgstr "Неуспело писање у датотеку (име непознато): %s"
+
+#: ../src/dialog.c:64
+#, c-format
+msgid "File \"%s\" does not have valid UTF-8 content."
+msgstr "Датотека „%s“ не поседује исправан UTF-8 садржај."
+
+#: ../src/dialog.c:66
+msgid "File (name unknown) does not have valid UTF-8 content."
+msgstr "Датотека (име непознато) не поседује исправан UTF-8 садржај."
+
+#: ../src/dialog.c:75
+#, c-format
+msgid "Converting contents of file \"%s\" failed: %s"
+msgstr "Неуспело конвертовање садржаја датотеке „%s“: %s"
+
+#: ../src/dialog.c:77
+#, c-format
+msgid "Converting contents of file (name unknown) failed: %s"
+msgstr "Неуспело конвертовање садржаја датотеке (име непознато): %s"
+
+#: ../src/dialog.c:85
+msgid "Warning"
+msgstr "Упозорење"
+
+#: ../src/dialog.c:85
+msgid "Error"
+msgstr "Грешка"
+
+#: ../src/dialog.c:104
+msgid "No matches found."
+msgstr "Нема подударања."
+
+#: ../src/dialog.c:107
+msgid "No matches"
+msgstr "Нема подударања"
+
+#: ../src/dialog.c:120
+msgid "The file was modified. Do you want to save it?"
+msgstr "Датотека је измењена. Да ли желите да је сачувате?"
+
+#: ../src/dialog.c:121
+msgid "Save changes?"
+msgstr "Сачувати измене?"
+
+#: ../src/dialog.c:122 ../src/replace.c:59
+msgid "Yes"
+msgstr "Да"
+
+#: ../src/dialog.c:122 ../src/replace.c:59
+msgid "No"
+msgstr "Не"
+
+#: ../src/dialog.c:122 ../src/dialog.c:141 ../src/dialog.c:211 ../src/find.c:53
+#: ../src/replace.c:59 ../src/replace.c:74
+msgid "Cancel"
+msgstr "Откажи"
+
+#: ../src/dialog.c:141
+msgid "Open file"
+msgstr "Отворите датотеку"
+
+#: ../src/dialog.c:141
+msgid "Open"
+msgstr "Отвори"
+
+#: ../src/dialog.c:148 ../src/dialog.c:221
+msgid "Text files"
+msgstr "Текстуалне датотеке"
+
+#: ../src/dialog.c:153 ../src/dialog.c:226
+msgid "All files"
+msgstr "Све датотеке"
+
+#: ../src/dialog.c:163 ../src/dialog.c:236
+msgid "Encoding:"
+msgstr "Кодирање:"
+
+#: ../src/dialog.c:211
+msgid "Save file"
+msgstr "Сачувајте датотеку"
+
+#: ../src/dialog.c:211
+msgid "Save"
+msgstr "Сачувај"
+
+#: ../src/dialog.c:260
+msgid "Untitled"
+msgstr "Без наслова"
+
+#: ../src/dialog.c:303
+msgid "About"
+msgstr "О програму"
+
+#: ../src/dialog.c:310
+msgid "translator-credits"
+msgstr "Никола Хаџић <nikola.hadzic.000@protonmail.com>"
+
+#: ../src/find.c:53
+msgid "Find"
+msgstr "Пронађи"
+
+#: ../src/find.c:59 ../src/replace.c:80
+msgid "Find what:"
+msgstr "Пронађи шта:"
+
+#: ../src/find.c:61 ../src/replace.c:84
+msgid "Case insensitive"
+msgstr "Игнориши словне списе"
+
+#: ../src/find.c:62 ../src/replace.c:85
+msgid "Backward search"
+msgstr "Претражи уназад"
+
+#: ../src/find.c:63 ../src/replace.c:86
+msgid "From here"
+msgstr "Претражи одавде"
+
+#: ../src/find.c:64
+msgid "Search wraps"
+msgstr "Обмотај претрагу"
+
+#: ../src/font.c:30
+msgid "Select font"
+msgstr "Изаберите фонт"
+
+#: ../src/main.c:86
+msgid "Show program version"
+msgstr "Приказује верзију програма"
+
+#: ../src/main.c:95
+msgid "Show program license"
+msgstr "Приказује лиценцу програма"
+
+#: ../src/main.c:121
+msgid "Assume that files are in this encoding"
+msgstr "Претпостави да су датотеку у овом кодирању"
+
+#: ../src/main.c:122
+msgid "ENCODING"
+msgstr "КОДИРАЊЕ"
+
+#: ../src/main.c:135
+msgid "File Options:"
+msgstr "Опције Датотекa:"
+
+#: ../src/main.c:135
+msgid "Show file options"
+msgstr "Приказује опције датотекa"
+
+#: ../src/main.c:141
+msgid "[FILE…]"
+msgstr "[ДАТОТЕКА…]"
+
+#: ../src/main.c:276
+#, c-format
+msgid "Version: %s\n"
+msgstr "Верзија: %s\n"
+
+#: ../src/main.c:282
+#, c-format
+msgid "License: %s\n"
+msgstr "Лиценца: %s\n"
+
+#: ../src/main.c:307
+#, c-format
+msgid "Could not spawn process for file \"%s\": %s\n"
+msgstr "Неуспело покретање процеса за датотеку „%s“: %s\n"
+
+#: ../src/options.c:89
+#, c-format
+msgid "Configuration file could not be loaded: %s\n"
+msgstr "Неуспело читање датотеке са поставкама: %s\n"
+
+#: ../src/options.c:104
+#, c-format
+msgid "Could not save configuration file: %s\n"
+msgstr "Неуспело чување датотеке са поставкама: %s\n"
+
+#: ../src/replace.c:55
+msgid "Replace this instance?"
+msgstr "Заменити овај примерак?"
+
+#: ../src/replace.c:56
+msgid "Replace?"
+msgstr "Заменити?"
+
+#: ../src/replace.c:59
+msgid "All"
+msgstr "Све"
+
+#: ../src/replace.c:74
+msgid "Replace"
+msgstr "Замени"
+
+#: ../src/replace.c:82
+msgid "Replace with:"
+msgstr "Замени са:"
+
+#: ../src/replace.c:87
+msgid "Replace all"
+msgstr "Замени све"
+
+#: ../src/window.c:49
+msgid "_File"
+msgstr "_Датотека"
+
+#: ../src/window.c:50
+msgid "_Edit"
+msgstr "_Уређивање"
+
+#: ../src/window.c:51
+msgid "_Search"
+msgstr "_Претрага"
+
+#: ../src/window.c:52
+msgid "_View"
+msgstr "П_реглед"
+
+#: ../src/window.c:53
+msgid "_Options"
+msgstr "П_оставке"
+
+#: ../src/window.c:54
+msgid "_Help"
+msgstr "По_моћ"
+
+#: ../src/window.c:57
+msgid "_New"
+msgstr "_Ново"
+
+#: ../src/window.c:58
+msgid "_Open…"
+msgstr "_Отвори…"
+
+#: ../src/window.c:59
+msgid "_Save"
+msgstr "_Сачувај"
+
+#: ../src/window.c:60
+msgid "Save _As…"
+msgstr "Сачувај _као…"
+
+#: ../src/window.c:61
+msgid "_Close"
+msgstr "_Затвори"
+
+#: ../src/window.c:64
+msgid "_Copy"
+msgstr "_Копирај"
+
+#: ../src/window.c:65
+msgid "_Paste"
+msgstr "_Убаци"
+
+#: ../src/window.c:66
+msgid "C_ut"
+msgstr "_Исеци"
+
+#: ../src/window.c:67
+msgid "_Delete"
+msgstr "_Обриши"
+
+#: ../src/window.c:68
+msgid "_Select All"
+msgstr "Изабери _све"
+
+#: ../src/window.c:69
+msgid "_Undo"
+msgstr "_Поништи"
+
+#: ../src/window.c:70
+msgid "_Redo"
+msgstr "Поно_ви"
+
+#: ../src/window.c:73
+msgid "_Find…"
+msgstr "_Пронађи…"
+
+#: ../src/window.c:74
+msgid "Find _Next"
+msgstr "Пронађи _следеће"
+
+#: ../src/window.c:75
+msgid "Find _Previous"
+msgstr "Пронађи п_ретходно"
+
+#: ../src/window.c:76
+msgid "_Replace…"
+msgstr "_Замени…"
+
+#: ../src/window.c:79
+msgid "_Fullscreen"
+msgstr "_Цео екран"
+
+#: ../src/window.c:82
+msgid "_Font…"
+msgstr "_Фонт…"
+
+#: ../src/window.c:83
+msgid "Append _Newline"
+msgstr "Додај _нову линију"
+
+#: ../src/window.c:84
+msgid "Text _Wrap"
+msgstr "_Прелом текста"
+
+#: ../src/window.c:85
+msgid "_None"
+msgstr "_Искључено"
+
+#: ../src/window.c:87
+msgid "On _Character"
+msgstr "Код _симбола"
+
+#: ../src/window.c:88
+msgid "On _Word"
+msgstr "Код _речи"
+
+#: ../src/window.c:89
+msgid "On Character _And Word"
+msgstr "Код симбола _и речи"
+
+#: ../src/window.c:90
+msgid "_Overlay Scrolling"
+msgstr "П_рекриј помицање"
+
+#: ../src/window.c:91
+msgid "Scrollbar _Policy"
+msgstr "П_олиса трака за помицање"
+
+#: ../src/window.c:92
+msgid "_Automatic"
+msgstr "_Аутоматско"
+
+#: ../src/window.c:94
+msgid "A_lways"
+msgstr "_Увек"
+
+#: ../src/window.c:95
+msgid "_Never"
+msgstr "_Никада"
+
+#: ../src/window.c:98
+msgid "_About"
+msgstr "_О програму"
+
+#: ../src/window.c:300
+#, c-format
+msgid "Conversion of filename \"%s\" to UTF-8 failed: %s\n"
+msgstr "Конверзија наслова датотеке „%s“ у UTF-8 неуспешнa: %s\n"
+
+#: ../src/window.c:303
+msgid "Unknown filename"
+msgstr "Име непознато"
