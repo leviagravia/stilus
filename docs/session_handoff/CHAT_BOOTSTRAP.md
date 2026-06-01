@@ -36,6 +36,10 @@ docs/session_handoff/PROJECT_HISTORY.md
 
 Read:
 
+docs/mandatory_orders/MANDATORY_ORDER_METHOD.md
+
+Read:
+
 docs/canonical/UPSTREAM_HARDENING_POLICY.md
 
 Inspect:
