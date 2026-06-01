@@ -76,29 +76,18 @@ Verified:
 
 ### Phase B
 
-UTF-8 Open Failure
+RESOLVED
 
-Status: OPEN
+Commit:
 
-Observed Behavior:
+cfe347b
 
-UTF-8 file saves correctly.
+Validation:
 
-Reopening the same file fails.
-
-Error:
-
-Invalid byte sequence in conversion input
-
-Conclusion:
-
-Write path appears fixed.
-
-Read/Open conversion path remains defective.
-
-Current Work Item:
-
-P0-004B UTF-8 OPEN HARDENING
+- empty file: PASS
+- ASCII file: PASS
+- UTF-8 accented file: PASS
+- mixed ASCII/UTF-8 file: PASS
 
 ---
 
