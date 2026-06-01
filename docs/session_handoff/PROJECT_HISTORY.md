@@ -232,3 +232,63 @@ P0-H5 Desktop Stress Audit
 ---
 
 End of history.
+
+---
+
+### UTF-8 Open Failure Resolution
+
+Milestone:
+
+P0-004B
+
+Status:
+
+RESOLVED
+
+Origin:
+
+Inherited AirPad defect.
+
+Problem:
+
+UTF-8 files containing accented characters could be saved successfully but could not be reopened successfully.
+
+Observed error:
+
+Invalid byte sequence in conversion input
+
+Root Cause:
+
+AirPad derived the default file encoding from the current locale using:
+
+    g_get_codeset()
+
+This created inconsistent save/open behavior on systems not defaulting to UTF-8.
+
+Historical Model:
+
+Modern writing editors treat UTF-8 as the default text encoding.
+
+Legacy encodings are compatibility paths, not defaults.
+
+Resolution:
+
+Replaced locale-derived default encoding with:
+
+    g_strdup("UTF-8")
+
+Commit:
+
+cfe347b
+
+Validation:
+
+- empty file: PASS
+- ASCII file: PASS
+- UTF-8 accented file: PASS
+- mixed ASCII/UTF-8 file: PASS
+
+Result:
+
+UTF-8 Open Failure resolved.
+
