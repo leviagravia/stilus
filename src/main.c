@@ -141,7 +141,17 @@ static void airpad_prepare_argument_parser(GApplication *application, struct Air
     g_application_set_option_context_parameter_string(application, _("[FILE\u2026]"));
 
     // Set the options to the default values.
-    data_arguments->file_encoding = g_get_codeset();
+    // Stilus defaults new/unknown text files to UTF-8.
+    //
+    // AirPad used g_get_codeset() here, which depends on the current
+    // process locale. On systems with a non-UTF-8 or ASCII locale, the
+    // Open dialog and command-line open path default to that legacy
+    // encoding. UTF-8 files saved by Stilus then fail to reopen because
+    // g_convert() tries to decode them using the locale codeset.
+    //
+    // Users can still override the encoding via the dialog/--encoding
+    // option when opening legacy files.
+    data_arguments->file_encoding = g_strdup("UTF-8");
 }
 
 // Loads the file contents into the text buffer, after optionally converting it to UTF-8.
