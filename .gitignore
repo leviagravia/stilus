@@ -1,3 +1,19 @@
+# Build artifacts
+
+obj/
+airpad
+
+# Packages
+
+*.deb
+
+# Build logs
+
+build*.log
+
+# Temporary test directories
+
+package/
 
 # Local upstream import workspace
 upstream/
