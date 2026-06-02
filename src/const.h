@@ -111,6 +111,7 @@ struct AirpadDataWindow
     GtkWidget *window;                          // Window itself.
     GdkPixbuf *icon;                            // Icon of the window.
     GtkWidget *content;                         // Grid that holds the window contents.
+    GtkWidget *status_bar;                      // Status bar.
     struct AirpadDataMenuBar *data_menu_bar;    // Menubar of the window.
     struct AirpadDataTextView *data_text_view;  // Text area of the window.
 };

@@ -268,11 +268,13 @@ void airpad_window_create(struct AirpadDataWindow *data_window, GtkApplication *
     // Create the window elements.
     airpad_window_menu_bar_create(data_window->data_menu_bar, data_options);
     airpad_window_text_view_create(data_window->data_text_view);
+    data_window->status_bar = gtk_label_new("Unsaved | Writable | IT | 0 words | Ln 1 Col 1 | UTF-8 | TXT | 0 KB");
 
     // Attach the window elements to the contents grid.
     data_window->content = gtk_grid_new();
     gtk_grid_attach(GTK_GRID(data_window->content), data_window->data_menu_bar->menu_bar, 0, 0, 1, 1);
-    gtk_grid_attach_next_to(GTK_GRID(data_window->content), data_window->data_text_view->scrolled_window, data_window->data_menu_bar->menu_bar, GTK_POS_BOTTOM, 1, 1);
+    gtk_grid_attach(GTK_GRID(data_window->content), data_window->data_text_view->scrolled_window, 0, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(data_window->content), data_window->status_bar, 0, 2, 1, 1);
 
     // Add the window accelerators.
     airpad_window_add_accelerators(data_window);
@@ -312,23 +314,12 @@ void airpad_window_set_title(const struct AirpadDataWindow *data_window, GFile *
         gtk_window_set_title(GTK_WINDOW(data_window->window), AIRPAD_WINDOW_TITLE);
 }
 
-// Prepends asterisk to the title if the file has been modified,
-// and removes it otherwise.
+// Stilus does not use implicit title markers for modified documents.
+// Modified state is shown explicitly in the status bar.
 void airpad_window_set_title_modified(const struct AirpadDataWindow *data_window, gboolean modified)
 {
-    if (modified)
-    {
-        char *title = g_strconcat("*", gtk_window_get_title(GTK_WINDOW(data_window->window)), NULL);
-        gtk_window_set_title(GTK_WINDOW(data_window->window), title);
-        g_free(title);
-    }
-    else
-    {
-        const char *title = gtk_window_get_title(GTK_WINDOW(data_window->window));
-
-        if (title[0] == '*')
-            gtk_window_set_title(GTK_WINDOW(data_window->window), title + 1);
-    }
+    (void)data_window;
+    (void)modified;
 }
 
 // Overrides the font of the text view.
