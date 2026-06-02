@@ -250,7 +250,9 @@ void airpad_undo_mark_unit_next()
 // we do not want to mark the subsequent buffer item as a unit.
 void airpad_undo_mark_unit_prev()
 {
-    undo_buffer.buffer[undo_buffer.next - 1].unit_marker = TRUE;
+    if (undo_buffer.next > 0)
+        undo_buffer.buffer[undo_buffer.next - 1].unit_marker = TRUE;
+
     unit_marker_next = FALSE;
 }
 
@@ -276,6 +278,9 @@ void airpad_undo_save(GtkTextBuffer *text_buffer)
 // Flushes the current item into the undo buffer.
 void airpad_undo_flush()
 {
+    if (current_action.type != AIRPAD_UNDO_BUFFER_ITEM_TYPE_INSERT && current_action.type != AIRPAD_UNDO_BUFFER_ITEM_TYPE_DELETE)
+        return;
+
     airpad_undo_expand_buffer();
     memcpy(undo_buffer.buffer + undo_buffer.next - 1, &current_action, sizeof(struct AirpadUndoBufferItem));
 
