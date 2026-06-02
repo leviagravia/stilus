@@ -139,9 +139,9 @@ clean:
 	$(info Cleaning directory...)
 	@rm -rf '$(PROG)' '$(OBJDIR)' '$(DEPSDIR)'
 
-install: $(PROG) $(PODIR)/*.po $(ICON).svg
+install: $(PROG) $(ICON).svg
 	$(INSTALL_PROGRAM) -D '$(PROG)' '$(INSTALLDIR)'
-	$(foreach po,$(wildcard $(PODIR)/*.po),$(call generate_mo,$(patsubst $(PODIR)/%.po,%,$(po)));)
+	# Translations are intentionally not installed until Stilus has complete locale catalogs.
 	$(INSTALL_DATA) -D '$(ICON).svg' '$(ICONDIR)/hicolor/scalable/apps/$(PROG).svg'
 	$(call generate_desktop)
 
