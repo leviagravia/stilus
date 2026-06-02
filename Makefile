@@ -9,7 +9,7 @@ LIB_GTK := gtk+-3.0
 # VARIABLES
 
 # User-modifiable variables.
-PROG := airpad
+PROG := stilus
 IDEN := com.gitlab.NH000.Airpad
 DEBUG :=
 PROFILE :=
