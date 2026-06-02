@@ -22,17 +22,17 @@
 #include <gtk/gtk.h>
 
 // Program information.
-#define AIRPAD_INFO_NAME        "Airpad"
+#define AIRPAD_INFO_NAME        "Stilus"
 #ifndef AIRPAD_INFO_IDEN
-#define AIRPAD_INFO_IDEN        "com.gitlab.NH000.Airpad"
+#define AIRPAD_INFO_IDEN        "com.leviagravia.Stilus"
 #endif
-#define AIRPAD_INFO_VERS        "1.1"
+#define AIRPAD_INFO_VERS        "0.1.0"
 #define AIRPAD_INFO_LICE        "GPL3"
 #define AIRPAD_INFO_LICE_TYPE   GTK_LICENSE_GPL_3_0
-#define AIRPAD_INFO_SITE        "https://gitlab.com/NH000/airpad"
-#define AIRPAD_INFO_AUTH        "Nikola Hadžić"
-#define AIRPAD_INFO_AUTH_EMAIL  "nikola.hadzic.000@protonmail.com"
-#define AIRPAD_INFO_YEAR        "2018-2022"
+#define AIRPAD_INFO_SITE        "https://github.com/leviagravia/stilus"
+#define AIRPAD_INFO_AUTH        "Luciano Squizzato"
+#define AIRPAD_INFO_AUTH_EMAIL  "leviagravia@zohomail.eu"
+#define AIRPAD_INFO_YEAR        "2026"
 
 // Types of errors that can occur during an execution of the program
 // and of which the user will be alarmed about via message dialog.
