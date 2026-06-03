@@ -18,6 +18,7 @@
  */
 
 #include <glib/gi18n.h>
+#include <string.h>
 #include <gtk/gtk.h>
 #include "const.h"
 
@@ -344,17 +345,39 @@ static unsigned int airpad_window_count_words(GtkTextBuffer *text_buffer)
     return words;
 }
 
+static char *airpad_window_format_text_size(GtkTextBuffer *text_buffer)
+{
+    GtkTextIter start;
+    GtkTextIter end;
+    gtk_text_buffer_get_bounds(text_buffer, &start, &end);
+
+    char *text = gtk_text_buffer_get_text(text_buffer, &start, &end, FALSE);
+    const gsize bytes = strlen(text);
+    const unsigned int kb = bytes == 0 ? 0 : (unsigned int)((bytes + 1023) / 1024);
+
+    char *result = g_strdup_printf("%u KB", kb);
+    g_free(text);
+
+    return result;
+}
+
+
 void airpad_window_update_status_bar(GtkTextBuffer *text_buffer, const struct AirpadDataWindow *data_window)
 {
     const gboolean modified = gtk_text_buffer_get_modified(text_buffer);
     const unsigned int words = airpad_window_count_words(text_buffer);
 
+    char *text_size = airpad_window_format_text_size(text_buffer);
+
     char *status = g_strdup_printf(
-        "%s | Writable | IT | %u %s | Ln 1 Col 1 | UTF-8 | TXT | 0 KB",
+        "%s | Writable | IT | %u %s | Ln 1 Col 1 | UTF-8 | TXT | %s",
         modified ? "Unsaved" : "Saved",
         words,
-        words == 1 ? "word" : "words"
+        words == 1 ? "word" : "words",
+        text_size
     );
+
+    g_free(text_size);
 
     gtk_label_set_text(GTK_LABEL(data_window->status_bar), status);
     g_free(status);
