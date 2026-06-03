@@ -61,3 +61,60 @@ The custom About Layer must follow:
 
 Until the custom About Layer is implemented, About may remain localized by GTK even when the Stilus UI is otherwise English.
 
+
+---
+
+## KI-002 — Application icon is a PNG embedded inside an SVG container
+
+Status: OPEN
+
+Severity: LOW
+
+Area: Branding / Packaging / Icons
+
+### Problem
+
+The current Stilus application icon is distributed as an SVG file containing an embedded PNG image.
+
+As a consequence:
+
+- the icon is larger than necessary;
+- it is not a true vector icon;
+- scaling quality depends on the embedded raster image;
+- package size is slightly increased.
+
+### Cause
+
+The current branding phase prioritized functional rebranding over icon optimization.
+
+### Impact
+
+No data loss.
+
+No editing failure.
+
+No runtime instability.
+
+Only affects packaging quality and icon scalability.
+
+### Current Decision
+
+Accepted temporary solution.
+
+The current icon remains in use until a proper vector version is produced.
+
+### Future Fix
+
+Create a true vector SVG icon.
+
+Requirements:
+
+- no embedded PNG data;
+- fully scalable;
+- optimized SVG source;
+- maintain current Stilus visual identity.
+
+### Caveat
+
+Current implementation is acceptable for development releases and early project phases.
+
