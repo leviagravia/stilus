@@ -314,6 +314,53 @@ void airpad_window_set_title(const struct AirpadDataWindow *data_window, GFile *
         gtk_window_set_title(GTK_WINDOW(data_window->window), AIRPAD_WINDOW_TITLE);
 }
 
+static unsigned int airpad_window_count_words(GtkTextBuffer *text_buffer)
+{
+    GtkTextIter start;
+    GtkTextIter end;
+    gtk_text_buffer_get_bounds(text_buffer, &start, &end);
+
+    char *text = gtk_text_buffer_get_text(text_buffer, &start, &end, FALSE);
+
+    unsigned int words = 0;
+    gboolean inside_word = FALSE;
+
+    for (const char *p = text; p && *p; p = g_utf8_next_char(p))
+    {
+        gunichar ch = g_utf8_get_char(p);
+
+        if (g_unichar_isspace(ch))
+        {
+            inside_word = FALSE;
+        }
+        else if (!inside_word)
+        {
+            inside_word = TRUE;
+            ++words;
+        }
+    }
+
+    g_free(text);
+    return words;
+}
+
+void airpad_window_update_status_bar(GtkTextBuffer *text_buffer, const struct AirpadDataWindow *data_window)
+{
+    const gboolean modified = gtk_text_buffer_get_modified(text_buffer);
+    const unsigned int words = airpad_window_count_words(text_buffer);
+
+    char *status = g_strdup_printf(
+        "%s | Writable | IT | %u %s | Ln 1 Col 1 | UTF-8 | TXT | 0 KB",
+        modified ? "Unsaved" : "Saved",
+        words,
+        words == 1 ? "word" : "words"
+    );
+
+    gtk_label_set_text(GTK_LABEL(data_window->status_bar), status);
+    g_free(status);
+}
+
+
 // Stilus does not use implicit title markers for modified documents.
 // Modified state is shown explicitly in the status bar.
 void airpad_window_set_title_modified(const struct AirpadDataWindow *data_window, gboolean modified)

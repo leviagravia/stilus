@@ -242,6 +242,7 @@ static void airpad_connect_signals(struct AirpadDataApplication *data_applicatio
     data_application->data_signals->text_buffer_has_selection = g_signal_connect_after(text_buffer, "notify::has-selection", G_CALLBACK(&airpad_edit_has_selection), data_application->data_window->data_menu_bar);
     data_application->data_signals->text_buffer_insert_text = g_signal_connect(text_buffer, "insert-text", G_CALLBACK(&airpad_undo_add_on_insert), data_application->data_window->data_menu_bar);
     data_application->data_signals->text_buffer_delete_range = g_signal_connect(text_buffer, "delete-range", G_CALLBACK(&airpad_undo_add_on_delete), data_application->data_window->data_menu_bar);
+    g_signal_connect(text_buffer, "changed", G_CALLBACK(&airpad_window_update_status_bar), data_application->data_window);
     data_application->data_signals->text_buffer_paste_done = g_signal_connect(text_buffer, "paste-done", G_CALLBACK(&airpad_edit_paste_done), data_application->data_window->data_text_view->text_view);
 
     // Menu item signals.

@@ -149,10 +149,7 @@ void airpad_file_text_buffer_modified(GtkTextBuffer *text_buffer, const struct A
     gtk_widget_set_sensitive(data_window->data_menu_bar->menu_item_file_save, modified);
     airpad_window_set_title_modified(data_window, modified);
 
-    gtk_label_set_text(GTK_LABEL(data_window->status_bar),
-        modified
-            ? "Unsaved | Writable | IT | 0 words | Ln 1 Col 1 | UTF-8 | TXT | 0 KB"
-            : "Saved | Writable | IT | 0 words | Ln 1 Col 1 | UTF-8 | TXT | 0 KB");
+    airpad_window_update_status_bar(text_buffer, data_window);
 }
 
 // Initializes the state of the file widgets.
