@@ -118,3 +118,45 @@ Requirements:
 
 Current implementation is acceptable for development releases and early project phases.
 
+
+---
+
+## KI-003 — Live line/column update via mark-set caused instability
+
+Status: OPEN
+
+Severity: MEDIUM
+
+Area: Status Bar / Cursor Position / GTK Signals
+
+### Problem
+
+An initial attempt to update `Ln / Col` live in the status bar caused Stilus to disappear during editor interaction, including copy/paste testing.
+
+### Cause
+
+The attempted implementation connected the existing status bar update function directly to the GtkTextBuffer `mark-set` signal.
+
+That callback signature is not compatible with the existing `airpad_window_update_status_bar()` function.
+
+### Impact
+
+The implementation was rolled back.
+
+The stable status bar currently provides:
+
+- dynamic Saved / Unsaved state;
+- dynamic word count.
+
+`Ln / Col` remains static until a safe cursor-position callback is implemented.
+
+### Current Decision
+
+Do not reconnect `mark-set` directly to `airpad_window_update_status_bar()`.
+
+### Future Fix
+
+Implement a dedicated wrapper callback for cursor movement updates.
+
+The wrapper must match the GtkTextBuffer `mark-set` signal signature and then call the central status bar update function safely.
+
