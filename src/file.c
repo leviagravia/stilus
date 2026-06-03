@@ -56,6 +56,26 @@ static gboolean airpad_file_write(GtkWidget *parent, GtkTextBuffer *text_buffer,
 
     error = NULL;
 
+    // Create a backup of the previous on-disk version before replacing it.
+    if (g_file_query_exists(data_file->file, NULL))
+    {
+        char *path = g_file_get_path(data_file->file);
+
+        if (path)
+        {
+            char *backup_path = g_strconcat(path, ".bak", NULL);
+            GFile *backup_file = g_file_new_for_path(backup_path);
+            GError *backup_error = NULL;
+
+            if (!g_file_copy(data_file->file, backup_file, G_FILE_COPY_OVERWRITE, NULL, NULL, NULL, &backup_error))
+                g_clear_error(&backup_error);
+
+            g_object_unref(backup_file);
+            g_free(backup_path);
+            g_free(path);
+        }
+    }
+
     // Get stream for overwriting, optionally creating the file if it does not exist.
     GFileOutputStream *output_stream = g_file_replace(data_file->file, NULL, FALSE, G_FILE_CREATE_NONE, NULL, &error);
     if (!output_stream)
