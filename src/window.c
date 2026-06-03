@@ -367,13 +367,22 @@ void airpad_window_update_status_bar(GtkTextBuffer *text_buffer, const struct Ai
     const gboolean modified = gtk_text_buffer_get_modified(text_buffer);
     const unsigned int words = airpad_window_count_words(text_buffer);
 
+    GtkTextIter cursor;
+    GtkTextMark *insert_mark = gtk_text_buffer_get_insert(text_buffer);
+    gtk_text_buffer_get_iter_at_mark(text_buffer, &cursor, insert_mark);
+
+    const int line = gtk_text_iter_get_line(&cursor) + 1;
+    const int column = gtk_text_iter_get_line_offset(&cursor) + 1;
+
     char *text_size = airpad_window_format_text_size(text_buffer);
 
     char *status = g_strdup_printf(
-        "%s | Writable | IT | %u %s | Ln 1 Col 1 | UTF-8 | TXT | %s",
+        "%s | Writable | IT | %u %s | Ln %d Col %d | UTF-8 | TXT | %s",
         modified ? "Unsaved" : "Saved",
         words,
         words == 1 ? "word" : "words",
+        line,
+        column,
         text_size
     );
 
@@ -381,6 +390,18 @@ void airpad_window_update_status_bar(GtkTextBuffer *text_buffer, const struct Ai
 
     gtk_label_set_text(GTK_LABEL(data_window->status_bar), status);
     g_free(status);
+}
+
+
+
+void airpad_window_text_buffer_mark_set(GtkTextBuffer *text_buffer, GtkTextIter *location, GtkTextMark *mark, const struct AirpadDataWindow *data_window)
+{
+    (void)location;
+
+    if (mark != gtk_text_buffer_get_insert(text_buffer))
+        return;
+
+    airpad_window_update_status_bar(text_buffer, data_window);
 }
 
 

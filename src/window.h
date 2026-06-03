@@ -30,6 +30,7 @@ void airpad_window_create(struct AirpadDataWindow *data_window, GtkApplication *
 void airpad_window_set_title(const struct AirpadDataWindow *data_window, GFile *current_file);
 void airpad_window_set_title_modified(const struct AirpadDataWindow *data_window, gboolean modified);
 void airpad_window_update_status_bar(GtkTextBuffer *text_buffer, const struct AirpadDataWindow *data_window);
+void airpad_window_text_buffer_mark_set(GtkTextBuffer *text_buffer, GtkTextIter *location, GtkTextMark *mark, const struct AirpadDataWindow *data_window);
 void airpad_window_set_font(const struct AirpadDataWindow *data_window, const char *font);
 void airpad_window_set_text_wrap_mode(const struct AirpadDataWindow *data_window, GtkWrapMode wrap_mode);
 void airpad_window_set_overlay_scrolling(const struct AirpadDataWindow *data_window, gboolean state);
