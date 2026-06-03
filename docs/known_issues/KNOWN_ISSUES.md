@@ -160,3 +160,46 @@ Implement a dedicated wrapper callback for cursor movement updates.
 
 The wrapper must match the GtkTextBuffer `mark-set` signal signature and then call the central status bar update function safely.
 
+
+---
+
+## KI-004 — About dialog may show fallback icon instead of Stilus icon
+
+Status: OPEN
+
+Severity: LOW
+
+Area: UI / Branding / Icons / About
+
+### Problem
+
+The About dialog may show a small fallback/default icon instead of the Stilus application icon.
+
+### Cause
+
+The current About implementation loads the icon from the active GTK icon theme using `AIRPAD_EXEC_NAME`.
+
+If the Stilus icon is not installed in the current icon theme path, GTK falls back to a default icon.
+
+### Impact
+
+No data loss.
+
+No editing failure.
+
+No runtime instability.
+
+Branding consistency is affected.
+
+### Current Decision
+
+Accepted temporary limitation.
+
+This is related to the current use of `GtkAboutDialog` and icon-theme lookup.
+
+### Future Fix
+
+Use a custom Stilus About Layer and load the project icon through a reliable project-controlled path or resource.
+
+Also ensure installation places the Stilus icon in the expected hicolor icon theme location.
+
