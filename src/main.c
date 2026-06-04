@@ -365,6 +365,7 @@ static void airpad_activate(GApplication *application, struct AirpadDataApplicat
     airpad_edit_init(data_application->data_window);
     airpad_undo_init(data_application->data_window);
     airpad_search_init(data_application->data_window);
+    airpad_window_update_status_bar(gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view)), data_application->data_window);
 
     // Display the window to the user.
     gtk_widget_show_all(data_application->data_window->window);
