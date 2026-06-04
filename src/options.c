@@ -115,7 +115,7 @@ void airpad_options_read(struct AirpadDataOptions *data_options)
 #define AIRPAD_OPTIONS_READ_VALUE(type, value, key, def)  value = g_key_file_has_key(key_file, "general", key, NULL) ? g_key_file_get_ ## type(key_file, "general", key, NULL) : def;
 
     AIRPAD_OPTIONS_READ_VALUE(string, data_options->font, "font", NULL)
-    AIRPAD_OPTIONS_READ_VALUE(boolean, data_options->append_newline, "append-newline", TRUE)
+    data_options->append_newline = FALSE;
     AIRPAD_OPTIONS_READ_VALUE(boolean, data_options->overlay_scrolling, "overlay-scrolling", TRUE)
     AIRPAD_OPTIONS_READ_VALUE(integer, data_options->text_wrap, "text-wrap", GTK_WRAP_NONE)
     AIRPAD_OPTIONS_READ_VALUE(integer, data_options->scrollbar_policy, "scrollbar-policy", GTK_POLICY_AUTOMATIC)
@@ -130,7 +130,6 @@ void airpad_options_write(const struct AirpadDataOptions *data_options)
                                                                     setter(key_file, "general", key, value);
 
     AIRPAD_OPTIONS_WRITE_VALUE(g_key_file_set_string, data_options->font, data_options->font, "font")
-    AIRPAD_OPTIONS_WRITE_VALUE(g_key_file_set_boolean, TRUE, data_options->append_newline, "append-newline")
     AIRPAD_OPTIONS_WRITE_VALUE(g_key_file_set_boolean, TRUE, data_options->overlay_scrolling, "overlay-scrolling")
     AIRPAD_OPTIONS_WRITE_VALUE(g_key_file_set_integer, TRUE, data_options->text_wrap, "text-wrap")
     AIRPAD_OPTIONS_WRITE_VALUE(g_key_file_set_integer, TRUE, data_options->scrollbar_policy, "scrollbar-policy")
