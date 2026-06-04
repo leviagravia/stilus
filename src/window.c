@@ -269,7 +269,7 @@ void airpad_window_create(struct AirpadDataWindow *data_window, GtkApplication *
     // Create the window elements.
     airpad_window_menu_bar_create(data_window->data_menu_bar, data_options);
     airpad_window_text_view_create(data_window->data_text_view);
-    data_window->status_bar = gtk_label_new("Unsaved | Writable | IT | 0 words | Ln 1 Col 1 | UTF-8 | TXT | 0 KB");
+    data_window->status_bar = gtk_label_new("Unsaved | Writable | 0 words | Ln 1 Col 1 | UTF-8 | 0 KB");
 
     // Attach the window elements to the contents grid.
     data_window->content = gtk_grid_new();
@@ -377,7 +377,7 @@ void airpad_window_update_status_bar(GtkTextBuffer *text_buffer, const struct Ai
     char *text_size = airpad_window_format_text_size(text_buffer);
 
     char *status = g_strdup_printf(
-        "%s | Writable | IT | %u %s | Ln %d Col %d | UTF-8 | TXT | %s",
+        "%s | Writable | %u %s | Ln %d Col %d | UTF-8 | %s",
         modified ? "Unsaved" : "Saved",
         words,
         words == 1 ? "word" : "words",
