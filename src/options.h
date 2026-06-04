@@ -22,7 +22,6 @@
 #include <gtk/gtk.h>
 #include "const.h"
 
-void airpad_options_update_append_newline(GtkWidget *widget, gboolean *option);
 void airpad_options_update_overlay_scrolling(GtkWidget *widget, const struct AirpadDataApplication *data_application);
 void airpad_options_update_text_wrap(GtkWidget *widget, const struct AirpadDataApplication *data_application);
 void airpad_options_update_scrollbar_policy(GtkWidget *widget, const struct AirpadDataApplication *data_application);

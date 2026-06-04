@@ -81,7 +81,6 @@ static void airpad_window_menu_bar_create(struct AirpadDataMenuBar *data_menu_ba
 
     // "Options" buttons.
     data_menu_bar->menu_item_options_font = gtk_menu_item_new_with_mnemonic(_("_Font\u2026"));
-    data_menu_bar->menu_item_options_append_newline = gtk_check_menu_item_new_with_mnemonic(_("Append _Newline"));
     data_menu_bar->menu_item_options_text_wrap = gtk_menu_item_new_with_mnemonic(_("Text _Wrap"));
     data_menu_bar->menu_item_options_text_wrap_none = gtk_radio_menu_item_new_with_mnemonic(NULL, _("_None"));
     radio_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(data_menu_bar->menu_item_options_text_wrap_none));

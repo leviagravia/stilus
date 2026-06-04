@@ -28,7 +28,7 @@
 // otherwise the file is just silently written down.
 gboolean airpad_quit(GtkWidget *widget, GdkEvent *event, const struct AirpadDataApplication *data_application)
 {
-    if (airpad_aux_save_prompt(data_application->data_window, data_application->data_file, data_application->data_arguments->file_encoding, data_application->data_options->append_newline))
+    if (airpad_aux_save_prompt(data_application->data_window, data_application->data_file, data_application->data_arguments->file_encoding))
         g_application_quit(G_APPLICATION(data_application->application));
 
     return TRUE;

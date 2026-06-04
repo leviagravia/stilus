@@ -23,6 +23,6 @@
 #include "const.h"
 
 void airpad_aux_position_cursor_at_open(GtkTextBuffer *text_buffer);
-gboolean airpad_aux_save_prompt(const struct AirpadDataWindow *data_window, struct AirpadDataFile *data_file, const char *default_encoding, gboolean append_newline);
+gboolean airpad_aux_save_prompt(const struct AirpadDataWindow *data_window, struct AirpadDataFile *data_file, const char *default_encoding);
 
 #endif

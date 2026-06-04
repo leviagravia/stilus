@@ -36,7 +36,7 @@ void airpad_aux_position_cursor_at_open(GtkTextBuffer *text_buffer)
 // `data_file` will be updated appropriately if the user did not cancel the operation,
 // otherwise it will not be modified.
 // Returns TRUE if the user did not cancel the operation, FALSE otherwise.
-gboolean airpad_aux_save_prompt(const struct AirpadDataWindow *data_window, struct AirpadDataFile *data_file, const char *default_encoding, gboolean append_newline)
+gboolean airpad_aux_save_prompt(const struct AirpadDataWindow *data_window, struct AirpadDataFile *data_file, const char *default_encoding)
 {
     GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_window->data_text_view->text_view));
 
@@ -119,30 +119,6 @@ gboolean airpad_aux_save_prompt(const struct AirpadDataWindow *data_window, stru
                 }
 
                 g_object_unref(output_stream);
-
-                // If the last character in the buffer is not a newline, add it.
-                if (append_newline && contents[contents_length - 1] != '\n')
-                {
-                    error = NULL;
-
-                    if (!(output_stream = g_file_append_to(data_file->file, G_FILE_CREATE_NONE, NULL, &error)) || g_output_stream_write(G_OUTPUT_STREAM(output_stream), "\n", 1, NULL, &error) == -1)
-                    {
-                        char *filename = g_filename_to_utf8(g_file_peek_path(data_file->file), -1, NULL, NULL, NULL);
-                        airpad_dialog_error(data_window->window, AIRPAD_ERROR_TYPE_FILE_WRITE_FAILURE, FALSE, filename, error->message);
-                        g_free(filename);
-
-                        if (output_stream)
-                            g_object_unref(output_stream);
-
-                        g_free(contents);
-
-                        g_error_free(error);
-
-                        return FALSE;
-                    }
-
-                    g_object_unref(output_stream);
-                }
 
                 g_free(contents);
             }

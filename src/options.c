@@ -35,12 +35,6 @@ static inline char *airpad_options_get_config_filename()
     return config_filename;
 }
 
-// Updates the "Append Newline" option.
-void airpad_options_update_append_newline(GtkWidget *widget, gboolean *option)
-{
-    *option = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget));
-}
-
 // Updates the "Text Wrap" option.
 void airpad_options_update_text_wrap(GtkWidget *widget, const struct AirpadDataApplication *data_application)
 {
@@ -115,7 +109,6 @@ void airpad_options_read(struct AirpadDataOptions *data_options)
 #define AIRPAD_OPTIONS_READ_VALUE(type, value, key, def)  value = g_key_file_has_key(key_file, "general", key, NULL) ? g_key_file_get_ ## type(key_file, "general", key, NULL) : def;
 
     AIRPAD_OPTIONS_READ_VALUE(string, data_options->font, "font", NULL)
-    data_options->append_newline = FALSE;
     AIRPAD_OPTIONS_READ_VALUE(boolean, data_options->overlay_scrolling, "overlay-scrolling", TRUE)
     AIRPAD_OPTIONS_READ_VALUE(integer, data_options->text_wrap, "text-wrap", GTK_WRAP_NONE)
     AIRPAD_OPTIONS_READ_VALUE(integer, data_options->scrollbar_policy, "scrollbar-policy", GTK_POLICY_AUTOMATIC)
