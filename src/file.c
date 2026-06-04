@@ -376,7 +376,7 @@ void airpad_file_save_as(GtkWidget *widget, const struct AirpadDataApplication *
     GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view));
 
     // Write the file.
-    if (airpad_file_write(data_application->data_window->window, text_buffer, data_application->data_file, data_application->data_options->append_newline) && g_file_equal(current_file, data_application->data_file->file))
+    if (airpad_file_write(data_application->data_window->window, text_buffer, data_application->data_file, data_application->data_options->append_newline))
     {
         // Destroy the reference to the previous file.
         if (current_file)
@@ -385,11 +385,14 @@ void airpad_file_save_as(GtkWidget *widget, const struct AirpadDataApplication *
             g_free(current_encoding);
         }
 
+        // Update the window title to the newly chosen file.
+        airpad_window_set_title(data_application->data_window, data_application->data_file->file);
+
         // Update the window state and mark the text buffer as not modified.
         airpad_undo_save(text_buffer);
         gtk_text_buffer_set_modified(text_buffer, FALSE);
     }
-    else    // Saving operation either did not succeed or it was applied to a different file, restore the current file reference.
+    else    // Saving operation did not succeed; restore the previous file reference.
     {
         g_object_unref(data_application->data_file->file);
         g_free(data_application->data_file->encoding);
