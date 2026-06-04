@@ -405,12 +405,32 @@ void airpad_window_text_buffer_mark_set(GtkTextBuffer *text_buffer, GtkTextIter 
 }
 
 
-// Stilus does not use implicit title markers for modified documents.
-// Modified state is shown explicitly in the status bar.
+// Shows modified document state explicitly in the window title.
 void airpad_window_set_title_modified(const struct AirpadDataWindow *data_window, gboolean modified)
 {
-    (void)data_window;
-    (void)modified;
+    const char *title = gtk_window_get_title(GTK_WINDOW(data_window->window));
+
+    if (!title)
+        return;
+
+    const char *suffix = " [Unsaved]";
+    const size_t suffix_len = strlen(suffix);
+    const size_t title_len = strlen(title);
+
+    const gboolean has_suffix = title_len >= suffix_len && strcmp(title + title_len - suffix_len, suffix) == 0;
+
+    if (modified && !has_suffix)
+    {
+        char *new_title = g_strconcat(title, suffix, NULL);
+        gtk_window_set_title(GTK_WINDOW(data_window->window), new_title);
+        g_free(new_title);
+    }
+    else if (!modified && has_suffix)
+    {
+        char *new_title = g_strndup(title, title_len - suffix_len);
+        gtk_window_set_title(GTK_WINDOW(data_window->window), new_title);
+        g_free(new_title);
+    }
 }
 
 // Overrides the font of the text view.
