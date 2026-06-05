@@ -215,3 +215,82 @@ Legal attribution must not be removed without explicit review.
 The finding records evidence only.
 
 It does not authorize source modifications.
+
+---
+
+## AF-003 — AirPad namespace migration surface is architectural
+
+Status:
+OPEN
+
+Area:
+Namespace / Architecture / Refactoring Risk
+
+Source Audit:
+P2-007 AirPad Namespace Migration Audit
+
+### Evidence
+
+Current source contains extensive AirPad-derived namespace usage across the active codebase.
+
+Evidence includes:
+
+- `AIRPAD_*` macro namespace;
+- `airpad_*` function namespace;
+- `AirpadData*` type namespace.
+
+The namespace is concentrated in core application files, including:
+
+- `src/main.c`
+- `src/file.c`
+- `src/undo.c`
+- `src/window.c`
+- `src/replace.c`
+- `src/dialog.c`
+
+Audit evidence also found 268 `Airpad*` type references.
+
+User-facing branding is already migrated to Stilus:
+
+- `AIRPAD_INFO_NAME` = `Stilus`
+- `AIRPAD_INFO_IDEN` = `com.leviagravia.Stilus`
+
+### Repository Location
+
+Multiple files under:
+
+src/*.c
+
+src/*.h
+
+### Risk
+
+VERY LARGE
+
+### Current Decision
+
+No implementation authorized.
+
+AirPad Namespace Migration is not branding cleanup.
+
+It is a large architectural refactor.
+
+### Future Investigation
+
+A dedicated namespace migration strategy would be required before any implementation.
+
+Such a strategy must define:
+
+- symbol mapping;
+- rename order;
+- build validation;
+- behavioral regression validation;
+- rollback plan.
+
+### Notes
+
+The finding records evidence only.
+
+It does not authorize source modifications.
+
+---
