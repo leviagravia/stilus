@@ -8,7 +8,7 @@ This document tracks known defects, caveats, deferred fixes and accepted tempora
 
 ## KI-001 — GtkAboutDialog follows system locale
 
-Status: OPEN
+Status: RESOLVED
 
 Severity: LOW
 
@@ -27,7 +27,7 @@ Example on Italian desktop sessions:
 
 ### Cause
 
-The current About dialog uses GTK's built-in `GtkAboutDialog`.
+The previous About dialog used GTK's built-in `GtkAboutDialog`.
 
 GTK localizes internal dialog labels according to the desktop/system locale.
 
@@ -43,30 +43,28 @@ No file lifecycle risk.
 
 User interface language consistency is affected.
 
-### Current Decision
+### Resolution
 
-Do not spend further time patching `GtkAboutDialog`.
+`GtkAboutDialog` was replaced by the custom Stilus Help Layer.
 
-Micro-patches to `gtk_window_set_title()` or About dialog properties do not solve the issue.
+About Stilus now uses Stilus-owned GTK dialogs and English strings.
 
-### Future Fix
+### Verification
 
-Replace `GtkAboutDialog` with a fully custom Stilus About Layer.
+PASS
 
-The custom About Layer must follow:
+Validated through Help → About Stilus after `stilus-help-layer-certified`.
 
-- `docs/canonical/STILUS_ABOUT_LAYER_SPEC.md`
+### Remaining Caveat
 
-### Caveat
-
-Until the custom About Layer is implemented, About may remain localized by GTK even when the Stilus UI is otherwise English.
+Other GTK-native dialogs may still follow the desktop/system locale. This is outside the resolved About Layer issue.
 
 
 ---
 
 ## KI-002 — Application icon is a PNG embedded inside an SVG container
 
-Status: OPEN
+Status: RESOLVED
 
 Severity: LOW
 
@@ -97,26 +95,22 @@ No runtime instability.
 
 Only affects packaging quality and icon scalability.
 
-### Current Decision
+### Resolution
 
-Accepted temporary solution.
+The icon was replaced with a true SVG as part of the certified Help Layer work.
 
-The current icon remains in use until a proper vector version is produced.
+Validation result:
 
-### Future Fix
+- no `<image>`;
+- no `base64`;
+- no `image/png`;
+- no `image/jpeg`.
 
-Create a true vector SVG icon.
+### Verification
 
-Requirements:
+PASS
 
-- no embedded PNG data;
-- fully scalable;
-- optimized SVG source;
-- maintain current Stilus visual identity.
-
-### Caveat
-
-Current implementation is acceptable for development releases and early project phases.
+Validated before `stilus-help-layer-certified`.
 
 
 ---
@@ -169,7 +163,7 @@ No instability observed.
 
 ## KI-004 — About dialog may show fallback icon instead of Stilus icon
 
-Status: OPEN
+Status: RESOLVED
 
 Severity: LOW
 
@@ -181,7 +175,7 @@ The About dialog may show a small fallback/default icon instead of the Stilus ap
 
 ### Cause
 
-The current About implementation loads the icon from the active GTK icon theme using `AIRPAD_EXEC_NAME`.
+The previous About implementation loaded the icon from the active GTK icon theme using `AIRPAD_EXEC_NAME`.
 
 If the Stilus icon is not installed in the current icon theme path, GTK falls back to a default icon.
 
@@ -195,17 +189,17 @@ No runtime instability.
 
 Branding consistency is affected.
 
-### Current Decision
+### Resolution
 
-Accepted temporary limitation.
+The custom Stilus Help Layer no longer uses `GtkAboutDialog` for About Stilus.
 
-This is related to the current use of `GtkAboutDialog` and icon-theme lookup.
+The About icon is loaded from a project-controlled source and no longer depends on GTK About icon-theme fallback behavior.
 
-### Future Fix
+### Verification
 
-Use a custom Stilus About Layer and load the project icon through a reliable project-controlled path or resource.
+PASS
 
-Also ensure installation places the Stilus icon in the expected hicolor icon theme location.
+Validated through the certified Help Layer implementation.
 
 
 ---
@@ -282,4 +276,85 @@ to tolerate invalid direct invocation paths.
 None.
 
 The issue does not block Stilus Core Certification.
+
+---
+
+## KI-006 — Remaining GTK-native dialogs may follow system locale
+
+Status: OPEN
+
+Severity: LOW
+
+Area: UI / Localization / GTK dialogs
+
+### Problem
+
+Some GTK-native dialogs outside the custom Help Layer may still expose system-localized labels.
+
+Examples may include file chooser dialogs, font chooser dialogs or stock GTK button labels.
+
+### Cause
+
+These dialogs are provided by GTK and may use the desktop/system locale for their internal labels.
+
+### Impact
+
+No data loss.
+
+No editing failure.
+
+No file lifecycle risk.
+
+User interface language consistency may be affected.
+
+### Current Decision
+
+Accepted temporary limitation.
+
+The custom Help Layer is resolved and uses Stilus-controlled English strings.
+
+Remaining GTK-native dialog localization is a separate issue.
+
+### Future Fix
+
+Evaluate whether each GTK-native dialog should be replaced, wrapped or accepted.
+
+Do not patch this opportunistically.
+
+---
+
+## KI-007 — Deprecated GTK APIs remain in use
+
+Status: OPEN
+
+Severity: LOW
+
+Area: GTK / Technical Debt
+
+### Problem
+
+Build warnings indicate deprecated GTK APIs still in use.
+
+Known examples:
+
+- `gtk_message_dialog_set_image`
+- `gtk_widget_override_font`
+
+### Impact
+
+No data loss.
+
+No editing failure.
+
+No observed runtime instability.
+
+### Current Decision
+
+Accepted technical debt.
+
+These APIs should not be changed opportunistically during unrelated work.
+
+### Future Fix
+
+Handle in a dedicated GTK deprecation audit and cleanup phase.
 
