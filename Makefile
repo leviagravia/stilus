@@ -10,7 +10,7 @@ LIB_GTK := gtk+-3.0
 
 # User-modifiable variables.
 PROG := stilus
-IDEN := com.gitlab.NH000.Airpad
+IDEN := com.leviagravia.Stilus
 DEBUG :=
 PROFILE :=
 OPTIMIZE :=
@@ -65,7 +65,7 @@ generate_desktop = mkdir -p '$(DESKTOPDIR)' && echo -e\
                    '[Desktop Entry]\n$\
                    Type=Application\n$\
                    Version=1.5\n$\
-                   Name=Airpad\n$\
+                   Name=Stilus\n$\
                    GenericName=Text editor\n$\
                    GenericName[sr]=Уређивач текста\n$\
                    GenericName[sr_RS@latin]=Uređivač teksta\n$\
