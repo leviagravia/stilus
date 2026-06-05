@@ -281,39 +281,229 @@ gboolean airpad_dialog_save(GtkWidget *parent, const char *default_encoding, str
     return TRUE;
 }
 
+static GtkWidget *airpad_dialog_create_text_label(const char *text)
+{
+    GtkWidget *label = gtk_label_new(text);
+    gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+    gtk_label_set_yalign(GTK_LABEL(label), 0.0);
+    gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
+    gtk_label_set_selectable(GTK_LABEL(label), TRUE);
+    return label;
+}
+
+static GtkWidget *airpad_dialog_create_text_dialog(GtkWidget *parent, const char *title, const char *text)
+{
+    GtkWidget *dialog = gtk_dialog_new_with_buttons(
+        title,
+        GTK_WINDOW(parent),
+        GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+        "Close",
+        GTK_RESPONSE_CLOSE,
+        NULL
+    );
+
+    gtk_window_set_default_size(GTK_WINDOW(dialog), 480, 360);
+    gtk_window_set_resizable(GTK_WINDOW(dialog), TRUE);
+
+    GtkWidget *content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+    GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+    gtk_container_set_border_width(GTK_CONTAINER(scrolled_window), 18);
+    gtk_box_pack_start(GTK_BOX(content_area), scrolled_window, TRUE, TRUE, 0);
+
+    GtkWidget *label = airpad_dialog_create_text_label(text);
+    gtk_container_add(GTK_CONTAINER(scrolled_window), label);
+
+    return dialog;
+}
+
+static GdkPixbuf *airpad_dialog_load_stilus_icon(void)
+{
+    GError *error = NULL;
+    GdkPixbuf *icon = gdk_pixbuf_new_from_file_at_size("icon.svg", 96, 96, &error);
+
+    if (!icon)
+    {
+        g_clear_error(&error);
+        icon = gdk_pixbuf_new_from_file_at_size("/usr/share/icons/hicolor/scalable/apps/stilus.svg", 96, 96, &error);
+    }
+
+    if (error)
+        g_error_free(error);
+
+    return icon;
+}
+
+static void airpad_dialog_credits(GtkWidget *parent)
+{
+    static const char *credits =
+        "Created by Luciano Squizzato\n"
+        "\n"
+        "Stilus icon by Luciano Squizzato\n"
+        "\n"
+        "Stilus originates from the AirPad project by Nikola Hadžić.\n"
+        "\n"
+        "The Stilus project preserves attribution and licensing information in accordance with the GNU General Public License.";
+
+    GtkWidget *dialog = airpad_dialog_create_text_dialog(parent, "Credits", credits);
+    gtk_widget_show_all(dialog);
+    gtk_dialog_run(GTK_DIALOG(dialog));
+    gtk_widget_destroy(dialog);
+}
+
 // About dialog.
 void airpad_dialog_about(GtkWidget *widget, GtkWidget *parent)
 {
-    static const char *authors[] =  {
-                                        AIRPAD_INFO_AUTH " <" AIRPAD_INFO_AUTH_EMAIL ">",
-                                        NULL
-                                    };
+    GtkWidget *dialog = gtk_dialog_new_with_buttons(
+        "About Stilus",
+        GTK_WINDOW(parent),
+        GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+        "Credits",
+        GTK_RESPONSE_APPLY,
+        "Close",
+        GTK_RESPONSE_CLOSE,
+        NULL
+    );
 
-    static const char *artists[] =  {
-                                        AIRPAD_INFO_AUTH " <" AIRPAD_INFO_AUTH_EMAIL ">",
-                                        NULL
-                                    };
+    gtk_window_set_default_size(GTK_WINDOW(dialog), 440, 360);
+    gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
 
-    GdkPixbuf *icon = gtk_icon_theme_load_icon(gtk_icon_theme_get_default(), AIRPAD_EXEC_NAME, 128, GTK_ICON_LOOKUP_FORCE_SIZE, NULL);
+    GtkWidget *content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+    GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 12);
+    gtk_container_set_border_width(GTK_CONTAINER(box), 20);
+    gtk_box_pack_start(GTK_BOX(content_area), box, TRUE, TRUE, 0);
 
-    // Create an about dialog.
-    GtkWidget *dialog = gtk_about_dialog_new();
-    gtk_window_set_transient_for(GTK_WINDOW(dialog), GTK_WINDOW(parent));
-    gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
-    gtk_window_set_title(GTK_WINDOW(dialog), _("About"));
-    gtk_about_dialog_set_version(GTK_ABOUT_DIALOG(dialog), AIRPAD_INFO_VERS);
-    gtk_about_dialog_set_copyright(GTK_ABOUT_DIALOG(dialog), "Copyright (C) " AIRPAD_INFO_YEAR " " AIRPAD_INFO_AUTH);
-    gtk_about_dialog_set_license_type(GTK_ABOUT_DIALOG(dialog), AIRPAD_INFO_LICE_TYPE);
-    gtk_about_dialog_set_website(GTK_ABOUT_DIALOG(dialog), AIRPAD_INFO_SITE);
-    gtk_about_dialog_set_authors(GTK_ABOUT_DIALOG(dialog), authors);
-    gtk_about_dialog_set_artists(GTK_ABOUT_DIALOG(dialog), artists);
-    gtk_about_dialog_set_translator_credits(GTK_ABOUT_DIALOG(dialog), _("translator-credits"));
-    gtk_about_dialog_set_logo(GTK_ABOUT_DIALOG(dialog), icon);
+    GdkPixbuf *icon = airpad_dialog_load_stilus_icon();
+    if (icon)
+    {
+        GtkWidget *image = gtk_image_new_from_pixbuf(icon);
+        gtk_widget_set_halign(image, GTK_ALIGN_CENTER);
+        gtk_box_pack_start(GTK_BOX(box), image, FALSE, FALSE, 0);
+        g_object_unref(icon);
+    }
 
-    // Display the dialog.
+    GtkWidget *title = gtk_label_new(NULL);
+    gtk_label_set_markup(GTK_LABEL(title), "<span size=\"xx-large\" weight=\"bold\">Stilus</span>");
+    gtk_label_set_xalign(GTK_LABEL(title), 0.5);
+    gtk_box_pack_start(GTK_BOX(box), title, FALSE, FALSE, 0);
+
+    GtkWidget *label = gtk_label_new(
+        "Version " AIRPAD_INFO_VERS "\n"
+        "\n"
+        "Created by " AIRPAD_INFO_AUTH "\n"
+        "\n"
+        "A lightweight text editor designed for writers\n"
+        "\n"
+        "Website"
+    );
+    gtk_label_set_xalign(GTK_LABEL(label), 0.5);
+    gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);
+    gtk_label_set_selectable(GTK_LABEL(label), TRUE);
+    gtk_box_pack_start(GTK_BOX(box), label, FALSE, FALSE, 0);
+
+    GtkWidget *website = gtk_link_button_new_with_label(AIRPAD_INFO_SITE, AIRPAD_INFO_SITE);
+    gtk_widget_set_halign(website, GTK_ALIGN_CENTER);
+    gtk_box_pack_start(GTK_BOX(box), website, FALSE, FALSE, 0);
+
+    GtkWidget *license_label = gtk_label_new("License");
+    gtk_label_set_xalign(GTK_LABEL(license_label), 0.5);
+    gtk_label_set_justify(GTK_LABEL(license_label), GTK_JUSTIFY_CENTER);
+    gtk_box_pack_start(GTK_BOX(box), license_label, FALSE, FALSE, 0);
+
+    GtkWidget *license = gtk_link_button_new_with_label(
+        "https://www.gnu.org/licenses/gpl-3.0.html",
+        "GNU General Public License v3 or later"
+    );
+    gtk_widget_set_halign(license, GTK_ALIGN_CENTER);
+    gtk_box_pack_start(GTK_BOX(box), license, FALSE, FALSE, 0);
+
+    gtk_widget_show_all(dialog);
+
+    int response;
+    while ((response = gtk_dialog_run(GTK_DIALOG(dialog))) == GTK_RESPONSE_APPLY)
+        airpad_dialog_credits(parent);
+
+    gtk_widget_destroy(dialog);
+}
+
+void airpad_dialog_writing_principles(GtkWidget *widget, GtkWidget *parent)
+{
+    static const char *text =
+        "Text First\n"
+        "Text creation is the primary purpose of Stilus.\n"
+        "\n"
+        "Writing Before Formatting\n"
+        "Text creation has priority over document presentation.\n"
+        "\n"
+        "UTF-8 First\n"
+        "Documents are stored and handled as UTF-8 text.\n"
+        "\n"
+        "Reliable File Handling\n"
+        "Opening and saving documents must be predictable and safe.\n"
+        "\n"
+        "Keyboard Friendly\n"
+        "Common actions should always be accessible from the keyboard.\n"
+        "\n"
+        "Fast Startup\n"
+        "The editor should remain responsive and lightweight.\n"
+        "\n"
+        "Long-form Friendly\n"
+        "The editor should remain comfortable for articles, essays, research and book-length writing.\n"
+        "\n"
+        "Distraction Free\n"
+        "The interface should support concentration and long-form writing.\n"
+        "\n"
+        "Simplicity Before Complexity\n"
+        "New functionality should only be added when it clearly improves the writing experience.";
+
+    GtkWidget *dialog = airpad_dialog_create_text_dialog(parent, "Writing Principles", text);
+    gtk_widget_show_all(dialog);
     gtk_dialog_run(GTK_DIALOG(dialog));
     gtk_widget_destroy(dialog);
+}
 
-    if (icon)
-        g_object_unref(icon);
+void airpad_dialog_keyboard_shortcuts(GtkWidget *widget, GtkWidget *parent)
+{
+    static const char *text =
+        "Ctrl+N          New\n"
+        "Ctrl+O          Open\n"
+        "Ctrl+S          Save\n"
+        "Ctrl+Shift+S    Save As\n"
+        "Ctrl+Z          Undo\n"
+        "Ctrl+Y          Redo\n"
+        "Ctrl+F          Find\n"
+        "Ctrl+H          Replace";
+
+    GtkWidget *dialog = airpad_dialog_create_text_dialog(parent, "Keyboard Shortcuts", text);
+    gtk_widget_show_all(dialog);
+    gtk_dialog_run(GTK_DIALOG(dialog));
+    gtk_widget_destroy(dialog);
+}
+
+void airpad_dialog_writing_workflow(GtkWidget *widget, GtkWidget *parent)
+{
+    static const char *text =
+        "Create\n"
+        "Start a new document.\n"
+        "\n"
+        "Write\n"
+        "Focus on text creation.\n"
+        "\n"
+        "Revise\n"
+        "Review, reorganize and improve the text.\n"
+        "\n"
+        "Save\n"
+        "Preserve work safely and predictably.\n"
+        "\n"
+        "Publish\n"
+        "Export or use the text in external publishing workflows.\n"
+        "\n"
+        "Stilus focuses on writing and revision.\n"
+        "\n"
+        "Document layout, desktop publishing and presentation design are outside the primary scope of the project.";
+
+    GtkWidget *dialog = airpad_dialog_create_text_dialog(parent, "Writing Workflow", text);
+    gtk_widget_show_all(dialog);
+    gtk_dialog_run(GTK_DIALOG(dialog));
+    gtk_widget_destroy(dialog);
 }

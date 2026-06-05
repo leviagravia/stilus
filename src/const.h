@@ -94,7 +94,10 @@ struct AirpadDataMenuBar
     GtkWidget *menu_item_options_scrollbar_policy_auto;         // "Options -> Scrollbar Policy -> Automatic" menu item.
     GtkWidget *menu_item_options_scrollbar_policy_always;       // "Options -> Scrollbar Policy -> Always" menu item.
     GtkWidget *menu_item_options_scrollbar_policy_never;        // "Options -> Scrollbar Policy -> Never" menu item.
-    GtkWidget *menu_item_help_about;                            // "Help -> About" menu item.
+    GtkWidget *menu_item_help_about;                            // "Help -> About Stilus" menu item.
+    GtkWidget *menu_item_help_writing_principles;               // "Help -> Writing Principles" menu item.
+    GtkWidget *menu_item_help_keyboard_shortcuts;                // "Help -> Keyboard Shortcuts" menu item.
+    GtkWidget *menu_item_help_writing_workflow;                 // "Help -> Writing Workflow" menu item.
 };
 
 // Text view data.
@@ -154,7 +157,10 @@ struct AirpadDataSignals
     gulong menu_item_options_scrollbar_policy_auto_toggled;         // "Options -> Scrollbar Policy -> Automatic": "toggled"
     gulong menu_item_options_scrollbar_policy_always_toggled;       // "Options -> Scrollbar Policy -> Always": "toggled"
     gulong menu_item_options_scrollbar_policy_never_toggled;        // "Options -> Scrollbar Policy -> Never": "toggled"
-    gulong menu_item_help_about_activate;                           // "Help -> About": "activate"
+    gulong menu_item_help_about_activate;                           // "Help -> About Stilus": "activate"
+    gulong menu_item_help_writing_principles_activate;              // "Help -> Writing Principles": "activate"
+    gulong menu_item_help_keyboard_shortcuts_activate;               // "Help -> Keyboard Shortcuts": "activate"
+    gulong menu_item_help_writing_workflow_activate;                 // "Help -> Writing Workflow": "activate"
 };
 
 // Data used by the searching facility.

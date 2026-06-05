@@ -28,5 +28,8 @@ void airpad_dialog_no_matches_found(GtkWidget *parent);
 GFile *airpad_dialog_open(GtkWidget *parent, const char *default_encoding, struct AirpadDataFile *data_file);
 GFile *airpad_dialog_save(GtkWidget *parent, const char *default_encoding, struct AirpadDataFile *data_file);
 void airpad_dialog_about(GtkWidget *widget, GtkWidget *parent);
+void airpad_dialog_writing_principles(GtkWidget *widget, GtkWidget *parent);
+void airpad_dialog_keyboard_shortcuts(GtkWidget *widget, GtkWidget *parent);
+void airpad_dialog_writing_workflow(GtkWidget *widget, GtkWidget *parent);
 
 #endif

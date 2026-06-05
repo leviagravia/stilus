@@ -274,6 +274,9 @@ static void airpad_connect_signals(struct AirpadDataApplication *data_applicatio
     data_application->data_signals->menu_item_options_scrollbar_policy_always_toggled = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_options_scrollbar_policy_always, "toggled", G_CALLBACK(&airpad_options_update_scrollbar_policy), data_application);
     data_application->data_signals->menu_item_options_scrollbar_policy_never_toggled = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_options_scrollbar_policy_never, "toggled", G_CALLBACK(&airpad_options_update_scrollbar_policy), data_application);
     data_application->data_signals->menu_item_help_about_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_help_about, "activate", G_CALLBACK(&airpad_dialog_about), data_application->data_window->window);
+    data_application->data_signals->menu_item_help_writing_principles_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_help_writing_principles, "activate", G_CALLBACK(&airpad_dialog_writing_principles), data_application->data_window->window);
+    data_application->data_signals->menu_item_help_keyboard_shortcuts_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_help_keyboard_shortcuts, "activate", G_CALLBACK(&airpad_dialog_keyboard_shortcuts), data_application->data_window->window);
+    data_application->data_signals->menu_item_help_writing_workflow_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_help_writing_workflow, "activate", G_CALLBACK(&airpad_dialog_writing_workflow), data_application->data_window->window);
 }
 
 // Acts on the specified options that require local handling and

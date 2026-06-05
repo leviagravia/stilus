@@ -95,7 +95,10 @@ static void airpad_window_menu_bar_create(struct AirpadDataMenuBar *data_menu_ba
     data_menu_bar->menu_item_options_scrollbar_policy_never = gtk_radio_menu_item_new_with_mnemonic(radio_group, _("_Never"));
 
     // "Help" buttons.
-    data_menu_bar->menu_item_help_about = gtk_menu_item_new_with_mnemonic(_("_About"));
+    data_menu_bar->menu_item_help_about = gtk_menu_item_new_with_mnemonic("_About Stilus");
+    data_menu_bar->menu_item_help_writing_principles = gtk_menu_item_new_with_mnemonic("_Writing Principles");
+    data_menu_bar->menu_item_help_keyboard_shortcuts = gtk_menu_item_new_with_mnemonic("_Keyboard Shortcuts");
+    data_menu_bar->menu_item_help_writing_workflow = gtk_menu_item_new_with_mnemonic("Writing _Workflow");
 
     // Attach the menus to items.
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_file), data_menu_bar->menu_file);
@@ -141,6 +144,9 @@ static void airpad_window_menu_bar_create(struct AirpadDataMenuBar *data_menu_ba
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_options_scrollbar_policy), data_menu_bar->menu_item_options_scrollbar_policy_always);
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_options_scrollbar_policy), data_menu_bar->menu_item_options_scrollbar_policy_never);
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_help), data_menu_bar->menu_item_help_about);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_help), data_menu_bar->menu_item_help_writing_principles);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_help), data_menu_bar->menu_item_help_keyboard_shortcuts);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_help), data_menu_bar->menu_item_help_writing_workflow);
 
     // Attach the menus to the menubar.
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_bar), data_menu_bar->menu_item_file);
