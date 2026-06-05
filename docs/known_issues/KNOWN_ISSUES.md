@@ -207,3 +207,79 @@ Use a custom Stilus About Layer and load the project icon through a reliable pro
 
 Also ensure installation places the Stilus icon in the expected hicolor icon theme location.
 
+
+---
+
+## KI-005 — Undo/Redo relies on menu state validation
+
+Status: ACCEPTED
+
+Severity: LOW
+
+Area: Undo / Redo / Defensive Programming
+
+### Problem
+
+`airpad_undo_action_undo()` and `airpad_undo_action_redo()` do not perform explicit local boundary validation.
+
+The implementation assumes:
+
+- Undo is only invoked when undo history exists.
+- Redo is only invoked when redo history exists.
+
+### Cause
+
+The current implementation relies on GTK menu sensitivity state.
+
+The Edit menu disables:
+
+- Undo when `undo_buffer.next == 0`
+- Redo when `undo_buffer.next == undo_buffer.end`
+
+As a consequence, invalid user invocation is prevented by the UI layer rather than by local guards inside the action functions.
+
+### Desktop Validation
+
+PASS
+
+Validated through:
+
+- new document
+- edit
+- undo
+- redo
+- save
+- dirty state transitions
+- undo/redo boundary transitions
+
+No incorrect behavior observed.
+
+### Impact
+
+No user-visible malfunction observed.
+
+No data loss observed.
+
+No crash observed.
+
+### Current Decision
+
+Accepted.
+
+The current implementation behaves correctly under all validated desktop scenarios.
+
+### Future Hardening
+
+Optional defensive guards may be added to:
+
+- `airpad_undo_action_undo()`
+- `airpad_undo_action_redo()`
+
+to tolerate invalid direct invocation paths.
+
+### Certification Impact
+
+None.
+
+The issue does not block Stilus Core Certification.
+
