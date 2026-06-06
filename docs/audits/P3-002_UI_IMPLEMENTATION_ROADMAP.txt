@@ -1,0 +1,52 @@
+PHASE A — LOW DIFFICULTY
+------------------------
+Insert Date/Time
+Favorites
+Line Numbers
+Always On Top
+Font Bigger
+Font Smaller
+
+PHASE B — LOW/MEDIUM
+--------------------
+Sessions
+Print Preview
+Print
+Word Statistics
+Writing Statistics
+
+PHASE C — RESEARCH PANEL FOUNDATION
+-----------------------------------
+Right Panel Shell
+Scratchpad
+Research Clipboard
+
+PHASE D — RESEARCH PANEL EXPANSION
+----------------------------------
+Tags Collection
+Source Notes
+
+PHASE E — NAVIGATION
+--------------------
+Document Outline
+Bookmarks
+
+PHASE F — WRITING MODES
+-----------------------
+Focus Mode
+Focus Paragraph
+Typewriter Mode
+Reading Layout
+
+PHASE G — REVISE
+----------------
+Smart Typography
+Paste Clean from PDF
+Cleanup Tools
+Editorial Search
+
+PHASE H — ADVANCED UI
+---------------------
+Transparency System
+Dark Mode refinements
+Multi-window workflow validation
