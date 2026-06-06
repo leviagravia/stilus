@@ -1,0 +1,48 @@
+IMPLEMENTED
+-----------
+File
+Edit
+Search
+View
+Options
+Help
+
+PARTIAL
+-------
+File
+Edit
+View
+Options
+Help
+
+MISSING
+-------
+Research
+Navigate
+Writing
+Revise
+Tools
+
+Research Panel
+--------------
+Research Clipboard
+Tags Collection
+Source Notes
+Scratchpad
+Document Outline
+
+Multiple Window Workflow
+Favorites
+Sessions
+Insert Date/Time
+Print Preview
+Print
+Always On Top
+Transparency System
+Line Numbers
+Word Statistics
+Writing Statistics
+Bookmarks
+Focus Mode
+Typewriter Mode
+...
