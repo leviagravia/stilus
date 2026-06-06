@@ -1,0 +1,412 @@
+STILUS CANONICAL MENU SPECIFICATION
+
+Status: CANONICAL
+
+Version: 1.0
+
+Scope: User Interface / Menu System
+
+======================================================================
+PURPOSE
+======================================================================
+
+This document defines the canonical menu structure of Stilus.
+
+The menu system is designed for:
+
+- academic writing
+- essays
+- articles
+- books
+- homilies
+- research-oriented writing
+- long-form text production
+
+Stilus remains:
+
+- lightweight
+- native desktop
+- text-oriented
+- TXT-first
+- Markdown-friendly
+
+Stilus is not:
+
+- an IDE
+- a PKM
+- a knowledge base
+- a workspace manager
+- a project manager
+- a Scrivener clone
+- an Obsidian clone
+
+======================================================================
+TOP LEVEL MENU ORDER
+======================================================================
+
+File
+Edit
+Research
+Navigate
+Writing
+Revise
+View
+Options
+Tools
+Help
+
+This order reflects the actual writing workflow:
+
+Research
+→ Navigation
+→ Writing
+→ Revision
+→ Verification
+→ Output
+
+======================================================================
+FILE
+======================================================================
+
+File
+├── New
+├── New from Template
+├── Open…
+├── Recent Files
+├── Favorites
+│   ├── Add Current File to Favorites
+│   ├── Open Favorite
+│   └── Manage Favorites
+├── Save
+├── Save As…
+├── Sessions
+│   ├── Save Session
+│   └── Reopen Last Session
+├── Print Preview…
+├── Print…
+├── Print Setup…
+└── Quit
+
+Notes
+
+Favorites belong to File because they are file-oriented.
+
+Sessions are intentionally lightweight.
+
+Sessions are limited to:
+
+- Save Session
+- Reopen Last Session
+
+Snapshots are not part of the canonical menu.
+
+======================================================================
+EDIT
+======================================================================
+
+Edit
+├── Undo
+├── Redo
+├── Cut
+├── Copy
+├── Paste
+├── Paste as Plain Text
+├── Select All
+├── Delete
+├── Find / Replace…
+├── Find Next
+├── Find Previous
+├── Go to Line…
+└── Insert Date / Time
+
+Edit contains direct text manipulation commands.
+
+======================================================================
+RESEARCH
+======================================================================
+
+Research
+├── Research Clipboard
+│   ├── Add Selection
+│   ├── Insert Clip
+│   └── Manage Clips
+├── Tags Collection
+│   └── Manage Tags
+├── Source Notes
+│   ├── Add Source Note
+│   └── Manage Source Notes
+└── Scratchpad
+    └── Clear Scratchpad
+
+Research is a defining feature of Stilus.
+
+Research exists to support:
+
+- collecting quotations
+- gathering fragments
+- organizing notes
+- managing sources
+- temporary writing notes
+
+Research is not:
+
+- a database
+- a PKM
+- a knowledge graph
+- a vault
+- a workspace
+
+Detailed operations such as Delete Clip, Delete Tag or Delete Note may be implemented inside management dialogs and do not need top-level menu entries.
+
+======================================================================
+NAVIGATE
+======================================================================
+
+Navigate
+├── Go to Section…
+├── Document Outline
+├── Refresh Outline
+├── Next Heading
+├── Previous Heading
+├── Bookmarks
+│   ├── Insert Bookmark
+│   ├── Next Bookmark
+│   ├── Previous Bookmark
+│   └── Manage Bookmarks
+├── Revision Marks
+│   ├── Next Mark
+│   └── Previous Mark
+├── Back
+├── Forward
+├── Go to Beginning
+└── Go to End
+
+Document Outline belongs conceptually to Navigate.
+
+Document Outline is a navigation feature.
+
+Document Outline must remain lightweight.
+
+Document Outline is generated from:
+
+- Markdown headings
+- document structure
+
+Document Outline is not:
+
+- an outliner engine
+- a binder
+- a project tree
+- a workspace hierarchy
+
+======================================================================
+WRITING
+======================================================================
+
+Writing
+├── Focus Mode
+├── Focus Paragraph
+├── Typewriter Mode
+├── Reading Layout
+├── Word Goal…
+├── Clear Word Goal
+├── Word Count
+├── Writing Statistics
+└── Document Statistics
+
+Writing contains composition-support tools.
+
+These commands assist concentration, drafting and writing progress.
+
+======================================================================
+REVISE
+======================================================================
+
+Revise
+├── Case
+│   ├── UPPERCASE
+│   ├── Lowercase
+│   ├── Title Case
+│   └── Sentence Case
+├── Typography
+│   └── Smart Typography
+├── Cleanup
+│   ├── Paste Clean from PDF
+│   ├── Clean Selected Text from PDF
+│   ├── Remove Extra Spaces
+│   ├── Remove Trailing Spaces
+│   ├── Normalize Whitespace
+│   ├── Remove Page Breaks
+│   └── Fix Hyphenation
+├── Paragraphs
+│   ├── Reflow Paragraph
+│   ├── Join Lines
+│   └── Remove Empty Paragraphs
+├── Sorting
+│   ├── Sort A–Z
+│   ├── Sort Z–A
+│   └── Remove Duplicate Lines
+├── Revision Marks
+│   ├── Mark Revision [REV]
+│   ├── Mark Citation Needed [CITE]
+│   ├── Mark Check [CHECK]
+│   └── Clear All Marks
+└── Editorial Search
+    ├── Double Spaces
+    ├── Mixed Quotes
+    ├── Multiple Punctuation
+    ├── Trailing Spaces
+    ├── TODO Markers
+    ├── Citation Markers
+    ├── Long Sentences
+    └── Long Paragraphs
+
+Revise contains:
+
+- cleanup
+- diagnostics
+- editorial review
+- revision workflow
+
+Editorial Search belongs in Revise.
+
+======================================================================
+VIEW
+======================================================================
+
+View
+├── Show / Hide Research Panel
+├── Highlight Current Line
+├── Character Map
+└── Always on Top
+
+View contains temporary visual controls.
+
+======================================================================
+OPTIONS
+======================================================================
+
+Options
+├── Word Wrap
+├── Line Numbers
+├── Font…
+├── Font Bigger
+├── Font Smaller
+├── White Background
+├── Dark Mode
+├── Transparent Mode
+├── Opacity
+│   ├── 100%
+│   ├── 90%
+│   ├── 80%
+│   ├── 70%
+│   ├── 60%
+│   ├── 50%
+│   └── 40%
+└── Preferences…
+
+Options contains persistent editor configuration.
+
+======================================================================
+TOOLS
+======================================================================
+
+Tools
+├── External Spellcheck
+├── Language…
+└── System Info…
+
+External Spellcheck is expected to use Hunspell.
+
+Tools must remain intentionally small.
+
+Editorial functionality belongs in Revise.
+
+======================================================================
+HELP
+======================================================================
+
+Help
+├── Keyboard Shortcuts
+└── About Stilus
+
+======================================================================
+RESEARCH PANEL
+======================================================================
+
+The right-side panel is canonically named:
+
+Research Panel
+
+The Research Panel contains:
+
+- Research Clipboard
+- Tags Collection
+- Source Notes
+- Scratchpad
+- Document Outline
+
+Important distinction:
+
+Document Outline is visually present inside the Research Panel.
+
+Document Outline conceptually belongs to Navigate.
+
+The Research Panel must remain:
+
+- lightweight
+- text-oriented
+- non-database
+- non-PKM
+- non-workspace
+
+Forbidden concepts:
+
+- Graph View
+- Backlinks
+- Vault
+- Workspace
+- Knowledge Base
+- Second Brain
+- Semantic Engine
+- AI Assistant
+
+======================================================================
+MULTIPLE WINDOWS POLICY
+======================================================================
+
+Stilus supports multiple independent windows.
+
+Canonical workflow:
+
+Window 1 → Manuscript
+Window 2 → Citations
+Window 3 → References
+Window 4 → Notes
+
+Multiple independent windows are preferred over split-view complexity.
+
+======================================================================
+IMPLEMENTATION DISCIPLINE
+======================================================================
+
+This menu specification is canonical.
+
+Implementation must remain consistent with:
+
+- lightweight architecture
+- academic writing workflow
+- research-assisted writing
+- TXT-first philosophy
+- Markdown-friendly philosophy
+
+No menu item authorizes:
+
+- IDE features
+- PKM features
+- workspace systems
+- project management systems
+- knowledge graph systems
+- cloud services
+- AI integrations
+- architectural rewrites
