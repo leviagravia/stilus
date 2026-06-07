@@ -1,0 +1,172 @@
+STILUS FILE MENU IMPLEMENTATION CLASSIFICATION
+
+Status: CANONICAL
+
+Prerequisite:
+
+File Menu Audit Complete
+
+====================================================
+LOW RISK
+====================================================
+
+Recent Files
+
+Reason:
+
+Uses existing GKeyFile infrastructure.
+
+No document lifecycle modification.
+
+No undo interaction.
+
+No persistence complexity beyond configuration storage.
+
+----------------------------------------------------
+
+Favorites
+
+Reason:
+
+Uses existing GKeyFile infrastructure.
+
+Independent of editor buffer.
+
+Independent of file lifecycle.
+
+----------------------------------------------------
+
+Quit Application
+
+Already implemented.
+
+====================================================
+LOW / MEDIUM RISK
+====================================================
+
+Close Document
+
+Reason:
+
+Requires separation from current Close/Quit behavior.
+
+Touches file lifecycle.
+
+Requires safe document reset path.
+
+----------------------------------------------------
+
+Bookmarks
+
+Reason:
+
+Requires persistence model.
+
+Requires UI.
+
+Requires document-position tracking.
+
+Architecture already frozen.
+
+====================================================
+MEDIUM RISK
+====================================================
+
+Print
+
+Reason:
+
+New subsystem.
+
+GtkPrintOperation integration.
+
+Potential future header/footer support.
+
+====================================================
+MEDIUM / HIGH RISK
+====================================================
+
+Print Preview
+
+Reason:
+
+Depends on Print subsystem.
+
+Preview lifecycle.
+
+Pagination logic.
+
+Header/footer interaction.
+
+====================================================
+HIGH RISK
+====================================================
+
+Save Session
+
+Reason:
+
+Requires session architecture.
+
+Cursor persistence.
+
+Scroll persistence.
+
+Window state persistence.
+
+----------------------------------------------------
+
+Reopen Last Session
+
+Reason:
+
+Depends on Save Session.
+
+Requires startup integration.
+
+Requires recovery paths.
+
+====================================================
+IMPLEMENTATION ORDER
+====================================================
+
+Phase 1
+
+Recent Files
+Favorites
+
+----------------------------------------------------
+
+Phase 2
+
+Close Document
+Bookmarks
+
+----------------------------------------------------
+
+Phase 3
+
+Print
+
+----------------------------------------------------
+
+Phase 4
+
+Print Preview
+
+----------------------------------------------------
+
+Deferred
+
+Save Session
+Reopen Last Session
+
+====================================================
+POLICY
+====================================================
+
+No File Menu implementation may bypass this classification.
+
+No Medium-Risk feature may be implemented before all
+Low-Risk features are completed and validated.
+
