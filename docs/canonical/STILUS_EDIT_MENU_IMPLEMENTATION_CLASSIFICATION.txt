@@ -1,0 +1,251 @@
+STILUS EDIT MENU IMPLEMENTATION CLASSIFICATION
+
+Status: CANONICAL
+Phase: P5-002
+Scope: Edit Menu
+
+Prerequisite:
+
+Edit Menu Full Audit Complete
+Line Operations Audit Complete
+
+====================================================
+EXISTING
+====================================================
+
+Undo
+Redo
+Cut
+Copy
+Paste
+Paste as Plain Text
+Delete Selection
+Select All
+Insert Date / Time
+
+Notes:
+
+Find, Find Next, Find Previous and Replace already exist,
+but they belong to the Search menu, not the Edit menu.
+
+====================================================
+LOW RISK
+====================================================
+
+Go To Line
+
+Reason:
+
+The status bar already tracks line and column using GtkTextIter.
+Implementation requires a dialog, get_iter_at_line, cursor placement
+and scrolling.
+
+No undo impact.
+No file lifecycle impact.
+No persistence impact.
+
+----------------------------------------------------
+
+Duplicate Line
+
+Reason:
+
+Line and offset handling already exist.
+Undo records inserts automatically through insert-text signal.
+
+----------------------------------------------------
+
+Uppercase
+
+Reason:
+
+Local text transformation.
+No persistence.
+No file lifecycle.
+Undo handled through text buffer mutation.
+
+----------------------------------------------------
+
+Lowercase
+
+Reason:
+
+Local text transformation.
+No persistence.
+No file lifecycle.
+Undo handled through text buffer mutation.
+
+----------------------------------------------------
+
+Remove Trailing Spaces
+
+Reason:
+
+Local text cleanup.
+No persistence.
+No file lifecycle.
+Undo handled through delete/insert signals.
+
+====================================================
+LOW / MEDIUM RISK
+====================================================
+
+Move Line Up
+
+Reason:
+
+Requires line boundary handling, adjacent line swap,
+cursor restoration and edge case handling.
+
+----------------------------------------------------
+
+Move Line Down
+
+Reason:
+
+Requires line boundary handling, adjacent line swap,
+cursor restoration and edge case handling.
+
+----------------------------------------------------
+
+Sentence Case
+
+Reason:
+
+Local text transformation but requires sentence-boundary policy.
+
+----------------------------------------------------
+
+Title Case
+
+Reason:
+
+Local text transformation but requires language/style policy.
+
+----------------------------------------------------
+
+Remove Extra Spaces
+
+Reason:
+
+Requires canonical whitespace policy.
+
+----------------------------------------------------
+
+Join Lines
+
+Reason:
+
+Requires rule for joining line breaks and preserving paragraph logic.
+
+====================================================
+MEDIUM RISK
+====================================================
+
+Sort A-Z
+
+Reason:
+
+Requires selection/line-range handling and stable line sorting policy.
+
+----------------------------------------------------
+
+Sort Z-A
+
+Reason:
+
+Requires selection/line-range handling and stable line sorting policy.
+
+----------------------------------------------------
+
+Reflow Paragraph
+
+Reason:
+
+Requires paragraph boundary detection and wrapping policy.
+
+====================================================
+MEDIUM / HIGH RISK
+====================================================
+
+Smart Typography
+
+Reason:
+
+Requires canonical typographic policy:
+quotes, apostrophes, dashes, ellipses, spaces.
+
+----------------------------------------------------
+
+Clean Paste from PDF
+
+Reason:
+
+Requires PDF text repair policy:
+hard line breaks, hyphenation, paragraph detection,
+spacing, and clipboard integration.
+
+----------------------------------------------------
+
+Clean Selected Text from PDF
+
+Reason:
+
+Requires same PDF text repair policy but applied to selection.
+Selection handling and replacement must be robust.
+
+====================================================
+HIGH RISK
+====================================================
+
+None currently classified as HIGH in Edit Menu Phase 1.
+
+====================================================
+IMPLEMENTATION ORDER
+====================================================
+
+Phase 1
+
+Go To Line
+Duplicate Line
+Uppercase
+Lowercase
+Remove Trailing Spaces
+
+----------------------------------------------------
+
+Phase 2
+
+Move Line Up
+Move Line Down
+Sentence Case
+Title Case
+Remove Extra Spaces
+Join Lines
+
+----------------------------------------------------
+
+Phase 3
+
+Sort A-Z
+Sort Z-A
+Reflow Paragraph
+
+----------------------------------------------------
+
+Phase 4
+
+Smart Typography
+Clean Paste from PDF
+Clean Selected Text from PDF
+
+====================================================
+POLICY
+====================================================
+
+No Edit Menu implementation may bypass this classification.
+
+No Medium-Risk feature may be implemented before Low-Risk
+features are completed and validated.
+
+Find and Replace must remain in Search, not Edit.
