@@ -74,6 +74,7 @@ static void airpad_window_menu_bar_create(struct AirpadDataMenuBar *data_menu_ba
     // "Edit" buttons.
     data_menu_bar->menu_item_edit_copy = gtk_menu_item_new_with_mnemonic(_("_Copy"));
     data_menu_bar->menu_item_edit_paste = gtk_menu_item_new_with_mnemonic(_("_Paste"));
+    data_menu_bar->menu_item_edit_paste_as_plain_text = gtk_menu_item_new_with_mnemonic(_("Paste as Plain _Text"));
     data_menu_bar->menu_item_edit_cut = gtk_menu_item_new_with_mnemonic(_("C_ut"));
     data_menu_bar->menu_item_edit_delete = gtk_menu_item_new_with_mnemonic(_("_Delete"));
     data_menu_bar->menu_item_edit_select_all = gtk_menu_item_new_with_mnemonic(_("_Select All"));
@@ -137,6 +138,7 @@ static void airpad_window_menu_bar_create(struct AirpadDataMenuBar *data_menu_ba
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_file), data_menu_bar->menu_item_file_close);
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_copy);
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_paste);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_paste_as_plain_text);
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_cut);
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_delete);
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), gtk_separator_menu_item_new());

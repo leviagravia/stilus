@@ -83,6 +83,7 @@ struct AirpadDataMenuBar
     GtkWidget *menu_item_file_close;                            // "File -> Close" menu item.
     GtkWidget *menu_item_edit_copy;                             // "Edit -> Copy" menu item.
     GtkWidget *menu_item_edit_paste;                            // "Edit -> Paste" menu item.
+    GtkWidget *menu_item_edit_paste_as_plain_text;              // "Edit -> Paste as Plain Text" menu item.
     GtkWidget *menu_item_edit_cut;                              // "Edit -> Cut" menu item.
     GtkWidget *menu_item_edit_delete;                           // "Edit -> Delete" menu item.
     GtkWidget *menu_item_edit_select_all;                       // "Edit -> Select All" menu item.
@@ -150,6 +151,7 @@ struct AirpadDataSignals
     gulong menu_item_file_close_activate;                           // "File -> Close" menu item: "activate"
     gulong menu_item_edit_copy_activate;                            // "Edit -> Copy" menu item: "activate"
     gulong menu_item_edit_paste_activate;                           // "Edit -> Paste" menu item: "activate"
+    gulong menu_item_edit_paste_as_plain_text_activate;             // "Edit -> Paste as Plain Text" menu item: "activate"
     gulong menu_item_edit_cut_activate;                             // "Edit -> Cut" menu item: "activate"
     gulong menu_item_edit_delete_activate;                          // "Edit -> Delete" menu item: "activate"
     gulong menu_item_edit_select_all_activate;                      // "Edit -> Select All" menu item: "activate"

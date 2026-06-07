@@ -27,6 +27,7 @@ void airpad_edit_paste_done(GtkTextBuffer *text_buffer, GtkClipboard *clipboard,
 void airpad_edit_init(const struct AirpadDataWindow *data_window);
 void airpad_edit_copy(GtkWidget *widget, const struct AirpadDataWindow *data_window);
 void airpad_edit_paste(GtkWidget *widget, GtkTextBuffer *text_buffer);
+void airpad_edit_paste_as_plain_text(GtkWidget *widget, GtkTextBuffer *text_buffer);
 void airpad_edit_cut(GtkWidget *widget, const struct AirpadDataWindow *data_window);
 void airpad_edit_delete(GtkWidget *widget, GtkTextBuffer *text_buffer);
 void airpad_edit_select_all(GtkWidget *widget, GtkTextBuffer *text_buffer);

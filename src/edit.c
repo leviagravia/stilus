@@ -66,6 +66,19 @@ void airpad_edit_paste(GtkWidget *widget, GtkTextBuffer *text_buffer)
     gtk_text_buffer_paste_clipboard(text_buffer, gtk_clipboard_get(GDK_SELECTION_CLIPBOARD), NULL, TRUE);
 }
 
+// Pastes clipboard text into the text buffer as plain text.
+void airpad_edit_paste_as_plain_text(GtkWidget *widget, GtkTextBuffer *text_buffer)
+{
+    (void) widget;
+
+    char *text = gtk_clipboard_wait_for_text(gtk_clipboard_get(GDK_SELECTION_CLIPBOARD));
+    if (!text)
+        return;
+
+    gtk_text_buffer_insert_at_cursor(text_buffer, text, -1);
+    g_free(text);
+}
+
 // Cuts the selected text and copies it to the clipboard.
 void airpad_edit_cut(GtkWidget *widget, const struct AirpadDataWindow *data_window)
 {
