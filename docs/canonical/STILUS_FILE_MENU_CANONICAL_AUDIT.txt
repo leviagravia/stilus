@@ -1,0 +1,140 @@
+STILUS FILE MENU CANONICAL AUDIT
+
+Status: CANONICAL
+Phase: P4-001
+Scope: File Menu
+
+CANONICAL FILE MENU COMMANDS
+
+File
+├── New
+├── Open
+├── Recent Files
+├── Favorites
+├── Bookmarks
+├── Save
+├── Save As
+├── Print Preview
+├── Print
+├── Close Document
+└── Quit Application
+
+IMPLEMENTED
+
+New
+Open
+Save
+Save As
+
+CURRENT AMBIGUITY RESOLVED
+
+Existing command:
+
+File -> Close
+
+Existing shortcut:
+
+Ctrl+Q
+
+Canonical decision:
+
+Close Document and Quit Application must both exist.
+
+Ctrl+Q remains assigned to the command it already belongs to.
+
+The other command will receive a new keyboard shortcut later.
+
+BOOKMARKS DECISION
+
+Bookmarks means:
+
+file bookmarks
+
+Not:
+
+document-position bookmarks
+internal anchors
+cursor bookmarks
+outline bookmarks
+
+Difficulty:
+
+file bookmarks = LOW/MEDIUM
+
+RECENT FILES
+
+Difficulty:
+
+LOW/MEDIUM
+
+Requires:
+
+GKeyFile persistence
+menu or dialog exposure
+
+FAVORITES
+
+Difficulty:
+
+LOW/MEDIUM
+
+Storage:
+
+existing GKeyFile persistence is preferred.
+
+PRINT
+
+Difficulty:
+
+MEDIUM
+
+Expected basis:
+
+GtkPrintOperation
+
+PRINT PREVIEW
+
+Difficulty:
+
+MEDIUM/HIGH
+
+SESSIONS
+
+Save Session and Reopen Last Session are not part of immediate File Menu low-risk implementation.
+
+Difficulty:
+
+HIGH
+
+Reason:
+
+session state requires file, cursor, scroll, window geometry and panel state decisions.
+
+IMPLEMENTATION ROADMAP
+
+IMPLEMENT NOW / LOW-RISK CANDIDATES
+
+Close Document / Quit Application split
+Recent Files
+Favorites
+File Bookmarks
+
+IMPLEMENT LATER
+
+Print
+Print Preview
+
+DO NOT IMPLEMENT YET
+
+Save Session
+Reopen Last Session
+
+POLICY
+
+No File Menu implementation may proceed without:
+
+source audit
+authorized files list
+build validation
+desktop validation
+single-feature commit
