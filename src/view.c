@@ -27,3 +27,9 @@ void airpad_view_fullscreen(GtkWidget *widget, GtkWidget *window)
     else
         gtk_window_unfullscreen(GTK_WINDOW(window));
 }
+
+// Keeps the window above other windows depending on the state of the associated menu item.
+void airpad_view_always_on_top(GtkWidget *widget, GtkWidget *window)
+{
+    gtk_window_set_keep_above(GTK_WINDOW(window), gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget)));
+}

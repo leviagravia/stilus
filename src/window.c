@@ -89,6 +89,7 @@ static void airpad_window_menu_bar_create(struct AirpadDataMenuBar *data_menu_ba
 
     // "View" buttons.
     data_menu_bar->menu_item_view_fullscreen = gtk_check_menu_item_new_with_mnemonic(_("_Fullscreen"));
+    data_menu_bar->menu_item_view_always_on_top = gtk_check_menu_item_new_with_mnemonic(_("_Always on Top"));
 
     // "Options" buttons.
     data_menu_bar->menu_item_options_font = gtk_menu_item_new_with_mnemonic(_("_Font\u2026"));
@@ -149,6 +150,7 @@ static void airpad_window_menu_bar_create(struct AirpadDataMenuBar *data_menu_ba
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_search), data_menu_bar->menu_item_search_find_prev);
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_search), data_menu_bar->menu_item_search_replace);
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_view), data_menu_bar->menu_item_view_fullscreen);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_view), data_menu_bar->menu_item_view_always_on_top);
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_options), data_menu_bar->menu_item_options_font);
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_options), data_menu_bar->menu_item_options_text_wrap);
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_options_text_wrap), data_menu_bar->menu_item_options_text_wrap_none);

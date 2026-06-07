@@ -22,5 +22,6 @@
 #include <gtk/gtk.h>
 
 void airpad_view_fullscreen(GtkWidget *widget, GtkWidget *window);
+void airpad_view_always_on_top(GtkWidget *widget, GtkWidget *window);
 
 #endif
