@@ -200,3 +200,38 @@ None.
 Implementation:
 Not authorized yet.
 Requires dedicated implementation audit.
+
+CLOSE / QUIT IMPLEMENTATION FINDING
+
+Status:
+CANONICAL
+
+Current implementation:
+
+File -> Close
+Ctrl+Q
+airpad_file_close()
+
+Actual behavior:
+Quit Application
+
+Evidence:
+airpad_file_close() prompts for save if needed and then calls g_application_quit().
+
+Canonical decision:
+The current File -> Close command must be renamed conceptually to Quit Application.
+
+Close Document must be implemented as a separate command.
+
+Shortcut policy:
+Ctrl+Q remains assigned to Quit Application.
+
+Close Document will receive a separate shortcut later.
+
+Implementation status:
+Quit Application behavior already exists.
+Close Document is not implemented.
+
+Risk:
+Quit Application rename / relabel = LOW
+Close Document = MEDIUM, because it must clear the current document safely without quitting the application.
