@@ -173,3 +173,30 @@ Oldest entries beyond file10 are discarded.
 Implementation:
 Not authorized yet.
 Requires dedicated implementation audit.
+
+RECENT FILES CLEAR LIST POLICY
+
+Status:
+CANONICAL
+
+Command:
+File -> Recent Files -> Clear List
+
+Behavior:
+Removes all entries from the recent files list.
+
+Storage impact:
+Deletes all keys in the [recent-files] group.
+
+Lifecycle impact:
+None.
+
+Undo impact:
+None.
+
+File content impact:
+None.
+
+Implementation:
+Not authorized yet.
+Requires dedicated implementation audit.
