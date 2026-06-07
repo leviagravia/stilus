@@ -52,9 +52,14 @@ struct AirpadDataMenuBar
     // Menus.
     GtkWidget *menu_file;                       // "File" menu.
     GtkWidget *menu_edit;                       // "Edit" menu.
+    GtkWidget *menu_research;                   // "Research" menu.
+    GtkWidget *menu_navigate;                   // "Navigate" menu.
+    GtkWidget *menu_writing;                    // "Writing" menu.
+    GtkWidget *menu_revise;                     // "Revise" menu.
     GtkWidget *menu_search;                     // "Search" menu.
     GtkWidget *menu_view;                       // "View" menu.
     GtkWidget *menu_options;                    // "Options" menu.
+    GtkWidget *menu_tools;                      // "Tools" menu.
     GtkWidget *menu_options_text_wrap;          // "Options -> Text Wrap" menu.
     GtkWidget *menu_options_scrollbar_policy;   // "Options -> Scrollbar Policy" menu.
     GtkWidget *menu_help;                       // "Help" menu.
@@ -62,9 +67,14 @@ struct AirpadDataMenuBar
     // Menu items.
     GtkWidget *menu_item_file;                                  // "File" menu item.
     GtkWidget *menu_item_edit;                                  // "Edit" menu item.
+    GtkWidget *menu_item_research;                              // "Research" menu item.
+    GtkWidget *menu_item_navigate;                              // "Navigate" menu item.
+    GtkWidget *menu_item_writing;                               // "Writing" menu item.
+    GtkWidget *menu_item_revise;                                // "Revise" menu item.
     GtkWidget *menu_item_search;                                // "Search" menu item.
     GtkWidget *menu_item_view;                                  // "View" menu item.
     GtkWidget *menu_item_options;                               // "Options" menu item.
+    GtkWidget *menu_item_tools;                                 // "Tools" menu item.
     GtkWidget *menu_item_help;                                  // "Help" menu item.
     GtkWidget *menu_item_file_new;                              // "File -> New" menu item.
     GtkWidget *menu_item_file_open;                             // "File -> Open..." menu item.

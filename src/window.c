@@ -35,9 +35,14 @@ static void airpad_window_menu_bar_create(struct AirpadDataMenuBar *data_menu_ba
     // Create the menus.
     data_menu_bar->menu_file = gtk_menu_new();
     data_menu_bar->menu_edit = gtk_menu_new();
+    data_menu_bar->menu_research = gtk_menu_new();
+    data_menu_bar->menu_navigate = gtk_menu_new();
+    data_menu_bar->menu_writing = gtk_menu_new();
+    data_menu_bar->menu_revise = gtk_menu_new();
     data_menu_bar->menu_search = gtk_menu_new();
     data_menu_bar->menu_view = gtk_menu_new();
     data_menu_bar->menu_options = gtk_menu_new();
+    data_menu_bar->menu_tools = gtk_menu_new();
     data_menu_bar->menu_options_text_wrap = gtk_menu_new();
     data_menu_bar->menu_options_scrollbar_policy = gtk_menu_new();
     data_menu_bar->menu_help = gtk_menu_new();
@@ -49,9 +54,14 @@ static void airpad_window_menu_bar_create(struct AirpadDataMenuBar *data_menu_ba
     // Submenu buttons.
     data_menu_bar->menu_item_file = gtk_menu_item_new_with_mnemonic(_("_File"));
     data_menu_bar->menu_item_edit = gtk_menu_item_new_with_mnemonic(_("_Edit"));
+    data_menu_bar->menu_item_research = gtk_menu_item_new_with_mnemonic(_("_Research"));
+    data_menu_bar->menu_item_navigate = gtk_menu_item_new_with_mnemonic(_("_Navigate"));
+    data_menu_bar->menu_item_writing = gtk_menu_item_new_with_mnemonic(_("_Writing"));
+    data_menu_bar->menu_item_revise = gtk_menu_item_new_with_mnemonic(_("Re_vise"));
     data_menu_bar->menu_item_search = gtk_menu_item_new_with_mnemonic(_("_Search"));
     data_menu_bar->menu_item_view = gtk_menu_item_new_with_mnemonic(_("_View"));
     data_menu_bar->menu_item_options = gtk_menu_item_new_with_mnemonic(_("_Options"));
+    data_menu_bar->menu_item_tools = gtk_menu_item_new_with_mnemonic(_("_Tools"));
     data_menu_bar->menu_item_help = gtk_menu_item_new_with_mnemonic(_("_Help"));
 
     // "File" buttons.
@@ -103,9 +113,14 @@ static void airpad_window_menu_bar_create(struct AirpadDataMenuBar *data_menu_ba
     // Attach the menus to items.
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_file), data_menu_bar->menu_file);
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_edit), data_menu_bar->menu_edit);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_research), data_menu_bar->menu_research);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_navigate), data_menu_bar->menu_navigate);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_writing), data_menu_bar->menu_writing);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_revise), data_menu_bar->menu_revise);
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_search), data_menu_bar->menu_search);
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_view), data_menu_bar->menu_view);
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_options), data_menu_bar->menu_options);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_tools), data_menu_bar->menu_tools);
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_options_text_wrap), data_menu_bar->menu_options_text_wrap);
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_options_scrollbar_policy), data_menu_bar->menu_options_scrollbar_policy);
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_help), data_menu_bar->menu_help);
@@ -151,9 +166,14 @@ static void airpad_window_menu_bar_create(struct AirpadDataMenuBar *data_menu_ba
     // Attach the menus to the menubar.
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_bar), data_menu_bar->menu_item_file);
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_bar), data_menu_bar->menu_item_edit);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_bar), data_menu_bar->menu_item_research);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_bar), data_menu_bar->menu_item_navigate);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_bar), data_menu_bar->menu_item_writing);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_bar), data_menu_bar->menu_item_revise);
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_bar), data_menu_bar->menu_item_search);
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_bar), data_menu_bar->menu_item_view);
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_bar), data_menu_bar->menu_item_options);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_bar), data_menu_bar->menu_item_tools);
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_bar), data_menu_bar->menu_item_help);
 
     // Set initial menu item states.
