@@ -391,3 +391,61 @@ Clear List is part of the canonical Recent Files feature.
 Implementation status:
 
 Not authorized yet.
+
+PRINT HEADER / FOOTER POLICY
+
+Status:
+CANONICAL
+
+Scope:
+File -> Print
+File -> Print Preview
+
+Print must eventually support header and footer output.
+
+Header/Footer purpose:
+Provide document context on printed pages.
+
+Recommended phased implementation:
+
+Phase 1:
+Basic Print
+
+Phase 2:
+Static Header/Footer
+
+Static header/footer may include:
+- filename
+- date
+- page number
+
+Phase 3:
+Configurable Header/Footer Dialog
+
+Configurable fields may include:
+- custom header text
+- custom footer text
+- filename toggle
+- date toggle
+- page number toggle
+
+Difficulty:
+
+Basic Print:
+MEDIUM
+
+Print with static header/footer:
+MEDIUM
+
+Print with configurable header/footer:
+MEDIUM/HIGH
+
+Print Preview with header/footer:
+HIGH
+
+Policy:
+Header/footer support is desirable for academic and long-form writing, but must not be part of first low-risk File Menu implementation.
+
+Implementation status:
+Not authorized yet.
+Requires dedicated Print subsystem audit.
