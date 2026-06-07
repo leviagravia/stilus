@@ -67,3 +67,74 @@ MEDIUM
 IMPLEMENTATION STATUS
 
 Not authorized yet.
+
+BOOKMARK LABEL ARCHITECTURE
+
+Status:
+CANONICAL
+
+Bookmark structure:
+
+bookmark_id
+line_number
+char_offset
+label
+
+LABEL DEFINITION
+
+The label is a single string.
+
+The label is mandatory.
+
+The label may be long.
+
+The label is intended to contain editorial instructions.
+
+Examples:
+
+Add citation here from Augustine Confessions Book X.
+
+Rewrite this paragraph because the argument is weak and needs stronger evidence.
+
+Verify source before final proofreading and compare with bibliography item 14.
+
+Expand this section using material from chapter 3 and add footnotes.
+
+ARCHITECTURAL LIMITS
+
+The label remains a single string.
+
+Bookmarks are not an annotation system.
+
+Bookmarks do not contain:
+
+title
+body
+priority
+status
+tags
+attachments
+rich text
+multiple text fields
+
+RATIONALE
+
+This provides most of the editorial value of annotations while keeping implementation complexity significantly lower.
+
+Phase 1 target:
+
+Bookmark
+=
+position
++
+line reference
++
+long editorial label
+
+Complexity:
+
+LOW / MEDIUM
+
+Implementation status:
+
+Not authorized yet.
