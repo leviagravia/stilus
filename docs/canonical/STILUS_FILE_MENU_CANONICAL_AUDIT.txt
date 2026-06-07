@@ -338,3 +338,56 @@ Editorial instruction label
 
 Implementation status:
 Not authorized yet.
+
+RECENT FILES MENU STRUCTURE POLICY
+
+Status:
+CANONICAL
+
+Menu structure:
+
+File
+└── Recent Files
+    ├── Recent file entries
+    ├── Separator
+    └── Clear List
+
+Clear List command:
+
+File -> Recent Files -> Clear List
+
+Behavior:
+
+Clear List removes all recent file entries.
+
+Storage impact:
+
+Clear List deletes all keys in the [recent-files] group:
+
+file1
+file2
+file3
+file4
+file5
+file6
+file7
+file8
+file9
+file10
+
+Lifecycle impact:
+None.
+
+Undo impact:
+None.
+
+File content impact:
+None.
+
+Policy:
+
+Clear List is part of the canonical Recent Files feature.
+
+Implementation status:
+
+Not authorized yet.
