@@ -1,0 +1,69 @@
+STILUS BOOKMARKS CANONICAL POLICY
+
+Status: CANONICAL
+Phase: P4-005B
+Scope: File Menu / Bookmarks
+
+MEANING
+
+Bookmarks are labeled document-position markers.
+
+They are not file favorites.
+
+PURPOSE
+
+A bookmark identifies a relevant point inside a document and stores an editorial instruction.
+
+DISPLAY FORMAT
+
+Bookmark #N
+Line X
+Label
+
+REQUIRED DATA
+
+bookmark_id
+line_number
+char_offset
+label
+timestamp
+
+LABEL POLICY
+
+Label is mandatory.
+
+Label may contain long editorial instructions.
+
+Examples:
+
+Add citation here from Augustine Confessions Book X.
+Rewrite this paragraph because the transition is weak.
+Verify source before final proofreading.
+Expand section using bibliography item #14.
+Check whether this claim needs a footnote.
+
+PERSISTENCE POLICY
+
+Bookmarks belong to the document.
+
+Storage must not be global config.
+
+Preferred storage:
+
+<document>.stilus-bookmarks
+
+RUNTIME POLICY
+
+GtkTextMark may be used at runtime.
+
+GtkTextMark must not be the only stored reference.
+
+Persistence must include line_number and char_offset.
+
+DIFFICULTY
+
+MEDIUM
+
+IMPLEMENTATION STATUS
+
+Not authorized yet.
