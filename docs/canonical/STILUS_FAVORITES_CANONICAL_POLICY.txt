@@ -1,0 +1,88 @@
+STILUS FAVORITES CANONICAL POLICY
+
+Status: CANONICAL
+Phase: P4-003
+Scope: File Menu / Favorites
+
+MENU STRUCTURE
+
+File
+└── Favorites
+    ├── Add Current File to Favorites
+    ├── Open Favorite
+    ├── Remove Favorite
+    ├── Clear Favorites
+    └── Manage Favorites
+
+STORAGE POLICY
+
+Storage:
+existing GKeyFile configuration system
+
+Configuration group:
+[favorites]
+
+Maximum favorites:
+20
+
+Keys:
+file1 ... file20
+
+RULES
+
+Favorites are file bookmarks.
+
+Favorites are not:
+- document-position bookmarks
+- cursor bookmarks
+- outline bookmarks
+- session recovery
+
+Duplicates:
+forbidden
+
+Adding an existing favorite:
+ignored
+
+Removing a favorite:
+compacts the list
+
+Clear Favorites:
+removes all entries from [favorites]
+
+DIFFICULTY
+
+Add Current File to Favorites:
+LOW
+
+Open Favorite:
+LOW/MEDIUM
+
+Remove Favorite:
+LOW
+
+Clear Favorites:
+LOW
+
+Manage Favorites:
+MEDIUM
+
+IMPLEMENTATION ROADMAP
+
+Phase A:
+Add Current File to Favorites
+Open Favorite
+Remove Favorite
+Clear Favorites
+
+Phase B:
+Manage Favorites
+
+POLICY
+
+No implementation without:
+source audit
+authorized files list
+build validation
+desktop validation
+single-feature commit
