@@ -292,3 +292,49 @@ Not authorized yet.
 
 Policy:
 Bookmarks are editorial navigation markers, not file favorites.
+
+BOOKMARK LABEL POLICY
+
+Status:
+CANONICAL
+
+Bookmark display format:
+
+Bookmark #N
+Line X
+Label
+
+Required fields:
+
+Bookmark number
+Line reference
+Long descriptive label
+
+Label policy:
+
+The label is mandatory.
+
+The label is not limited to 3 or 4 words.
+
+The label must support longer editorial instructions, for example:
+
+- Add citation here from Augustine / Confessions
+- Rewrite this paragraph because argument is weak
+- Verify source before final revision
+- Expand this section with bibliography note
+- Check whether this claim needs a footnote
+
+Purpose:
+
+The label tells the writer how to use the bookmark during revision.
+
+Canonical bookmark meaning:
+
+Position
++
+Line reference
++
+Editorial instruction label
+
+Implementation status:
+Not authorized yet.
