@@ -89,3 +89,22 @@ void airpad_edit_select_all(GtkWidget *widget, GtkTextBuffer *text_buffer)
     gtk_text_buffer_get_end_iter(text_buffer, &end);
     gtk_text_buffer_select_range(text_buffer, &start, &end);
 }
+
+// Inserts the current local date and time at the cursor position.
+void airpad_edit_insert_date_time(GtkWidget *widget, GtkTextBuffer *text_buffer)
+{
+    (void) widget;
+
+    GDateTime *now = g_date_time_new_now_local();
+    if (!now)
+        return;
+
+    char *date_time = g_date_time_format(now, "%Y-%m-%d %H:%M");
+    g_date_time_unref(now);
+
+    if (!date_time)
+        return;
+
+    gtk_text_buffer_insert_at_cursor(text_buffer, date_time, -1);
+    g_free(date_time);
+}

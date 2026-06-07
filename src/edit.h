@@ -30,5 +30,6 @@ void airpad_edit_paste(GtkWidget *widget, GtkTextBuffer *text_buffer);
 void airpad_edit_cut(GtkWidget *widget, const struct AirpadDataWindow *data_window);
 void airpad_edit_delete(GtkWidget *widget, GtkTextBuffer *text_buffer);
 void airpad_edit_select_all(GtkWidget *widget, GtkTextBuffer *text_buffer);
+void airpad_edit_insert_date_time(GtkWidget *widget, GtkTextBuffer *text_buffer);
 
 #endif

@@ -86,6 +86,7 @@ struct AirpadDataMenuBar
     GtkWidget *menu_item_edit_cut;                              // "Edit -> Cut" menu item.
     GtkWidget *menu_item_edit_delete;                           // "Edit -> Delete" menu item.
     GtkWidget *menu_item_edit_select_all;                       // "Edit -> Select All" menu item.
+    GtkWidget *menu_item_edit_insert_date_time;                  // "Edit -> Insert Date / Time" menu item.
     GtkWidget *menu_item_edit_undo;                             // "Edit -> Undo" menu item.
     GtkWidget *menu_item_edit_redo;                             // "Edit -> Redo" menu item.
     GtkWidget *menu_item_search_find;                           // "Search -> Find..." menu item.
@@ -151,6 +152,7 @@ struct AirpadDataSignals
     gulong menu_item_edit_cut_activate;                             // "Edit -> Cut" menu item: "activate"
     gulong menu_item_edit_delete_activate;                          // "Edit -> Delete" menu item: "activate"
     gulong menu_item_edit_select_all_activate;                      // "Edit -> Select All" menu item: "activate"
+    gulong menu_item_edit_insert_date_time_activate;                 // "Edit -> Insert Date / Time" menu item: "activate"
     gulong menu_item_edit_undo_activate;                            // "Edit -> Undo" menu item: "activate"
     gulong menu_item_edit_redo_activate;                            // "Edit -> Redo" menu item: "activate"
     gulong menu_item_search_find_activate;                          // "Search -> Find" menu item: "activate"

@@ -77,6 +77,7 @@ static void airpad_window_menu_bar_create(struct AirpadDataMenuBar *data_menu_ba
     data_menu_bar->menu_item_edit_cut = gtk_menu_item_new_with_mnemonic(_("C_ut"));
     data_menu_bar->menu_item_edit_delete = gtk_menu_item_new_with_mnemonic(_("_Delete"));
     data_menu_bar->menu_item_edit_select_all = gtk_menu_item_new_with_mnemonic(_("_Select All"));
+    data_menu_bar->menu_item_edit_insert_date_time = gtk_menu_item_new_with_mnemonic(_("Insert Date / _Time"));
     data_menu_bar->menu_item_edit_undo = gtk_menu_item_new_with_mnemonic(_("_Undo"));
     data_menu_bar->menu_item_edit_redo = gtk_menu_item_new_with_mnemonic(_("_Redo"));
 
@@ -139,6 +140,7 @@ static void airpad_window_menu_bar_create(struct AirpadDataMenuBar *data_menu_ba
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_delete);
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), gtk_separator_menu_item_new());
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_select_all);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_insert_date_time);
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), gtk_separator_menu_item_new());
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_undo);
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_redo);
