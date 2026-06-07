@@ -235,3 +235,60 @@ Close Document is not implemented.
 Risk:
 Quit Application rename / relabel = LOW
 Close Document = MEDIUM, because it must clear the current document safely without quitting the application.
+
+BOOKMARKS POLICY REVISION
+
+Status:
+CANONICAL REVISION
+
+Previous decision:
+Bookmarks = file bookmarks
+
+Revised decision:
+Bookmarks = labeled document-position bookmarks
+
+Reason:
+File-level bookmarking is already covered by:
+
+Recent Files
+Favorites
+
+Therefore Bookmarks must serve a distinct writing-oriented purpose.
+
+Canonical meaning:
+Bookmarks mark important positions inside the current document.
+
+Use cases:
+- Add citation here
+- Verify source
+- Rewrite paragraph
+- Expand section
+- Check argument
+- Add footnote
+- Review conclusion
+
+Canonical menu structure:
+
+File
+└── Bookmarks
+    ├── Add Bookmark...
+    ├── Next Bookmark
+    ├── Previous Bookmark
+    ├── Remove Current Bookmark
+    ├── Manage Bookmarks...
+    └── Clear All Bookmarks
+
+Bookmark data:
+- document path
+- cursor position or line reference
+- label
+- timestamp
+
+Difficulty:
+MEDIUM
+
+Implementation status:
+Not authorized yet.
+
+Policy:
+Bookmarks are editorial navigation markers, not file favorites.
