@@ -1,0 +1,94 @@
+P3-006 FAVORITES AUDIT
+
+Status: READ ONLY AUDIT
+Result: PASS
+
+MISSION
+
+Audit implementation path for:
+
+File
+└── Favorites
+    ├── Add Current File to Favorites
+    ├── Open Favorite...
+    └── Manage Favorites...
+
+EVIDENCE
+
+1. Persistence System
+
+Existing persistence infrastructure already exists.
+
+Files:
+
+src/options.c
+src/options.h
+
+Mechanism:
+
+GKeyFile
+
+Configuration file:
+
+~/.config/stilus.ini
+
+Conclusion:
+
+Favorites can reuse existing configuration storage.
+
+No database required.
+No JSON required.
+No SQLite required.
+
+2. Lifecycle Impact
+
+Inspected:
+
+src/file.c
+
+Favorites do not interact with:
+
+- Undo
+- Redo
+- File encoding
+- Save lifecycle
+- Open lifecycle
+- Window title updates
+
+Favorites are metadata only.
+
+3. Difficulty Assessment
+
+Add Current File to Favorites:
+LOW
+
+Open Favorite:
+MEDIUM
+
+Manage Favorites:
+MEDIUM
+
+4. Risks
+
+Low risk.
+
+No impact on:
+
+- UTF-8 handling
+- File ownership
+- Memory lifecycle
+- Undo system
+
+CONCLUSION
+
+Favorites are feasible using existing GKeyFile persistence.
+
+Recommended storage:
+
+[favorites]
+file1=/path/...
+file2=/path/...
+
+STATUS
+
+AUDIT COMPLETE
