@@ -138,3 +138,38 @@ authorized files list
 build validation
 desktop validation
 single-feature commit
+
+RECENT FILES STORAGE POLICY
+
+Status:
+CANONICAL
+
+Maximum recent files:
+10
+
+Storage:
+existing GKeyFile configuration system
+
+Configuration group:
+[recent-files]
+
+Keys:
+file1
+file2
+file3
+file4
+file5
+file6
+file7
+file8
+file9
+file10
+
+Policy:
+Most recently opened file is file1.
+Duplicate paths are moved to file1.
+Oldest entries beyond file10 are discarded.
+
+Implementation:
+Not authorized yet.
+Requires dedicated implementation audit.
