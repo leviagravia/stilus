@@ -1,0 +1,46 @@
+P3-007 LINE NUMBERS AUDIT
+
+Status: PRELIMINARY AUDIT
+
+MISSION
+
+Determine implementation complexity for:
+
+Options
+└── Line Numbers
+
+PRELIMINARY FINDINGS
+
+Need verification of editor widget type.
+
+Questions:
+
+Is editor widget:
+
+GtkTextView
+or
+GtkSourceView
+
+Complexity depends entirely on widget type.
+
+GtkSourceView:
+LOW
+
+GtkTextView:
+MEDIUM/HIGH
+
+NEXT STEP
+
+Perform dedicated source audit.
+
+Inspect:
+
+src/window.c
+src/const.h
+
+Identify exact editor widget creation path.
+
+STATUS
+
+PRELIMINARY
+NOT AUTHORIZED FOR IMPLEMENTATION
