@@ -1,0 +1,178 @@
+STILUS VIEW MENU IMPLEMENTATION CLASSIFICATION
+
+Status: CANONICAL
+Phase: P7-002
+Scope: View Menu
+
+Prerequisite:
+
+View Menu Full Audit Complete
+
+====================================================
+EXISTING
+====================================================
+
+Fullscreen
+Always on Top
+Select Font
+Word Wrap
+
+Notes:
+
+Select Font and Word Wrap currently live under Options in code,
+but they are visual/editor-view controls in the canonical UI model.
+
+====================================================
+LOW RISK
+====================================================
+
+Font Bigger
+
+Reason:
+
+Font selection and persistence already exist.
+Requires controlled font size increment.
+
+----------------------------------------------------
+
+Font Smaller
+
+Reason:
+
+Font selection and persistence already exist.
+Requires controlled font size decrement.
+
+====================================================
+LOW / MEDIUM RISK
+====================================================
+
+Transparent Mode
+
+Policy:
+
+Transparency applies to the entire window.
+
+Not editor-only.
+
+Reason:
+
+Does not touch TextBuffer, Undo, File lifecycle, Save/Open or encoding.
+Requires UI state and opacity application.
+
+----------------------------------------------------
+
+Opacity Presets
+
+Policy:
+
+Range:
+30% to 100%
+
+Preset values:
+30%
+40%
+50%
+60%
+70%
+80%
+90%
+100%
+
+No slider in Phase 1.
+
+Reason:
+
+Preset menu values are simpler and more testable than a slider.
+
+====================================================
+MEDIUM RISK
+====================================================
+
+Focus Mode
+
+Reason:
+
+Requires temporary UI hiding/showing policy:
+menu bar
+status bar
+possibly other panels later.
+
+Does not touch file lifecycle or text content.
+
+====================================================
+MEDIUM / HIGH RISK
+====================================================
+
+Distraction-Free Mode
+
+Reason:
+
+Likely combines fullscreen, focus mode and additional visual policy.
+Requires clear UX definition before implementation.
+
+====================================================
+HIGH RISK
+====================================================
+
+Line Numbers
+
+Reason:
+
+Current editor widget is GtkTextView, not GtkSourceView.
+Line numbers require custom gutter/drawing/scroll synchronization.
+
+----------------------------------------------------
+
+Highlight Current Line
+
+Reason:
+
+Current editor widget is GtkTextView, not GtkSourceView.
+Requires custom highlighting policy and redraw coordination.
+
+====================================================
+IMPLEMENTATION ORDER
+====================================================
+
+Phase 1
+
+Font Bigger
+Font Smaller
+
+----------------------------------------------------
+
+Phase 2
+
+Transparent Mode
+Opacity Presets
+
+----------------------------------------------------
+
+Phase 3
+
+Focus Mode
+
+----------------------------------------------------
+
+Phase 4
+
+Distraction-Free Mode
+
+----------------------------------------------------
+
+Deferred
+
+Line Numbers
+Highlight Current Line
+
+====================================================
+POLICY
+====================================================
+
+No View Menu implementation may bypass this classification.
+
+No Medium-Risk feature may be implemented before Low-Risk
+and Low/Medium-Risk features are completed and validated.
+
+Line Numbers and Highlight Current Line are deferred while Stilus
+uses GtkTextView rather than GtkSourceView.
