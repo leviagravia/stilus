@@ -1,0 +1,155 @@
+STILUS WRITING MENU IMPLEMENTATION CLASSIFICATION
+
+Status: CANONICAL
+Phase: P8-006
+Scope: Writing Menu
+
+Prerequisite:
+
+Writing Menu Audit Complete
+
+====================================================
+EXISTING / PARTIAL
+====================================================
+
+Word Count
+
+Reason:
+Word count already exists in status bar through airpad_window_count_words().
+
+----------------------------------------------------
+
+Document Statistics
+
+Reason:
+Base statistics already exist:
+word count
+line
+column
+file size
+
+A full dialog is not yet implemented.
+
+====================================================
+LOW RISK
+====================================================
+
+Writing Statistics
+
+Reason:
+Uses already available document metrics.
+Requires dialog/presentation layer.
+
+----------------------------------------------------
+
+Word Goal
+
+Reason:
+Can be implemented as simple numeric target.
+No TextBuffer mutation.
+No undo impact.
+No file lifecycle impact.
+
+----------------------------------------------------
+
+Clear Word Goal
+
+Reason:
+Clears stored numeric target.
+No document mutation.
+
+====================================================
+LOW / MEDIUM RISK
+====================================================
+
+Reading Layout
+
+Reason:
+Can reuse existing font, wrap and scroll policy infrastructure.
+Requires UI policy but not document mutation.
+
+====================================================
+MEDIUM RISK
+====================================================
+
+Focus Mode
+
+Reason:
+Requires temporary UI hiding/showing policy:
+menu bar
+status bar
+future panels.
+
+No file lifecycle impact.
+
+----------------------------------------------------
+
+Typewriter Mode
+
+Reason:
+Requires cursor tracking and scroll synchronization.
+Source already uses scroll_to_mark patterns.
+
+====================================================
+MEDIUM / HIGH RISK
+====================================================
+
+Focus Paragraph
+
+Reason:
+Requires paragraph detection, highlight/dimming policy and redraw behavior.
+GtkTextView does not provide this for free.
+
+====================================================
+HIGH RISK
+====================================================
+
+None currently classified as HIGH in Writing Menu Phase 1.
+
+====================================================
+IMPLEMENTATION ORDER
+====================================================
+
+Phase 1
+
+Writing Statistics
+Word Goal
+Clear Word Goal
+
+----------------------------------------------------
+
+Phase 2
+
+Reading Layout
+
+----------------------------------------------------
+
+Phase 3
+
+Focus Mode
+
+----------------------------------------------------
+
+Phase 4
+
+Typewriter Mode
+
+----------------------------------------------------
+
+Deferred
+
+Focus Paragraph
+
+====================================================
+POLICY
+====================================================
+
+No Writing Menu implementation may bypass this classification.
+
+Writing features must not mutate document text unless explicitly designed to insert text.
+
+Writing features must preserve:
+file lifecycle
+save lifecycle
+undo/redo behavior
+TextBuffer integrity
