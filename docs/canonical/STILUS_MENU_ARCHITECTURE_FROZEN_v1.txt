@@ -1,0 +1,218 @@
+STILUS MENU ARCHITECTURE FROZEN v1
+
+Status: CANONICAL FREEZE
+Phase: P8-013
+Date: 2026-06-10
+
+Purpose:
+
+This document freezes the final Stilus menu architecture after:
+
+P8 Menu Classification
+P8 Global Menu Reconciliation Audit
+P8 Reconciliation Decisions
+
+All reconciliation items RR-001 through RR-006 are CLOSED.
+
+====================================================================
+FINAL TOP-LEVEL MENU ORDER
+====================================================================
+
+File
+Edit
+Research
+Navigate
+Writing
+Revise
+View
+Tools
+Help
+
+The Options menu is removed from the final top-level menu order.
+
+====================================================================
+FROZEN RECONCILIATION DECISIONS
+====================================================================
+
+RR-001
+
+References replaces Research Clipboard and Clips.
+
+Final term:
+
+References
+
+----------------------------------------------------
+
+RR-002
+
+Revision Marks ownership is split:
+
+Revise owns creation and clearing:
+
+Mark Revision [REV]
+Mark Citation Needed [CITE]
+Mark Check [CHECK]
+Clear All Marks
+
+Navigate owns movement:
+
+Next Mark
+Previous Mark
+
+----------------------------------------------------
+
+RR-003
+
+Font commands belong to View:
+
+Select Font
+Font Bigger
+Font Smaller
+
+Font commands do not belong to Options.
+
+----------------------------------------------------
+
+RR-004
+
+Transparency and opacity belong to View:
+
+Transparent Mode
+Opacity Presets
+
+----------------------------------------------------
+
+RR-005
+
+Research Panel contains:
+
+References
+Tags
+Source Notes
+Scratchpad
+
+Document Outline does not belong to the Research Panel.
+
+Document Outline belongs to Navigate.
+
+----------------------------------------------------
+
+RR-006
+
+Options menu is removed.
+
+Theme moves to View.
+
+Preferences moves to Tools.
+
+====================================================================
+FINAL MENU OWNERSHIP MODEL
+====================================================================
+
+File:
+document lifecycle, file access, output, sessions, print.
+
+Edit:
+direct text editing and basic selection/edit operations.
+
+Research:
+references, tags, source notes, scratchpad.
+
+Navigate:
+movement inside the current document, bookmarks, outline, heading navigation,
+revision-mark navigation.
+
+Writing:
+composition support, focus, typewriter mode, goals, statistics.
+
+Revise:
+text cleanup, typography, PDF cleanup, revision mark creation,
+editorial transformations.
+
+View:
+visual state and presentation:
+fullscreen, always on top, word wrap, fonts, theme, transparency.
+
+Tools:
+support utilities:
+language, external spellcheck, system info, preferences.
+
+Help:
+about, keyboard shortcuts, writing principles, writing workflow,
+documentation and license information.
+
+====================================================================
+FINAL RESEARCH PANEL MODEL
+====================================================================
+
+Research Panel:
+
+References
+Tags
+Source Notes
+Scratchpad
+
+Forbidden in Research Panel:
+
+Document Outline
+project tree
+binder
+workspace tree
+knowledge graph
+vault
+backlinks
+AI assistant
+
+====================================================================
+DOCUMENT OUTLINE OWNERSHIP
+====================================================================
+
+Document Outline belongs to Navigate.
+
+It is:
+
+navigation-only
+lightweight
+generated from document structure or Markdown headings
+
+It is not:
+
+binder
+outliner engine
+project tree
+workspace hierarchy
+graph
+
+====================================================================
+CANONICAL DOCUMENT REWRITE AUTHORIZATION
+====================================================================
+
+This freeze authorizes P8-014:
+
+CANONICAL DOCUMENT REWRITE
+
+Affected documents:
+
+STILUS_CANONICAL_MENU_SPEC.txt
+STILUS_RESEARCH_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+STILUS_NAVIGATE_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+STILUS_VIEW_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+STILUS_OPTIONS_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+STILUS_TOOLS_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+
+The rewrite must align those documents with this freeze.
+
+====================================================================
+IMPLEMENTATION RULE
+====================================================================
+
+No implementation may contradict this freeze.
+
+If a future contradiction appears, this freeze may only be reopened through:
+
+new evidence
+new audit
+new reconciliation item
+new explicit decision
+
