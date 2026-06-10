@@ -1,0 +1,168 @@
+STILUS OPTIONS MENU IMPLEMENTATION CLASSIFICATION
+
+Status: CANONICAL
+Phase: P8-008
+Scope: Options Menu
+
+Prerequisite:
+
+Options Menu Audit Complete
+
+====================================================
+EXISTING
+====================================================
+
+Font...
+
+Reason:
+Already implemented through GTK font chooser.
+Font value is persisted through GKeyFile.
+
+----------------------------------------------------
+
+Text Wrap
+
+Existing options:
+
+None
+On Character
+On Word
+On Character and Word
+
+Reason:
+Already implemented and persisted through GKeyFile.
+
+----------------------------------------------------
+
+Overlay Scrolling
+
+Reason:
+Already implemented and persisted through GKeyFile.
+
+----------------------------------------------------
+
+Scrollbar Policy
+
+Existing options:
+
+Automatic
+Always
+Never
+
+Reason:
+Already implemented and persisted through GKeyFile.
+
+====================================================
+LOW RISK
+====================================================
+
+Preferences...
+
+Reason:
+Can initially expose already existing persisted options in one dialog.
+GKeyFile infrastructure already exists.
+
+====================================================
+LOW / MEDIUM RISK
+====================================================
+
+Theme Selection
+
+Reason:
+Low/Medium only if limited to:
+
+Light
+Dark
+System
+
+No custom theme engine is authorized in Phase 1.
+
+====================================================
+MEDIUM RISK
+====================================================
+
+Transparent Mode
+Opacity Presets
+
+Preset values:
+
+30%
+40%
+50%
+60%
+70%
+80%
+90%
+100%
+
+Reason:
+Requires window opacity application and persistence.
+No TextBuffer impact.
+No undo impact.
+No file lifecycle impact.
+
+====================================================
+MEDIUM / HIGH RISK
+====================================================
+
+Custom Theme Engine
+
+Reason:
+Not authorized in Phase 1.
+Would require broader style policy and persistence design.
+
+====================================================
+HIGH RISK
+====================================================
+
+None currently classified as HIGH in Options Menu Phase 1.
+
+====================================================
+IMPLEMENTATION ORDER
+====================================================
+
+Phase 1
+
+Preferences...
+
+----------------------------------------------------
+
+Phase 2
+
+Theme Selection:
+Light
+Dark
+System
+
+----------------------------------------------------
+
+Phase 3
+
+Transparent Mode
+Opacity Presets
+
+----------------------------------------------------
+
+Deferred
+
+Custom Theme Engine
+
+====================================================
+POLICY
+====================================================
+
+No Options Menu implementation may bypass this classification.
+
+Options contains persistent editor configuration.
+
+Options features must preserve:
+GKeyFile integrity
+startup behavior
+window state behavior
+TextBuffer integrity
+
+Options must not become:
+plugin system
+theme marketplace
+workspace configuration
+project configuration
