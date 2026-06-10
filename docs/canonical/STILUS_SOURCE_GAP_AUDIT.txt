@@ -1,0 +1,189 @@
+STILUS SOURCE GAP AUDIT
+
+Status: CANONICAL AUDIT
+Phase: P9-001
+Mode: READ ONLY
+
+Purpose:
+Compare frozen Stilus menu architecture against current source reality.
+
+Source Evidence:
+src/window.c
+src/main.c
+src/dialog.c
+src/file.c
+src/options.c
+src/undo.c
+
+====================================================
+IMPLEMENTED TODAY
+====================================================
+
+File:
+New
+Open
+Save
+Save As
+Close
+
+Edit:
+Copy
+Paste
+Paste as Plain Text
+Cut
+Delete
+Select All
+Insert Date / Time
+Undo
+Redo
+
+Search:
+Find
+Find Next
+Find Previous
+Replace
+
+View:
+Fullscreen
+Always on Top
+
+Options / legacy:
+Font
+Text Wrap
+Overlay Scrolling
+Scrollbar Policy
+
+Help:
+About Stilus
+Writing Principles
+Keyboard Shortcuts
+Writing Workflow
+
+Core:
+Status Bar
+Word Count
+Line / Column
+File Size
+UTF-8 handling
+Modified state
+Save prompt
+Undo/Redo buffer
+Open/Save encoding dialog
+GKeyFile configuration
+
+====================================================
+PARTIAL / MISPLACED
+====================================================
+
+Search exists as top-level menu in source.
+
+Canonical freeze removed Search as top-level menu.
+
+Find / Replace must be reconciled into canonical structure.
+
+Options exists as top-level menu in source.
+
+Canonical freeze removed Options.
+
+Font and Word Wrap currently live under Options in source,
+but canonical ownership is View.
+
+====================================================
+MISSING TOP-LEVEL IMPLEMENTATION
+====================================================
+
+Research menu exists but is empty.
+
+Navigate menu exists but is empty.
+
+Writing menu exists but is empty.
+
+Revise menu exists but is empty.
+
+Tools menu exists but is empty.
+
+====================================================
+MISSING CANONICAL FEATURES
+====================================================
+
+Research:
+References
+Tags
+Source Notes
+Scratchpad
+
+Navigate:
+Document Outline
+Bookmarks
+Revision Mark navigation
+Heading navigation
+Back / Forward
+Go to Beginning
+Go to End
+
+Writing:
+Writing Statistics
+Word Goal
+Reading Layout
+Focus Mode
+Typewriter Mode
+
+Revise:
+Case transforms
+Text cleanup
+PDF cleanup
+Paragraph tools
+Sorting
+Revision Marks creation
+Editorial Search
+
+View:
+Font Bigger
+Font Smaller
+Theme
+Transparent Mode
+Opacity Presets
+
+Tools:
+Language
+External Spellcheck
+System Info
+Preferences
+
+====================================================
+FIRST SOURCE GAP CONCLUSION
+====================================================
+
+The current source already provides a stable lightweight editor core.
+
+The biggest architectural gap is not file lifecycle or undo/redo.
+
+The biggest gap is menu migration:
+
+1. remove / absorb Search top-level menu
+2. remove Options top-level menu
+3. move visual options into View
+4. populate empty canonical menus incrementally
+
+====================================================
+IMPLEMENTATION PRIORITY
+====================================================
+
+Before adding complex features, first reconcile menu source structure with
+STILUS_MENU_ARCHITECTURE_FROZEN_v1.
+
+Recommended first implementation phase:
+
+P9-002
+CANONICAL MENU SKELETON MIGRATION
+
+Scope:
+top-level menu order
+remove Options from menu bar
+remove Search from menu bar or absorb its commands
+move Font / Word Wrap into View
+move Preferences placeholder into Tools
+preserve all working callbacks
+
+No feature implementation yet.
+
