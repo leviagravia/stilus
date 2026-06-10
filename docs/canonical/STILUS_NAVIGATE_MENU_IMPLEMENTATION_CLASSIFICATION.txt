@@ -1,0 +1,170 @@
+STILUS NAVIGATE MENU IMPLEMENTATION CLASSIFICATION
+
+Status: CANONICAL
+Phase: P8-005
+Scope: Navigate Menu
+
+Prerequisite:
+
+Navigate Menu Audit Complete
+
+====================================================
+EXISTING
+====================================================
+
+Navigate top-level menu skeleton
+
+Reason:
+Source contains menu_navigate and menu_item_navigate.
+No Navigate commands are currently attached.
+
+====================================================
+LOW RISK
+====================================================
+
+Go to Beginning
+Go to End
+
+Reason:
+Cursor movement only.
+No document mutation.
+No undo impact.
+No file lifecycle impact.
+
+----------------------------------------------------
+
+Insert Bookmark
+Next Bookmark
+Previous Bookmark
+Remove Bookmark
+Clear Bookmarks
+
+Reason:
+Bookmark policy is already canonical.
+Cursor, line, offset and mark infrastructure already exist.
+
+====================================================
+LOW / MEDIUM RISK
+====================================================
+
+Manage Bookmarks
+
+Reason:
+Requires item list, selection model and management dialog.
+
+----------------------------------------------------
+
+Back
+Forward
+
+Reason:
+Requires cursor-position history but no document mutation.
+
+====================================================
+MEDIUM RISK
+====================================================
+
+Revision Marks
+Next Mark
+Previous Mark
+
+Reason:
+Can be implemented as textual marker navigation:
+[REV]
+[CITE]
+[CHECK]
+
+Requires scan/navigation policy.
+
+====================================================
+MEDIUM / HIGH RISK
+====================================================
+
+Go to Section
+Document Outline
+Refresh Outline
+Next Heading
+Previous Heading
+
+Reason:
+Requires lightweight heading parser and outline generation.
+
+Document Outline must remain:
+navigation-only
+non-persistent
+non-binder
+non-project-tree
+non-workspace
+
+====================================================
+HIGH RISK
+====================================================
+
+None currently classified as HIGH in Navigate Menu Phase 1.
+
+====================================================
+IMPLEMENTATION ORDER
+====================================================
+
+Phase 1
+
+Go to Beginning
+Go to End
+
+----------------------------------------------------
+
+Phase 2
+
+Bookmarks:
+Insert Bookmark
+Next Bookmark
+Previous Bookmark
+Remove Bookmark
+Clear Bookmarks
+
+----------------------------------------------------
+
+Phase 3
+
+Manage Bookmarks
+
+Back
+Forward
+
+----------------------------------------------------
+
+Phase 4
+
+Revision Marks navigation:
+Next Mark
+Previous Mark
+
+----------------------------------------------------
+
+Phase 5
+
+Go to Section
+Document Outline
+Refresh Outline
+Next Heading
+Previous Heading
+
+====================================================
+POLICY
+====================================================
+
+No Navigate Menu implementation may bypass this classification.
+
+Navigate features must remain:
+document-local
+navigation-oriented
+non-project
+non-workspace
+non-binder
+
+Document Outline must not become:
+outliner engine
+binder
+project tree
+workspace tree
+graph
