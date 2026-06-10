@@ -1,0 +1,106 @@
+STILUS TOOLS MENU IMPLEMENTATION CLASSIFICATION
+
+Status: CANONICAL
+Phase: P8-009
+Scope: Tools Menu
+
+Prerequisite:
+
+Tools Menu Audit Complete
+
+====================================================
+EXISTING
+====================================================
+
+Tools top-level menu skeleton
+
+Reason:
+Source contains menu_tools and menu_item_tools.
+No Tools commands are currently attached.
+
+====================================================
+LOW RISK
+====================================================
+
+System Info...
+
+Reason:
+Source already exposes version and encoding-related information.
+Implementation requires an informational dialog only.
+
+No TextBuffer impact.
+No undo impact.
+No file lifecycle impact.
+
+====================================================
+LOW / MEDIUM RISK
+====================================================
+
+Language...
+
+Reason:
+Language is already canonical in UI/status-bar documentation.
+Requires language selection policy and persistence.
+
+====================================================
+MEDIUM RISK
+====================================================
+
+External Spellcheck
+
+Reason:
+Expected basis is Hunspell.
+Requires dictionary discovery, language mapping, document scan and result presentation.
+
+Must remain external/lightweight.
+No language-server integration is authorized.
+
+====================================================
+MEDIUM / HIGH RISK
+====================================================
+
+None currently classified as MEDIUM/HIGH in Tools Menu Phase 1.
+
+====================================================
+HIGH RISK
+====================================================
+
+None currently classified as HIGH in Tools Menu Phase 1.
+
+====================================================
+IMPLEMENTATION ORDER
+====================================================
+
+Phase 1
+
+System Info...
+
+----------------------------------------------------
+
+Phase 2
+
+Language...
+
+----------------------------------------------------
+
+Phase 3
+
+External Spellcheck
+
+====================================================
+POLICY
+====================================================
+
+No Tools Menu implementation may bypass this classification.
+
+Tools must remain intentionally small.
+
+Editorial functionality belongs in Revise, not Tools.
+
+Tools must not introduce:
+language server integration
+plugin system
+cloud services
+AI services
+workspace systems
+database systems
