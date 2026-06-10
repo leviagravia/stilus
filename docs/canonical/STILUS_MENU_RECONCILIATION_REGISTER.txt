@@ -283,3 +283,180 @@ STILUS_MENU_ARCHITECTURE_FROZEN_v1
 
 Only after freeze may canonical menu documents be rewritten.
 
+
+====================================================================
+P8-012 RECONCILIATION DECISIONS
+====================================================================
+
+Status:
+CANONICAL DECISION RECORD
+
+Date:
+2026-06-10
+
+Decision Summary:
+
+All open reconciliation items RR-001 through RR-006 are ACCEPTED.
+
+No canonical menu specification rewrite is performed in this phase.
+
+Canonical rewrite is deferred to the Menu Architecture Freeze phase.
+
+====================================================================
+RR-001 DECISION
+====================================================================
+
+Title:
+References vs Research Clipboard
+
+Decision:
+ACCEPTED
+
+Final Resolution:
+References replaces Research Clipboard and Clips.
+
+Status:
+CLOSED
+
+====================================================================
+RR-002 DECISION
+====================================================================
+
+Title:
+Revision Marks Ownership
+
+Decision:
+ACCEPTED
+
+Final Resolution:
+
+Revise owns creation and clearing:
+
+Mark Revision [REV]
+Mark Citation Needed [CITE]
+Mark Check [CHECK]
+Clear All Marks
+
+Navigate owns movement:
+
+Next Mark
+Previous Mark
+
+Status:
+CLOSED
+
+====================================================================
+RR-003 DECISION
+====================================================================
+
+Title:
+Font Ownership
+
+Decision:
+ACCEPTED
+
+Final Resolution:
+
+Font commands belong to View:
+
+Select Font
+Font Bigger
+Font Smaller
+
+Font commands do not belong to Options.
+
+Status:
+CLOSED
+
+====================================================================
+RR-004 DECISION
+====================================================================
+
+Title:
+Opacity Ownership
+
+Decision:
+ACCEPTED
+
+Final Resolution:
+
+Transparency and Opacity belong to View:
+
+Transparent Mode
+Opacity Presets
+
+Status:
+CLOSED
+
+====================================================================
+RR-005 DECISION
+====================================================================
+
+Title:
+Research Panel Composition
+
+Decision:
+ACCEPTED
+
+Final Resolution:
+
+Research Panel contains:
+
+References
+Tags
+Source Notes
+Scratchpad
+
+Document Outline does not belong to the Research Panel.
+
+Document Outline belongs to Navigate.
+
+Status:
+CLOSED
+
+====================================================================
+RR-006 DECISION
+====================================================================
+
+Title:
+Options Menu Removal
+
+Decision:
+ACCEPTED
+
+Final Resolution:
+
+Options menu shall be removed from the final canonical top-level menu order.
+
+Theme moves to View.
+
+Preferences moves to Tools.
+
+Final top-level menu order becomes:
+
+File
+Edit
+Research
+Navigate
+Writing
+Revise
+View
+Tools
+Help
+
+Status:
+CLOSED
+
+====================================================================
+P8-012 RESULT
+====================================================================
+
+All reconciliation items are CLOSED.
+
+Menu Architecture Freeze is now authorized.
+
+Next phase:
+
+P8-013
+STILUS_MENU_ARCHITECTURE_FROZEN_v1
+
