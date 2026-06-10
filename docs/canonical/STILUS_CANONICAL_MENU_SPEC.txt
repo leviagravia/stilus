@@ -1,44 +1,9 @@
 STILUS CANONICAL MENU SPECIFICATION
 
 Status: CANONICAL
-
-Version: 1.0
-
-Scope: User Interface / Menu System
-
-======================================================================
-PURPOSE
-======================================================================
-
-This document defines the canonical menu structure of Stilus.
-
-The menu system is designed for:
-
-- academic writing
-- essays
-- articles
-- books
-- homilies
-- research-oriented writing
-- long-form text production
-
-Stilus remains:
-
-- lightweight
-- native desktop
-- text-oriented
-- TXT-first
-- Markdown-friendly
-
-Stilus is not:
-
-- an IDE
-- a PKM
-- a knowledge base
-- a workspace manager
-- a project manager
-- a Scrivener clone
-- an Obsidian clone
+Version: 2.0
+Phase: P8-014
+Source of authority: STILUS_MENU_ARCHITECTURE_FROZEN_v1.txt
 
 ======================================================================
 TOP LEVEL MENU ORDER
@@ -51,18 +16,10 @@ Navigate
 Writing
 Revise
 View
-Options
 Tools
 Help
 
-This order reflects the actual writing workflow:
-
-Research
-→ Navigation
-→ Writing
-→ Revision
-→ Verification
-→ Output
+Options is removed.
 
 ======================================================================
 FILE
@@ -74,9 +31,6 @@ File
 ├── Open…
 ├── Recent Files
 ├── Favorites
-│   ├── Add Current File to Favorites
-│   ├── Open Favorite
-│   └── Manage Favorites
 ├── Save
 ├── Save As…
 ├── Sessions
@@ -86,19 +40,6 @@ File
 ├── Print…
 ├── Print Setup…
 └── Quit
-
-Notes
-
-Favorites belong to File because they are file-oriented.
-
-Sessions are intentionally lightweight.
-
-Sessions are limited to:
-
-- Save Session
-- Reopen Last Session
-
-Snapshots are not part of the canonical menu.
 
 ======================================================================
 EDIT
@@ -119,44 +60,23 @@ Edit
 ├── Go to Line…
 └── Insert Date / Time
 
-Edit contains direct text manipulation commands.
-
 ======================================================================
 RESEARCH
 ======================================================================
 
 Research
-├── Research Clipboard
-│   ├── Add Selection
-│   ├── Insert Clip
-│   └── Manage Clips
-├── Tags Collection
-│   └── Manage Tags
+├── References
+├── Tags
 ├── Source Notes
-│   ├── Add Source Note
-│   └── Manage Source Notes
 └── Scratchpad
-    └── Clear Scratchpad
-
-Research is a defining feature of Stilus.
-
-Research exists to support:
-
-- collecting quotations
-- gathering fragments
-- organizing notes
-- managing sources
-- temporary writing notes
 
 Research is not:
-
-- a database
-- a PKM
-- a knowledge graph
-- a vault
-- a workspace
-
-Detailed operations such as Delete Clip, Delete Tag or Delete Note may be implemented inside management dialogs and do not need top-level menu entries.
+database
+PKM
+vault
+workspace
+graph
+AI assistant
 
 ======================================================================
 NAVIGATE
@@ -181,23 +101,7 @@ Navigate
 ├── Go to Beginning
 └── Go to End
 
-Document Outline belongs conceptually to Navigate.
-
-Document Outline is a navigation feature.
-
-Document Outline must remain lightweight.
-
-Document Outline is generated from:
-
-- Markdown headings
-- document structure
-
-Document Outline is not:
-
-- an outliner engine
-- a binder
-- a project tree
-- a workspace hierarchy
+Document Outline belongs to Navigate.
 
 ======================================================================
 WRITING
@@ -213,10 +117,6 @@ Writing
 ├── Word Count
 ├── Writing Statistics
 └── Document Statistics
-
-Writing contains composition-support tools.
-
-These commands assist concentration, drafting and writing progress.
 
 ======================================================================
 REVISE
@@ -261,62 +161,41 @@ Revise
     ├── Long Sentences
     └── Long Paragraphs
 
-Revise contains:
-
-- cleanup
-- diagnostics
-- editorial review
-- revision workflow
-
-Editorial Search belongs in Revise.
-
 ======================================================================
 VIEW
 ======================================================================
 
 View
-├── Show / Hide Research Panel
-├── Highlight Current Line
-├── Character Map
-└── Always on Top
-
-View contains temporary visual controls.
-
-======================================================================
-OPTIONS
-======================================================================
-
-Options
+├── Fullscreen
+├── Always on Top
 ├── Word Wrap
-├── Line Numbers
-├── Font…
+├── Select Font
 ├── Font Bigger
 ├── Font Smaller
-├── White Background
-├── Dark Mode
+├── Theme
+│   ├── Light
+│   ├── Dark
+│   └── System
 ├── Transparent Mode
-├── Opacity
-│   ├── 100%
-│   ├── 90%
-│   ├── 80%
-│   ├── 70%
-│   ├── 60%
-│   ├── 50%
-│   └── 40%
-└── Preferences…
-
-Options contains persistent editor configuration.
+└── Opacity
+    ├── 30%
+    ├── 40%
+    ├── 50%
+    ├── 60%
+    ├── 70%
+    ├── 80%
+    ├── 90%
+    └── 100%
 
 ======================================================================
 TOOLS
 ======================================================================
 
 Tools
-├── External Spellcheck
 ├── Language…
-└── System Info…
-
-External Spellcheck is expected to use Hunspell.
+├── External Spellcheck
+├── System Info…
+└── Preferences…
 
 Tools must remain intentionally small.
 
@@ -327,86 +206,26 @@ HELP
 ======================================================================
 
 Help
+├── About Stilus
+├── Writing Principles
 ├── Keyboard Shortcuts
-└── About Stilus
+├── Writing Workflow
+├── Documentation
+└── License
 
 ======================================================================
-RESEARCH PANEL
+FORBIDDEN CONCEPTS
 ======================================================================
 
-The right-side panel is canonically named:
+Stilus menu architecture must not introduce:
 
-Research Panel
-
-The Research Panel contains:
-
-- Research Clipboard
-- Tags Collection
-- Source Notes
-- Scratchpad
-- Document Outline
-
-Important distinction:
-
-Document Outline is visually present inside the Research Panel.
-
-Document Outline conceptually belongs to Navigate.
-
-The Research Panel must remain:
-
-- lightweight
-- text-oriented
-- non-database
-- non-PKM
-- non-workspace
-
-Forbidden concepts:
-
-- Graph View
-- Backlinks
-- Vault
-- Workspace
-- Knowledge Base
-- Second Brain
-- Semantic Engine
-- AI Assistant
-
-======================================================================
-MULTIPLE WINDOWS POLICY
-======================================================================
-
-Stilus supports multiple independent windows.
-
-Canonical workflow:
-
-Window 1 → Manuscript
-Window 2 → Citations
-Window 3 → References
-Window 4 → Notes
-
-Multiple independent windows are preferred over split-view complexity.
-
-======================================================================
-IMPLEMENTATION DISCIPLINE
-======================================================================
-
-This menu specification is canonical.
-
-Implementation must remain consistent with:
-
-- lightweight architecture
-- academic writing workflow
-- research-assisted writing
-- TXT-first philosophy
-- Markdown-friendly philosophy
-
-No menu item authorizes:
-
-- IDE features
-- PKM features
-- workspace systems
-- project management systems
-- knowledge graph systems
-- cloud services
-- AI integrations
-- architectural rewrites
+IDE behavior
+PKM behavior
+knowledge graph
+backlinks
+vault
+workspace engine
+project manager
+Scrivener-like binder
+AI assistant
+cloud dependency
