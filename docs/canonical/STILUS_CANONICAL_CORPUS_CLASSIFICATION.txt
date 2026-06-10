@@ -1,0 +1,164 @@
+STILUS CANONICAL CORPUS CLASSIFICATION
+
+Status: CANONICAL
+Phase: P8-015
+
+Purpose:
+
+Classify the status of every canonical document.
+
+This document prevents endless rewriting of historical material.
+
+Documents must be classified as:
+
+ACTIVE
+FROZEN
+SUPERSEDED
+ARCHIVED
+HISTORICAL
+
+====================================================================
+STATUS DEFINITIONS
+====================================================================
+
+ACTIVE
+
+Current authoritative document.
+May evolve through audit and decision.
+
+----------------------------------------------------
+
+FROZEN
+
+Authoritative baseline.
+
+Modification requires:
+
+Audit
+Finding
+Decision
+
+----------------------------------------------------
+
+SUPERSEDED
+
+Replaced by a newer authoritative document.
+
+Retained for historical traceability.
+
+----------------------------------------------------
+
+ARCHIVED
+
+Working document whose mission is completed.
+
+Retained for audit history.
+
+----------------------------------------------------
+
+HISTORICAL
+
+Historical audit or evidence document.
+
+Never rewritten.
+
+====================================================================
+FROZEN
+====================================================================
+
+STILUS_MENU_ARCHITECTURE_FROZEN_v1.txt
+
+====================================================================
+ACTIVE
+====================================================================
+
+STILUS_CANONICAL_MENU_SPEC.txt
+STILUS_FILE_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+STILUS_EDIT_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+STILUS_RESEARCH_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+STILUS_NAVIGATE_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+STILUS_WRITING_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+STILUS_REVISE_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+STILUS_VIEW_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+STILUS_TOOLS_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+STILUS_HELP_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+
+STILUS_IDENTITY_AND_PHILOSOPHY.md
+STILUS_VISION.md
+STILUS_ARCHITECTURE_RULES.md
+
+STILUS_BACKUP_AND_RECOVERY_SPEC.md
+STILUS_SESSION_RECOVERY_ARCHITECTURE.md
+STILUS_RECOVERY_SNAPSHOT_POLICY.md
+
+====================================================================
+SUPERSEDED
+====================================================================
+
+STILUS_OPTIONS_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+
+Superseded By:
+
+STILUS_MENU_ARCHITECTURE_FROZEN_v1.txt
+
+Reason:
+
+Options menu removed.
+Theme moved to View.
+Preferences moved to Tools.
+
+====================================================================
+ARCHIVED
+====================================================================
+
+STILUS_MENU_RECONCILIATION_NOTES.txt
+STILUS_MENU_RECONCILIATION_REGISTER.txt
+
+Reason:
+
+Menu reconciliation completed.
+
+====================================================================
+HISTORICAL
+====================================================================
+
+STILUS_FILE_MENU_CANONICAL_AUDIT.txt
+
+STILUS_AUDIT_FINDINGS_REGISTER.md
+
+PROJECT_MILESTONES.md
+
+CALAMUS_LESSONS_LEARNED.md
+
+UPSTREAM_HARDENING_POLICY.md
+
+====================================================================
+CORPUS RULE
+====================================================================
+
+Historical documents are not rewritten.
+
+Superseded documents are not rewritten.
+
+Archived documents are not rewritten.
+
+Only ACTIVE documents may evolve.
+
+FROZEN documents require formal reopening.
+
+====================================================================
+IMPLEMENTATION PRIORITY RULE
+====================================================================
+
+Documentation work is now considered substantially complete.
+
+Future effort should prioritize:
+
+source audit
+implementation audit
+code implementation
+validation
+desktop testing
+
+rather than continuous documentation expansion.
+
