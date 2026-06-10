@@ -1,0 +1,129 @@
+STILUS HELP MENU IMPLEMENTATION CLASSIFICATION
+
+Status: CANONICAL
+Phase: P8-010
+Scope: Help Menu
+
+Prerequisite:
+
+Help Menu Audit Complete
+
+====================================================
+EXISTING
+====================================================
+
+Help top-level menu
+
+----------------------------------------------------
+
+About Stilus
+
+Reason:
+Already implemented and connected to airpad_dialog_about().
+
+----------------------------------------------------
+
+Writing Principles
+
+Reason:
+Already implemented as Help menu item and connected to a dedicated dialog.
+
+----------------------------------------------------
+
+Keyboard Shortcuts
+
+Reason:
+Already implemented as Help menu item and connected to a dedicated dialog.
+
+----------------------------------------------------
+
+Writing Workflow
+
+Reason:
+Already implemented as Help menu item and connected to a dedicated dialog.
+
+====================================================
+LOW RISK
+====================================================
+
+License
+
+Reason:
+License information already exists in About dialog and command-line --license support.
+
+====================================================
+LOW / MEDIUM RISK
+====================================================
+
+Documentation
+
+Reason:
+Requires loading/displaying project-controlled help documents.
+docs/help/ is the expected location.
+
+====================================================
+MEDIUM RISK
+====================================================
+
+About Layer Refactoring
+
+Reason:
+Canonical Help Layer requires Stilus-controlled GTK dialogs.
+Final implementation must not depend on GtkAboutDialog or GTK stock About layout.
+
+====================================================
+MEDIUM / HIGH RISK
+====================================================
+
+None currently classified as MEDIUM/HIGH in Help Menu Phase 1.
+
+====================================================
+HIGH RISK
+====================================================
+
+None currently classified as HIGH in Help Menu Phase 1.
+
+====================================================
+IMPLEMENTATION ORDER
+====================================================
+
+Phase 1
+
+License
+
+----------------------------------------------------
+
+Phase 2
+
+Documentation
+
+----------------------------------------------------
+
+Phase 3
+
+About Layer Refactoring
+
+====================================================
+POLICY
+====================================================
+
+No Help Menu implementation may bypass this classification.
+
+Help dialogs must remain:
+local
+offline
+project-controlled
+non-web-dependent
+
+About Stilus must not contain:
+full documentation
+full keyboard shortcut list
+full writing workflow
+
+Keyboard Shortcuts must remain separate from About Stilus.
+
+Writing Workflow must remain separate from About Stilus.
+
+Final Help Layer must follow:
+STILUS_HELP_LAYER_SPEC.md
+STILUS_ABOUT_LAYER_SPEC.md
