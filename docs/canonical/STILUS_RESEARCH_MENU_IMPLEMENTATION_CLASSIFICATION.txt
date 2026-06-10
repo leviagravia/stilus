@@ -1,0 +1,287 @@
+STILUS RESEARCH MENU IMPLEMENTATION CLASSIFICATION
+
+Status: CANONICAL
+Phase: P8-004
+Scope: Research Menu / Research Panel
+
+Prerequisite:
+
+Research Menu Audit Complete
+
+====================================================
+CANONICAL RESEARCH PANEL MODEL
+====================================================
+
+The right-side Research Panel contains four items:
+
+References
+Tags
+Source Notes
+Scratchpad
+
+The previous terminology:
+
+Research Clipboard
+Clips
+
+is replaced by:
+
+References
+
+Reason:
+
+References is more coherent with academic writing.
+
+====================================================
+CANONICAL RESEARCH MENU
+====================================================
+
+Research
+├── References
+│   ├── Add Reference
+│   ├── Insert Reference
+│   ├── Delete Reference
+│   └── Manage References
+├── Tags
+│   ├── Add Tag
+│   ├── Insert Tag
+│   ├── Delete Tag
+│   └── Manage Tags
+├── Source Notes
+│   ├── Add Source Note
+│   ├── Insert Source Note
+│   ├── Delete Source Note
+│   └── Manage Source Notes
+└── Scratchpad
+    ├── Add to Scratchpad
+    ├── Insert Scratchpad Text
+    ├── Clear Scratchpad
+    └── Manage Scratchpad
+
+====================================================
+COMMAND SEMANTICS
+====================================================
+
+Add:
+
+Add current selection or user-entered text to the relevant Research Panel item.
+
+Insert:
+
+Insert selected stored item into the document at cursor position.
+
+Delete:
+
+Delete one selected stored item.
+
+Clear:
+
+Clear the content of a singleton container or all scratchpad content.
+
+Manage:
+
+Open a management dialog or panel for viewing, editing, deleting and organizing stored items.
+
+Scratchpad uses Clear because it is a singleton working area.
+
+References, Tags and Source Notes use Delete because they contain multiple items.
+
+====================================================
+EXISTING
+====================================================
+
+Research top-level menu skeleton
+
+Reason:
+
+The source already contains menu_research and menu_item_research.
+
+No Research menu commands are currently attached.
+
+====================================================
+LOW RISK
+====================================================
+
+Add Reference
+
+Reason:
+
+Can initially add current selection to an in-memory list or simple store.
+
+----------------------------------------------------
+
+Insert Reference
+
+Reason:
+
+Inserts stored text into GtkTextBuffer at cursor.
+
+Undo handled by existing insert-text signal.
+
+----------------------------------------------------
+
+Add Tag
+
+Reason:
+
+Stores short textual tag.
+
+No text buffer mutation unless inserted.
+
+----------------------------------------------------
+
+Insert Tag
+
+Reason:
+
+Inserts selected tag text into GtkTextBuffer at cursor.
+
+----------------------------------------------------
+
+Add to Scratchpad
+
+Reason:
+
+Can append selected text or user text to scratchpad storage.
+
+----------------------------------------------------
+
+Insert Scratchpad Text
+
+Reason:
+
+Inserts scratchpad text into GtkTextBuffer at cursor.
+
+----------------------------------------------------
+
+Clear Scratchpad
+
+Reason:
+
+Clears singleton scratchpad content.
+
+No file lifecycle impact.
+
+====================================================
+LOW / MEDIUM RISK
+====================================================
+
+Delete Reference
+Delete Tag
+Delete Source Note
+
+Reason:
+
+Requires item identity and selection model.
+
+----------------------------------------------------
+
+Manage References
+Manage Tags
+Manage Scratchpad
+
+Reason:
+
+Requires management dialog or panel but no complex architecture if kept local and text-oriented.
+
+====================================================
+MEDIUM RISK
+====================================================
+
+Source Notes
+Add Source Note
+Insert Source Note
+Manage Source Notes
+
+Reason:
+
+Source Notes may require structured fields:
+
+source
+author
+page
+note
+
+Still text-oriented and non-database.
+
+====================================================
+MEDIUM / HIGH RISK
+====================================================
+
+Full Research Panel integration
+
+Reason:
+
+Requires right-side panel infrastructure, UI state, layout policy and persistence policy.
+
+====================================================
+HIGH RISK
+====================================================
+
+None, provided Research remains:
+
+text-oriented
+file-oriented
+non-database
+non-PKM
+non-workspace
+non-graph
+
+====================================================
+IMPLEMENTATION ORDER
+====================================================
+
+Phase 1
+
+References
+Add Reference
+Insert Reference
+
+Scratchpad
+Add to Scratchpad
+Insert Scratchpad Text
+Clear Scratchpad
+
+----------------------------------------------------
+
+Phase 2
+
+Tags
+Add Tag
+Insert Tag
+Delete Tag
+Manage Tags
+
+----------------------------------------------------
+
+Phase 3
+
+Source Notes
+Add Source Note
+Insert Source Note
+Delete Source Note
+Manage Source Notes
+
+----------------------------------------------------
+
+Phase 4
+
+Full Research Panel integration
+
+====================================================
+POLICY
+====================================================
+
+No Research implementation may introduce:
+
+database
+PKM
+knowledge graph
+backlinks
+workspace engine
+project vault
+semantic engine
+AI
+cloud dependency
+
+No Research menu implementation may bypass this classification.
