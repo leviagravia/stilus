@@ -1,0 +1,81 @@
+STILUS MENU RECONCILIATION NOTES
+
+Status: CANONICAL SUPPORT DOCUMENT
+Scope: Menu specification reconciliation
+Source: historical menu command chat, current source menu skeleton, File/Edit/View classifications
+
+KEY RECONCILIATION POINTS
+
+1. Top-level menu order is confirmed:
+
+File
+Edit
+Research
+Navigate
+Writing
+Revise
+View
+Options
+Tools
+Help
+
+2. Research is an identity feature of Stilus.
+
+Research is not optional.
+Research is not a PKM system.
+Research is not a database.
+Research is not a workspace engine.
+
+3. Research Panel contains:
+
+Research Clipboard
+Tags Collection
+Source Notes
+Scratchpad
+Document Outline
+
+4. Document Outline has dual placement:
+
+Conceptual placement:
+Navigate
+
+Visual placement:
+Research Panel
+
+It is not:
+binder
+outliner engine
+project tree
+workspace tree
+graph
+
+5. Editorial Search belongs in Revise, not Tools.
+
+6. Tools must remain intentionally small.
+
+Canonical Tools scope:
+
+External Spellcheck
+Language
+System Info
+
+7. Snapshots are not part of the canonical menu.
+
+8. Sessions remain canonical only in lightweight form:
+
+Save Session
+Reopen Last Session
+
+9. Future update to STILUS_CANONICAL_MENU_SPEC.txt must be additive.
+
+It must preserve:
+
+Purpose
+Research rationale
+Document Outline rationale
+Research Panel section
+Multiple Windows Policy
+Implementation Discipline
+Forbidden concepts
+
+10. No destructive rewrite of STILUS_CANONICAL_MENU_SPEC.txt is authorized.
