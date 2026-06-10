@@ -1,0 +1,177 @@
+STILUS REVISE MENU IMPLEMENTATION CLASSIFICATION
+
+Status: CANONICAL
+Phase: P8-007
+Scope: Revise Menu
+
+Prerequisite:
+
+Revise Menu Audit Complete
+
+====================================================
+EXISTING
+====================================================
+
+None
+
+Reason:
+Revise exists as a top-level menu skeleton, but no Revise commands are currently attached.
+
+====================================================
+LOW RISK
+====================================================
+
+UPPERCASE
+Lowercase
+Remove Trailing Spaces
+
+Reason:
+Local text transformations/cleanup.
+No file lifecycle impact.
+No persistence impact.
+Undo handled through existing TextBuffer mutation signals.
+
+====================================================
+LOW / MEDIUM RISK
+====================================================
+
+Title Case
+Sentence Case
+Remove Extra Spaces
+Remove Empty Paragraphs
+Remove Duplicate Lines
+
+Reason:
+Require local transformation policy, but no new architecture.
+
+====================================================
+MEDIUM RISK
+====================================================
+
+Sort A-Z
+Sort Z-A
+Join Lines
+Normalize Whitespace
+Remove Page Breaks
+Fix Hyphenation
+
+Reason:
+Require selection/line/paragraph handling and stable cleanup policies.
+
+----------------------------------------------------
+
+Revision Marks
+
+Commands:
+
+Mark Revision [REV]
+Mark Citation Needed [CITE]
+Mark Check [CHECK]
+Clear All Marks
+Next Mark
+Previous Mark
+
+Reason:
+Can be implemented as explicit textual markers.
+No database required.
+No semantic engine required.
+
+====================================================
+MEDIUM / HIGH RISK
+====================================================
+
+Reflow Paragraph
+
+Reason:
+Requires paragraph boundary detection and wrapping policy.
+
+----------------------------------------------------
+
+Smart Typography
+
+Reason:
+Requires canonical typographic policy:
+quotes
+apostrophes
+dashes
+ellipsis
+spacing
+
+----------------------------------------------------
+
+Clean Paste from PDF
+Clean Selected Text from PDF
+
+Reason:
+Requires PDF text repair policy:
+hard line breaks
+hyphen repair
+paragraph reconstruction
+space normalization
+
+====================================================
+HIGH RISK
+====================================================
+
+None currently classified as HIGH in Revise Menu Phase 1.
+
+====================================================
+IMPLEMENTATION ORDER
+====================================================
+
+Phase 1
+
+UPPERCASE
+Lowercase
+Remove Trailing Spaces
+
+----------------------------------------------------
+
+Phase 2
+
+Title Case
+Sentence Case
+Remove Extra Spaces
+Remove Empty Paragraphs
+
+----------------------------------------------------
+
+Phase 3
+
+Sort A-Z
+Sort Z-A
+Join Lines
+Normalize Whitespace
+Remove Page Breaks
+Fix Hyphenation
+Remove Duplicate Lines
+Revision Marks
+
+----------------------------------------------------
+
+Phase 4
+
+Reflow Paragraph
+Smart Typography
+Clean Paste from PDF
+Clean Selected Text from PDF
+
+====================================================
+POLICY
+====================================================
+
+No Revise Menu implementation may bypass this classification.
+
+Revise features must remain:
+text-oriented
+local
+non-AI
+non-cloud
+non-database
+non-PKM
+
+Revise features must preserve:
+file lifecycle
+save lifecycle
+undo/redo behavior
+TextBuffer integrity
