@@ -1,0 +1,285 @@
+STILUS MENU RECONCILIATION REGISTER
+
+Status: ACTIVE
+
+Version: 1.0
+
+Purpose:
+
+Record menu architecture inconsistencies discovered during
+P8 Menu Classification and Reconciliation audits.
+
+This document is authoritative for unresolved menu conflicts.
+
+Canonical menu documents shall not be modified until all
+reconciliation items are resolved and architecture freeze
+is formally declared.
+
+====================================================================
+RR-001
+====================================================================
+
+Title:
+References vs Research Clipboard
+
+Status:
+OPEN
+
+Current Situation:
+
+Historical documents contain:
+
+Research Clipboard
+
+Current classification contains:
+
+References
+
+Proposed Resolution:
+
+Freeze:
+
+References
+
+Reason:
+
+References better reflects academic writing workflow and
+editorial intent.
+
+Affected Documents:
+
+STILUS_CANONICAL_MENU_SPEC.txt
+STILUS_RESEARCH_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+
+====================================================================
+RR-002
+====================================================================
+
+Title:
+Revision Marks Ownership
+
+Status:
+OPEN
+
+Current Situation:
+
+Revision Marks appear in both:
+
+Navigate
+Revise
+
+Proposed Resolution:
+
+Revise
+
+    Mark Revision [REV]
+    Mark Citation Needed [CITE]
+    Mark Check [CHECK]
+    Clear All Marks
+
+Navigate
+
+    Next Mark
+    Previous Mark
+
+Reason:
+
+Creation belongs to revision.
+
+Movement belongs to navigation.
+
+Affected Documents:
+
+STILUS_CANONICAL_MENU_SPEC.txt
+STILUS_NAVIGATE_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+STILUS_REVISE_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+
+====================================================================
+RR-003
+====================================================================
+
+Title:
+Font Ownership
+
+Status:
+OPEN
+
+Current Situation:
+
+Font commands appear in:
+
+View
+Options
+
+Proposed Resolution:
+
+Freeze:
+
+View
+    Select Font
+    Font Bigger
+    Font Smaller
+
+Remove Font from Options.
+
+Reason:
+
+Font changes presentation rather than application configuration.
+
+Affected Documents:
+
+STILUS_CANONICAL_MENU_SPEC.txt
+STILUS_VIEW_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+STILUS_OPTIONS_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+
+====================================================================
+RR-004
+====================================================================
+
+Title:
+Opacity Ownership
+
+Status:
+OPEN
+
+Current Situation:
+
+Opacity appears in:
+
+View
+Options
+
+Proposed Resolution:
+
+Freeze:
+
+View
+    Transparent Mode
+    Opacity
+
+Reason:
+
+Opacity is a visual state, not a configuration category.
+
+Affected Documents:
+
+STILUS_CANONICAL_MENU_SPEC.txt
+STILUS_VIEW_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+STILUS_OPTIONS_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+
+====================================================================
+RR-005
+====================================================================
+
+Title:
+Research Panel Composition
+
+Status:
+OPEN
+
+Current Situation:
+
+Multiple panel definitions exist.
+
+Proposed Resolution:
+
+Research Panel
+
+    References
+    Tags
+    Source Notes
+    Scratchpad
+
+Document Outline removed from Research Panel.
+
+Reason:
+
+Outline is navigation.
+
+Research is information gathering.
+
+Affected Documents:
+
+STILUS_CANONICAL_MENU_SPEC.txt
+STILUS_RESEARCH_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+STILUS_NAVIGATE_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+
+====================================================================
+RR-006
+====================================================================
+
+Title:
+Options Menu Removal
+
+Status:
+OPEN
+
+Current Situation:
+
+Options contains too few commands to justify a dedicated menu.
+
+Proposed Resolution:
+
+Remove:
+
+Options
+
+Move:
+
+Theme -> View
+
+Preferences -> Tools
+
+Final Top-Level Menu Order:
+
+File
+Edit
+Research
+Navigate
+Writing
+Revise
+View
+Tools
+Help
+
+Reason:
+
+Reduces menu clutter.
+
+Improves workflow coherence.
+
+Matches lightweight editor philosophy.
+
+Affected Documents:
+
+STILUS_CANONICAL_MENU_SPEC.txt
+STILUS_OPTIONS_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+STILUS_VIEW_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+STILUS_TOOLS_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+
+====================================================================
+RECONCILIATION RULE
+====================================================================
+
+No canonical menu document shall be rewritten until all
+reconciliation items are CLOSED.
+
+====================================================================
+ARCHITECTURE FREEZE RULE
+====================================================================
+
+Architecture Freeze may be declared only when:
+
+RR-001 CLOSED
+RR-002 CLOSED
+RR-003 CLOSED
+RR-004 CLOSED
+RR-005 CLOSED
+RR-006 CLOSED
+
+Freeze Document:
+
+STILUS_MENU_ARCHITECTURE_FROZEN_v1
+
+Only after freeze may canonical menu documents be rewritten.
+
