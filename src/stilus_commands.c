@@ -7,7 +7,7 @@ static const StilusCommand stilus_commands[] =
         "Go To Line...",
         "Navigate/Go To Line...",
         "<Control>L",
-        STILUS_CMD_NAVIGATION | STILUS_CMD_DIALOG,
+        STILUS_CMD_NAVIGATION | STILUS_CMD_DIALOG | STILUS_CMD_READ_ONLY,
         stilus_cmd_navigate_go_to_line,
         "Move the cursor to a specific line number."
     },

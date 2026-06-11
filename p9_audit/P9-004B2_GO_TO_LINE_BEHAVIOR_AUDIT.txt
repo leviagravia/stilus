@@ -1,0 +1,492 @@
+P9-004B2 GO TO LINE BEHAVIOR AUDIT
+DATE: 2026-06-11T23:14:38+02:00
+
+== GIT HEAD AND STATUS ==
+6faf169 (HEAD -> p9-004-command-layer-foundation, origin/p9-004-command-layer-foundation) P9-004B1 Wire Go To Line menu infrastructure
+b826ada P9-004A Command Layer Foundation
+b1b3288 (origin/p2-code-cleanup-audit, p2-code-cleanup-audit) Migrate menu ownership to frozen architecture
+4e68fdf Add source gap audit
+73232c7 Add canonical corpus classification
+?? p9_audit/P9-004B2_GO_TO_LINE_BEHAVIOR_AUDIT.txt
+
+== CURRENT COMMAND CALLBACK ==
+#include "stilus_commands.h"
+
+static const StilusCommand stilus_commands[] =
+{
+    {
+        "navigate.go-to-line",
+        "Go To Line...",
+        "Navigate/Go To Line...",
+        "<Control>L",
+        STILUS_CMD_NAVIGATION | STILUS_CMD_DIALOG,
+        stilus_cmd_navigate_go_to_line,
+        "Move the cursor to a specific line number."
+    },
+    {
+        "revise.uppercase",
+        "UPPERCASE",
+        "Revise/Case/UPPERCASE",
+        NULL,
+        STILUS_CMD_TEXT_MUTATION | STILUS_CMD_REQUIRES_SELECTION,
+        stilus_cmd_revise_uppercase,
+        "Convert the selected text to uppercase."
+    },
+    {
+        "revise.lowercase",
+        "Lowercase",
+        "Revise/Case/Lowercase",
+        NULL,
+        STILUS_CMD_TEXT_MUTATION | STILUS_CMD_REQUIRES_SELECTION,
+        stilus_cmd_revise_lowercase,
+        "Convert the selected text to lowercase."
+    },
+    {
+        "revise.remove-trailing-spaces",
+        "Remove Trailing Spaces",
+        "Revise/Cleanup/Remove Trailing Spaces",
+        NULL,
+        STILUS_CMD_TEXT_MUTATION,
+        stilus_cmd_revise_remove_trailing_spaces,
+        "Remove trailing spaces and tabs from document lines."
+    },
+    {
+        "view.font-bigger",
+        "Font Bigger",
+        "View/Font Bigger",
+        "<Control>plus",
+        STILUS_CMD_UI_ONLY | STILUS_CMD_PERSISTENCE,
+        stilus_cmd_view_font_bigger,
+        "Increase the editor font size."
+    },
+    {
+        "view.font-smaller",
+        "Font Smaller",
+        "View/Font Smaller",
+        "<Control>minus",
+        STILUS_CMD_UI_ONLY | STILUS_CMD_PERSISTENCE,
+        stilus_cmd_view_font_smaller,
+        "Decrease the editor font size."
+    }
+};
+
+const StilusCommand *
+stilus_commands_get_all(gsize *count)
+{
+    if (count != NULL)
+        *count = G_N_ELEMENTS(stilus_commands);
+
+    return stilus_commands;
+}
+
+const StilusCommand *
+stilus_commands_find_by_id(const char *id)
+{
+    gsize i;
+
+    if (id == NULL)
+        return NULL;
+
+    for (i = 0; i < G_N_ELEMENTS(stilus_commands); i++)
+    {
+        if (g_strcmp0(stilus_commands[i].id, id) == 0)
+            return &stilus_commands[i];
+    }
+
+    return NULL;
+}
+
+void
+stilus_cmd_navigate_go_to_line(GtkWidget *widget, gpointer data)
+{
+    (void)widget;
+    (void)data;
+}
+
+void
+stilus_cmd_revise_uppercase(GtkWidget *widget, gpointer data)
+{
+    (void)widget;
+    (void)data;
+}
+
+void
+stilus_cmd_revise_lowercase(GtkWidget *widget, gpointer data)
+{
+    (void)widget;
+    (void)data;
+}
+
+void
+stilus_cmd_revise_remove_trailing_spaces(GtkWidget *widget, gpointer data)
+{
+    (void)widget;
+    (void)data;
+}
+
+void
+stilus_cmd_view_font_bigger(GtkWidget *widget, gpointer data)
+{
+    (void)widget;
+    (void)data;
+}
+
+void
+stilus_cmd_view_font_smaller(GtkWidget *widget, gpointer data)
+{
+    (void)widget;
+    (void)data;
+}
+
+== DATA TYPES AVAILABLE ==
+};
+
+// Text view data.
+struct AirpadDataTextView
+{
+    GtkWidget *text_view;       // Text view itself.
+    GtkWidget *scrolled_window; // Scrollable area that holds the text view.
+};
+
+// Window data.
+struct AirpadDataWindow
+{
+    GtkWidget *window;                          // Window itself.
+    GdkPixbuf *icon;                            // Icon of the window.
+    GtkWidget *content;                         // Grid that holds the window contents.
+    GtkWidget *status_bar;                      // Status bar.
+    struct AirpadDataMenuBar *data_menu_bar;    // Menubar of the window.
+    struct AirpadDataTextView *data_text_view;  // Text area of the window.
+};
+
+// Signal IDs.
+struct AirpadDataSignals
+{
+    gulong window_delete_event;                                     // Top-level window: "delete-event"
+    gulong window_focus_in;                                         // Top-level window: "focus-in-event"
+    gulong window_state;                                            // Top-level window: "window-state-change"
+    gulong text_view_copy_clipboard;                                // Text view: "copy-clipboard"
+    gulong text_view_cut_clipboard;                                 // Text view: "cut-clipboard"
+    gulong text_buffer_modified;                                    // Text buffer: "modified-changed"
+    gulong text_buffer_has_selection;                               // Text buffer: "notify::has-selection"
+    gulong text_buffer_insert_text;                                 // Text buffer: "insert-text"
+    gulong text_buffer_delete_range;                                // Text buffer: "delete-range"
+    gulong text_buffer_paste_done;                                  // Text buffer: "paste-done"
+    gulong menu_item_file_new_activate;                             // "File -> New" menu item: "activate"
+    gulong menu_item_file_open_activate;                            // "File -> Open" menu item: "activate"
+    gulong menu_item_file_save_activate;                            // "File -> Save" menu item: "activate"
+    gulong menu_item_file_save_as_activate;                         // "File -> Save As" menu item: "activate"
+    gulong menu_item_file_close_activate;                           // "File -> Close" menu item: "activate"
+    gulong menu_item_navigate_go_to_line_activate;             // "Navigate -> Go To Line..." menu item: "activate"
+    gulong menu_item_edit_copy_activate;                            // "Edit -> Copy" menu item: "activate"
+    gulong menu_item_edit_paste_activate;                           // "Edit -> Paste" menu item: "activate"
+    gulong menu_item_edit_paste_as_plain_text_activate;             // "Edit -> Paste as Plain Text" menu item: "activate"
+    gulong menu_item_edit_cut_activate;                             // "Edit -> Cut" menu item: "activate"
+    gulong menu_item_edit_delete_activate;                          // "Edit -> Delete" menu item: "activate"
+    gulong menu_item_edit_select_all_activate;                      // "Edit -> Select All" menu item: "activate"
+    gulong menu_item_edit_insert_date_time_activate;                 // "Edit -> Insert Date / Time" menu item: "activate"
+    gulong menu_item_edit_undo_activate;                            // "Edit -> Undo" menu item: "activate"
+    gulong menu_item_edit_redo_activate;                            // "Edit -> Redo" menu item: "activate"
+    gulong menu_item_search_find_activate;                          // "Search -> Find" menu item: "activate"
+    gulong menu_item_search_find_next_activate;                     // "Search -> Find Next" menu item: "activate"
+    gulong menu_item_search_find_prev_activate;                     // "Search -> Find Previous" menu item: "activate"
+    gulong menu_item_search_replace_activate;                       // "Search -> Replace" menu item: "activate"
+    gulong menu_item_view_fullscreen_activate;                      // "View -> Fullscreen" menu item: "activate"
+    gulong menu_item_view_always_on_top_activate;                 // "View -> Always on Top" menu item: "activate"
+    gulong menu_item_options_font_activate;                         // "Options -> Font" menu item: "activate"
+    gulong menu_item_options_text_wrap_none_toggled;                // "Options -> Text Wrap -> None": "toggled"
+    gulong menu_item_options_text_wrap_on_word_toggled;             // "Options -> Text Wrap -> On Word": "toggled"
+    gulong menu_item_options_text_wrap_on_char_toggled;             // "Options -> Text Wrap -> On Character": "toggled"
+    gulong menu_item_options_text_wrap_on_char_and_word_toggled;    // "Options -> Text Wrap -> On Character and Word": "toggled"
+    gulong menu_item_options_overlay_scrolling_toggled;             // "Options -> Overlay Scrollbars": "toggled"
+    gulong menu_item_options_scrollbar_policy_auto_toggled;         // "Options -> Scrollbar Policy -> Automatic": "toggled"
+    gulong menu_item_options_scrollbar_policy_always_toggled;       // "Options -> Scrollbar Policy -> Always": "toggled"
+    gulong menu_item_options_scrollbar_policy_never_toggled;        // "Options -> Scrollbar Policy -> Never": "toggled"
+    gulong menu_item_help_about_activate;                           // "Help -> About Stilus": "activate"
+    gulong menu_item_help_writing_principles_activate;              // "Help -> Writing Principles": "activate"
+    gulong menu_item_help_keyboard_shortcuts_activate;               // "Help -> Keyboard Shortcuts": "activate"
+    gulong menu_item_help_writing_workflow_activate;                 // "Help -> Writing Workflow": "activate"
+};
+
+// Data used by the searching facility.
+struct AirpadDataSearch
+{
+    // Text.
+    char *text_find;    // Text to find.
+    char *text_replace; // Text to replace.
+
+    // Switches.
+    gboolean case_insensitive;
+    gboolean backward_search;
+    gboolean from_here;
+    gboolean search_wraps;
+    gboolean replace_all;
+};
+
+// File info.
+struct AirpadDataFile
+{
+    GFile *file;    // File itself.
+    char *encoding; // Encoding of the file.
+};
+
+// Program options, read from the configuration file.
+struct AirpadDataOptions
+{
+    char *font;
+    gboolean overlay_scrolling;
+    GtkWrapMode text_wrap;
+    GtkPolicyType scrollbar_policy;
+};
+
+// Holds command-line option values.
+struct AirpadDataArguments
+{
+    // File options.
+    char *file_encoding;
+};
+
+// Application data.
+struct AirpadDataApplication
+{
+    GtkApplication *application;                // Application itself.
+    struct AirpadDataArguments *data_arguments; // Argument holder.
+    struct AirpadDataOptions *data_options;     // Configuration options.
+    struct AirpadDataFile *data_file;           // Currently opened file.
+    struct AirpadDataSearch *data_search;       // Options used for find/replace.
+    struct AirpadDataSignals *data_signals;     // Signal connections.
+    struct AirpadDataWindow *data_window;       // Application window.
+};
+
+#endif
+
+== EXISTING DIALOG PATTERNS ==
+src/find.c:53:    GtkWidget *dialog = gtk_dialog_new_with_buttons(_("Find"), GTK_WINDOW(parent), GTK_DIALOG_MODAL, _("Cancel"), GTK_RESPONSE_CANCEL, _("Find"), GTK_RESPONSE_ACCEPT, NULL);
+src/find.c:60:    GtkWidget *entry_find = gtk_entry_new();
+src/find.c:99:    const int response = gtk_dialog_run(GTK_DIALOG(dialog));
+src/font.c:35:    if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_OK)
+src/replace.c:55:    GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(parent), GTK_DIALOG_MODAL, GTK_MESSAGE_QUESTION, GTK_BUTTONS_NONE, _("Replace this instance?"));
+src/replace.c:62:    const int response = gtk_dialog_run(GTK_DIALOG(dialog));
+src/replace.c:74:    GtkWidget *dialog = gtk_dialog_new_with_buttons(_("Replace"), GTK_WINDOW(parent), GTK_DIALOG_MODAL, _("Cancel"), GTK_RESPONSE_CANCEL, _("Replace"), GTK_RESPONSE_ACCEPT, NULL);
+src/replace.c:81:    GtkWidget *entry_find = gtk_entry_new();
+src/replace.c:83:    GtkWidget *entry_replace = gtk_entry_new();
+src/replace.c:128:    const int response = gtk_dialog_run(GTK_DIALOG(dialog));
+src/dialog.c:43:                dialog = gtk_message_dialog_new(GTK_WINDOW(parent), GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, _("Reading from file \"%s\" failed: %s"), filename, detail);
+src/dialog.c:45:                dialog = gtk_message_dialog_new(GTK_WINDOW(parent), GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, _("Reading from file (name unknown) failed: %s"), detail);
+src/dialog.c:54:                dialog = gtk_message_dialog_new(GTK_WINDOW(parent), GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, _("Writing to file \"%s\" failed: %s"), filename, detail);
+src/dialog.c:56:                dialog = gtk_message_dialog_new(GTK_WINDOW(parent), GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, _("Writing to file (name unknown) failed: %s"), detail);
+src/dialog.c:64:                dialog = gtk_message_dialog_new(GTK_WINDOW(parent), GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, _("File \"%s\" does not have valid UTF-8 content."), filename);
+src/dialog.c:66:                dialog = gtk_message_dialog_new(GTK_WINDOW(parent), GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, _("File (name unknown) does not have valid UTF-8 content."));
+src/dialog.c:75:                dialog = gtk_message_dialog_new(GTK_WINDOW(parent), GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, _("Converting contents of file \"%s\" failed: %s"), filename, detail);
+src/dialog.c:77:                dialog = gtk_message_dialog_new(GTK_WINDOW(parent), GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, _("Converting contents of file (name unknown) failed: %s"), detail);
+src/dialog.c:93:    const int response = gtk_dialog_run(GTK_DIALOG(dialog));
+src/dialog.c:104:    GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(parent), GTK_DIALOG_MODAL, GTK_MESSAGE_INFO, GTK_BUTTONS_OK, _("No matches found."));
+src/dialog.c:110:    gtk_dialog_run(GTK_DIALOG(dialog));
+src/dialog.c:120:    GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(parent), GTK_DIALOG_MODAL, GTK_MESSAGE_QUESTION, GTK_BUTTONS_NONE, _("The file was modified. Do you want to save it?"));
+src/dialog.c:126:    int response = gtk_dialog_run(GTK_DIALOG(dialog));
+src/dialog.c:164:    GtkWidget *encoding_entry = gtk_entry_new();
+src/dialog.c:185:    int response = gtk_dialog_run(GTK_DIALOG(dialog));
+src/dialog.c:237:    GtkWidget *encoding_entry = gtk_entry_new();
+src/dialog.c:267:    int response = gtk_dialog_run(GTK_DIALOG(dialog));
+src/dialog.c:296:    GtkWidget *dialog = gtk_dialog_new_with_buttons(
+src/dialog.c:350:    gtk_dialog_run(GTK_DIALOG(dialog));
+src/dialog.c:357:    GtkWidget *dialog = gtk_dialog_new_with_buttons(
+src/dialog.c:423:    while ((response = gtk_dialog_run(GTK_DIALOG(dialog))) == GTK_RESPONSE_APPLY)
+src/dialog.c:461:    gtk_dialog_run(GTK_DIALOG(dialog));
+src/dialog.c:479:    gtk_dialog_run(GTK_DIALOG(dialog));
+src/dialog.c:507:    gtk_dialog_run(GTK_DIALOG(dialog));
+
+== EXISTING SCROLL/CURSOR PATTERNS ==
+src/find.c:201:        gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view), mark_insert, 0.0, TRUE, 0.5, 0.5);
+src/find.c:235:        gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view), mark_insert, 0.0, TRUE, 0.5, 0.5);
+src/find.c:268:        gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view), mark_insert, 0.0, TRUE, 0.5, 0.5);
+src/aux.c:31:    gtk_text_buffer_place_cursor(text_buffer, &start);
+src/undo.c:114:            gtk_text_buffer_place_cursor(text_buffer, &start);
+src/undo.c:165:            gtk_text_buffer_place_cursor(text_buffer, &start);
+src/undo.c:399:    gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view), gtk_text_buffer_get_selection_bound(text_buffer), 0.1, FALSE, 0.0, 0.0);
+src/undo.c:435:    gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view), gtk_text_buffer_get_selection_bound(text_buffer), 0.1, FALSE, 0.0, 0.0);
+src/replace.c:203:            gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view), gtk_text_buffer_get_insert(text_buffer), 0.0, TRUE, 0.5, 0.1);
+src/replace.c:232:        gtk_text_buffer_place_cursor(text_buffer, &bounds[0]);
+src/replace.c:261:        gtk_text_buffer_place_cursor(text_buffer, &iter_last_cursor_pos);
+
+== EXISTING INCLUDE STYLE ==
+#include "stilus_commands.h"
+
+static const StilusCommand stilus_commands[] =
+{
+    {
+        "navigate.go-to-line",
+        "Go To Line...",
+        "Navigate/Go To Line...",
+        "<Control>L",
+        STILUS_CMD_NAVIGATION | STILUS_CMD_DIALOG,
+        stilus_cmd_navigate_go_to_line,
+        "Move the cursor to a specific line number."
+    },
+    {
+        "revise.uppercase",
+        "UPPERCASE",
+        "Revise/Case/UPPERCASE",
+        NULL,
+        STILUS_CMD_TEXT_MUTATION | STILUS_CMD_REQUIRES_SELECTION,
+        stilus_cmd_revise_uppercase,
+        "Convert the selected text to uppercase."
+    },
+    {
+        "revise.lowercase",
+        "Lowercase",
+        "Revise/Case/Lowercase",
+        NULL,
+        STILUS_CMD_TEXT_MUTATION | STILUS_CMD_REQUIRES_SELECTION,
+        stilus_cmd_revise_lowercase,
+        "Convert the selected text to lowercase."
+    },
+    {
+        "revise.remove-trailing-spaces",
+        "Remove Trailing Spaces",
+        "Revise/Cleanup/Remove Trailing Spaces",
+        NULL,
+        STILUS_CMD_TEXT_MUTATION,
+        stilus_cmd_revise_remove_trailing_spaces,
+        "Remove trailing spaces and tabs from document lines."
+    },
+    {
+        "view.font-bigger",
+        "Font Bigger",
+        "View/Font Bigger",
+        "<Control>plus",
+/*
+ * Copyright (C) 2020-2022 Nikola Hadžić
+ *
+ * This file is part of Airpad.
+ *
+ * Airpad is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Airpad is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Airpad.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#include <glib/gi18n.h>
+#include <gtk/gtk.h>
+#include "const.h"
+#include "dialog.h"
+
+// Enables/disables the find button depending on whether there is some content in the find entry.
+static void airpad_find_set_find_button_state(GtkEditable *entry, GtkWidget *button)
+{
+    gtk_widget_set_sensitive(button, gtk_entry_get_text_length(GTK_ENTRY(entry)));
+}
+
+// Triggers the user accepting the operation when he presses "Enter"
+// while the text entry is focused.
+static void airpad_find_entry_activated(GtkEntry *entry, GtkWidget *dialog)
+{
+    gtk_dialog_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
+}
+
+// Causes the find entry to grab the focus and expands the find entry's selection
+// bound to the entire text. This function should be called when the dialog has
+// been mapped.
+static gboolean airpad_find_focus_entry(GtkWidget *dialog, GdkEvent *event, GtkWidget *entry)
+{
+    gtk_widget_grab_focus(entry);
+
+    return FALSE;
+/*
+ * Copyright (C) 2020-2022 Nikola Hadžić
+ *
+ * This file is part of Airpad.
+ *
+ * Airpad is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Airpad is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Airpad.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#include <glib/gi18n.h>
+#include <gtk/gtk.h>
+#include "const.h"
+#include "dialog.h"
+#include "undo.h"
+
+// Enables/disables the replace button depending on whether there is some content in the find entry.
+static void airpad_replace_set_replace_button_state(GtkEditable *entry, GtkWidget *button)
+{
+    gtk_widget_set_sensitive(button, gtk_entry_get_text_length(GTK_ENTRY(entry)));
+}
+
+// Triggers the user accepting the operation when he presses "Enter" while either of
+// the text entries is focused.
+static void airpad_replace_entry_activated(GtkEntry *entry, GtkWidget *dialog)
+{
+    gtk_dialog_response(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT);
+}
+
+// Causes the replace entry to grab the focus and expands the replace entry's selection
+// bound to the entire text. This function should be called when the dialog has
+// been mapped.
+static gboolean airpad_replace_focus_entry(GtkWidget *dialog, GdkEvent *event, GtkWidget *entry)
+{
+    gtk_widget_grab_focus(entry);
+
+
+== WINDOW PARENT ACCESS PATTERN ==
+src/find.c:190:    if (!airpad_find_dialog_find(data_application->data_window->window, data_application->data_search))
+src/find.c:205:        airpad_dialog_no_matches_found(data_application->data_window->window);
+src/find.c:239:        airpad_dialog_no_matches_found(data_application->data_window->window);
+src/find.c:272:        airpad_dialog_no_matches_found(data_application->data_window->window);
+src/aux.c:46:        switch (airpad_dialog_confirm(data_window->window))
+src/aux.c:55:                    if (!airpad_dialog_save(data_window->window, default_encoding, data_file))
+src/aux.c:76:                        airpad_dialog_error(data_window->window, AIRPAD_ERROR_TYPE_TEXT_CONVERSION_ERROR, FALSE, filename, error->message);
+src/aux.c:94:                    airpad_dialog_error(data_window->window, AIRPAD_ERROR_TYPE_FILE_WRITE_FAILURE, FALSE, filename, error->message);
+src/aux.c:110:                    airpad_dialog_error(data_window->window, AIRPAD_ERROR_TYPE_FILE_WRITE_FAILURE, FALSE, filename, error->message);
+src/font.c:30:    GtkWidget *dialog = gtk_font_chooser_dialog_new(_("Select font"), GTK_WINDOW(data_application->data_window->window));
+src/replace.c:206:            switch (airpad_replace_dialog_replace_prompt(data_application->data_window->window))
+src/replace.c:283:    if (!airpad_replace_dialog_replace(data_application->data_window->window, data_application->data_search))
+src/replace.c:293:        airpad_dialog_no_matches_found(data_application->data_window->window);
+src/file.c:207:    if (!airpad_dialog_open(data_application->data_window->window, data_application->data_arguments->file_encoding, data_application->data_file))
+src/file.c:218:        airpad_dialog_error(data_application->data_window->window, AIRPAD_ERROR_TYPE_FILE_READ_FAILURE, FALSE, filename, error->message);
+src/file.c:242:            airpad_dialog_error(data_application->data_window->window, AIRPAD_ERROR_TYPE_TEXT_CONVERSION_ERROR, FALSE, filename, error->message);
+src/file.c:258:        airpad_dialog_error(data_application->data_window->window, AIRPAD_ERROR_TYPE_TEXT_INVALID_UTF8, FALSE, filename);
+src/file.c:320:        if (!airpad_dialog_save(data_application->data_window->window, data_application->data_arguments->file_encoding, data_application->data_file))
+src/file.c:327:    const gboolean success = airpad_file_write(data_application->data_window->window, text_buffer, data_application->data_file);
+src/file.c:348:    if (!airpad_dialog_save(data_application->data_window->window, data_application->data_arguments->file_encoding, data_application->data_file))
+src/file.c:355:    if (airpad_file_write(data_application->data_window->window, text_buffer, data_application->data_file))
+src/window.c:240:    gtk_window_add_accel_group(GTK_WINDOW(data_window->window), accel_group);
+src/window.c:264:        gtk_window_set_icon(GTK_WINDOW(data_window->window), data_window->icon);
+src/window.c:298:    data_window->window = gtk_application_window_new(application);
+src/window.c:299:    gtk_window_set_default_size(GTK_WINDOW(data_window->window), AIRPAD_WINDOW_WIDTH, AIRPAD_WINDOW_HEIGHT);
+src/window.c:324:    gtk_container_add(GTK_CONTAINER(data_window->window), data_window->content);
+src/window.c:341:            gtk_window_set_title(GTK_WINDOW(data_window->window), _("Unknown filename"));
+src/window.c:345:            gtk_window_set_title(GTK_WINDOW(data_window->window), filename);
+src/window.c:350:        gtk_window_set_title(GTK_WINDOW(data_window->window), AIRPAD_WINDOW_TITLE);
+src/window.c:446:    const char *title = gtk_window_get_title(GTK_WINDOW(data_window->window));
+src/window.c:460:        gtk_window_set_title(GTK_WINDOW(data_window->window), new_title);
+src/window.c:466:        gtk_window_set_title(GTK_WINDOW(data_window->window), new_title);
+src/main.c:233:    data_application->data_signals->window_delete_event = g_signal_connect(data_application->data_window->window, "delete-event", G_CALLBACK(&airpad_quit), data_application);
+src/main.c:234:    data_application->data_signals->window_focus_in = g_signal_connect_after(data_application->data_window->window, "focus-in-event", G_CALLBACK(&airpad_window_focus_in), data_application->data_window);
+src/main.c:235:    data_application->data_signals->window_state = g_signal_connect_after(data_application->data_window->window, "window-state-event", G_CALLBACK(&airpad_window_window_state), data_application->data_window);
+src/main.c:270:    data_application->data_signals->menu_item_view_fullscreen_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_view_fullscreen, "activate", G_CALLBACK(&airpad_view_fullscreen), data_application->data_window->window);
+src/main.c:271:    data_application->data_signals->menu_item_view_always_on_top_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_view_always_on_top, "activate", G_CALLBACK(&airpad_view_always_on_top), data_application->data_window->window);
+src/main.c:281:    data_application->data_signals->menu_item_help_about_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_help_about, "activate", G_CALLBACK(&airpad_dialog_about), data_application->data_window->window);
+src/main.c:282:    data_application->data_signals->menu_item_help_writing_principles_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_help_writing_principles, "activate", G_CALLBACK(&airpad_dialog_writing_principles), data_application->data_window->window);
+src/main.c:283:    data_application->data_signals->menu_item_help_keyboard_shortcuts_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_help_keyboard_shortcuts, "activate", G_CALLBACK(&airpad_dialog_keyboard_shortcuts), data_application->data_window->window);
+src/main.c:284:    data_application->data_signals->menu_item_help_writing_workflow_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_help_writing_workflow, "activate", G_CALLBACK(&airpad_dialog_writing_workflow), data_application->data_window->window);
+src/main.c:351:        if (!airpad_load_contents(data_application->data_window->window, gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view)), data_application->data_file))
+src/main.c:378:    gtk_widget_show_all(data_application->data_window->window);

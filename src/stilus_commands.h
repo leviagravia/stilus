@@ -11,7 +11,8 @@ typedef enum
     STILUS_CMD_REQUIRES_SELECTION = 1 << 3,
     STILUS_CMD_NAVIGATION         = 1 << 4,
     STILUS_CMD_DIALOG             = 1 << 5,
-    STILUS_CMD_PERSISTENCE        = 1 << 6
+    STILUS_CMD_PERSISTENCE        = 1 << 6,
+    STILUS_CMD_READ_ONLY          = 1 << 7
 } StilusCommandFlags;
 
 typedef struct
