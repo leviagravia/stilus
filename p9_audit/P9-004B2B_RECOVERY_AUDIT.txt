@@ -1,0 +1,163 @@
+P9-004B2B RECOVERY AUDIT
+DATE: 2026-06-11T23:29:12+02:00
+
+== GIT STATUS ==
+ M src/stilus_commands.c
+?? p9_audit/P9-004B2B_GO_TO_LINE_FINAL_AUDIT.txt
+?? p9_audit/P9-004B2B_RECOVERY_AUDIT.txt
+
+== STILUS COMMANDS INCLUDES ==
+#include "stilus_commands.h"
+#include "const.h"
+#include <glib/gi18n.h>
+
+static const StilusCommand stilus_commands[] =
+{
+    {
+        "navigate.go-to-line",
+        "Go To Line...",
+        "Navigate/Go To Line...",
+
+== GO TO LINE FUNCTION FULL ==
+    }
+
+    return NULL;
+}
+
+void
+stilus_cmd_navigate_go_to_line(GtkWidget *widget, gpointer data)
+{
+    struct AirpadDataApplication *data_application = data;
+
+    (void)widget;
+
+    if (data_application == NULL ||
+        data_application->data_window == NULL ||
+        data_application->data_window->data_text_view == NULL ||
+        data_application->data_window->data_text_view->text_view == NULL)
+        return;
+
+    GtkWidget *text_view = data_application->data_window->data_text_view->text_view;
+    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
+    const gint line_count = gtk_text_buffer_get_line_count(text_buffer);
+
+    GtkWidget *dialog = gtk_dialog_new_with_buttons(
+        _("Go To Line"),
+        GTK_WINDOW(data_application->data_window->window),
+        GTK_DIALOG_MODAL,
+        _("Cancel"),
+        GTK_RESPONSE_CANCEL,
+        _("Go"),
+        GTK_RESPONSE_ACCEPT,
+        NULL);
+
+    GtkWidget *content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+    GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
+    GtkWidget *label = gtk_label_new(_("Line number:"));
+    GtkAdjustment *adjustment = gtk_adjustment_new(1, 1, line_count, 1, 10, 0);
+    GtkWidget *spin_button = gtk_spin_button_new(adjustment, 1, 0);
+
+    gtk_container_set_border_width(GTK_CONTAINER(box), 8);
+    gtk_box_pack_start(GTK_BOX(box), label, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(box), spin_button, FALSE, FALSE, 0);
+    gtk_container_add(GTK_CONTAINER(content_area), box);
+
+    gtk_widget_show_all(dialog);
+
+    if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
+    {
+        const gint line_number = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spin_button));
+        GtkTextIter iter;
+
+        gtk_text_buffer_get_iter_at_line(text_buffer, &iter, line_number - 1);
+        gtk_text_buffer_place_cursor(text_buffer, &iter);
+        gtk_text_view_scroll_to_iter(GTK_TEXT_VIEW(text_view), &iter, 0.1, TRUE, 0.5, 0.5);
+        gtk_widget_grab_focus(text_view);
+    }
+
+    gtk_widget_destroy(dialog);
+}
+
+void
+stilus_cmd_revise_uppercase(GtkWidget *widget, gpointer data)
+{
+    (void)widget;
+    (void)data;
+}
+
+void
+stilus_cmd_revise_lowercase(GtkWidget *widget, gpointer data)
+{
+    (void)widget;
+    (void)data;
+}
+
+== DIFF FULL ==
+diff --git a/src/stilus_commands.c b/src/stilus_commands.c
+index 03e7688..810d9f9 100644
+--- a/src/stilus_commands.c
++++ b/src/stilus_commands.c
+@@ -1,4 +1,6 @@
+ #include "stilus_commands.h"
++#include "const.h"
++#include <glib/gi18n.h>
+ 
+ static const StilusCommand stilus_commands[] =
+ {
+@@ -87,8 +89,55 @@ stilus_commands_find_by_id(const char *id)
+ void
+ stilus_cmd_navigate_go_to_line(GtkWidget *widget, gpointer data)
+ {
++    struct AirpadDataApplication *data_application = data;
++
+     (void)widget;
+-    (void)data;
++
++    if (data_application == NULL ||
++        data_application->data_window == NULL ||
++        data_application->data_window->data_text_view == NULL ||
++        data_application->data_window->data_text_view->text_view == NULL)
++        return;
++
++    GtkWidget *text_view = data_application->data_window->data_text_view->text_view;
++    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
++    const gint line_count = gtk_text_buffer_get_line_count(text_buffer);
++
++    GtkWidget *dialog = gtk_dialog_new_with_buttons(
++        _("Go To Line"),
++        GTK_WINDOW(data_application->data_window->window),
++        GTK_DIALOG_MODAL,
++        _("Cancel"),
++        GTK_RESPONSE_CANCEL,
++        _("Go"),
++        GTK_RESPONSE_ACCEPT,
++        NULL);
++
++    GtkWidget *content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
++    GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
++    GtkWidget *label = gtk_label_new(_("Line number:"));
++    GtkAdjustment *adjustment = gtk_adjustment_new(1, 1, line_count, 1, 10, 0);
++    GtkWidget *spin_button = gtk_spin_button_new(adjustment, 1, 0);
++
++    gtk_container_set_border_width(GTK_CONTAINER(box), 8);
++    gtk_box_pack_start(GTK_BOX(box), label, FALSE, FALSE, 0);
++    gtk_box_pack_start(GTK_BOX(box), spin_button, FALSE, FALSE, 0);
++    gtk_container_add(GTK_CONTAINER(content_area), box);
++
++    gtk_widget_show_all(dialog);
++
++    if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
++    {
++        const gint line_number = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spin_button));
++        GtkTextIter iter;
++
++        gtk_text_buffer_get_iter_at_line(text_buffer, &iter, line_number - 1);
++        gtk_text_buffer_place_cursor(text_buffer, &iter);
++        gtk_text_view_scroll_to_iter(GTK_TEXT_VIEW(text_view), &iter, 0.1, TRUE, 0.5, 0.5);
++        gtk_widget_grab_focus(text_view);
++    }
++
++    gtk_widget_destroy(dialog);
+ }
+ 
+ void

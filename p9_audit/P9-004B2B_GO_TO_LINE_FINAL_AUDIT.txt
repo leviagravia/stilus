@@ -1,0 +1,88 @@
+P9-004B2B GO TO LINE FINAL AUDIT
+DATE: 2026-06-11T23:26:47+02:00
+
+== GIT STATE ==
+3dee8fa (HEAD -> p9-004-command-layer-foundation, origin/p9-004-command-layer-foundation) P9-004B2A Align command metadata
+6faf169 P9-004B1 Wire Go To Line menu infrastructure
+b826ada P9-004A Command Layer Foundation
+b1b3288 (origin/p2-code-cleanup-audit, p2-code-cleanup-audit) Migrate menu ownership to frozen architecture
+4e68fdf Add source gap audit
+?? p9_audit/P9-004B2B_GO_TO_LINE_FINAL_AUDIT.txt
+
+== CURRENT GO TO LINE CALLBACK ==
+    }
+
+    return NULL;
+}
+
+void
+stilus_cmd_navigate_go_to_line(GtkWidget *widget, gpointer data)
+{
+    (void)widget;
+    (void)data;
+}
+
+void
+stilus_cmd_revise_uppercase(GtkWidget *widget, gpointer data)
+{
+    (void)widget;
+    (void)data;
+}
+
+
+== REQUIRED TYPES ==
+118:struct AirpadDataTextView
+119-{
+120-    GtkWidget *text_view;       // Text view itself.
+121-    GtkWidget *scrolled_window; // Scrollable area that holds the text view.
+122-};
+123-
+124-// Window data.
+125:struct AirpadDataWindow
+126-{
+127-    GtkWidget *window;                          // Window itself.
+128-    GdkPixbuf *icon;                            // Icon of the window.
+129-    GtkWidget *content;                         // Grid that holds the window contents.
+130-    GtkWidget *status_bar;                      // Status bar.
+131-    struct AirpadDataMenuBar *data_menu_bar;    // Menubar of the window.
+132:    struct AirpadDataTextView *data_text_view;  // Text area of the window.
+133-};
+134-
+135-// Signal IDs.
+136-struct AirpadDataSignals
+137-{
+138-    gulong window_delete_event;                                     // Top-level window: "delete-event"
+139-    gulong window_focus_in;                                         // Top-level window: "focus-in-event"
+140-    gulong window_state;                                            // Top-level window: "window-state-change"
+141-    gulong text_view_copy_clipboard;                                // Text view: "copy-clipboard"
+142-    gulong text_view_cut_clipboard;                                 // Text view: "cut-clipboard"
+143-    gulong text_buffer_modified;                                    // Text buffer: "modified-changed"
+144-    gulong text_buffer_has_selection;                               // Text buffer: "notify::has-selection"
+145-    gulong text_buffer_insert_text;                                 // Text buffer: "insert-text"
+146-    gulong text_buffer_delete_range;                                // Text buffer: "delete-range"
+147-    gulong text_buffer_paste_done;                                  // Text buffer: "paste-done"
+--
+223:struct AirpadDataApplication
+224-{
+225-    GtkApplication *application;                // Application itself.
+226-    struct AirpadDataArguments *data_arguments; // Argument holder.
+227-    struct AirpadDataOptions *data_options;     // Configuration options.
+228-    struct AirpadDataFile *data_file;           // Currently opened file.
+229-    struct AirpadDataSearch *data_search;       // Options used for find/replace.
+230-    struct AirpadDataSignals *data_signals;     // Signal connections.
+231:    struct AirpadDataWindow *data_window;       // Application window.
+232-};
+233-
+234-#endif
+
+== CURRENT INCLUDES ==
+#include "stilus_commands.h"
+
+static const StilusCommand stilus_commands[] =
+{
+    {
+        "navigate.go-to-line",
+        "Go To Line...",
+        "Navigate/Go To Line...",
+
+== GTK FUNCTIONS CHECK ==
