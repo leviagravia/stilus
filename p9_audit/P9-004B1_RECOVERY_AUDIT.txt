@@ -1,0 +1,78 @@
+P9-004B1 RECOVERY AUDIT
+DATE: 2026-06-11T22:53:03+02:00
+
+== GIT STATUS ==
+ M src/const.h
+ M src/main.c
+ M src/window.c
+?? p9_audit/P9-004B1_RECOVERY_AUDIT.txt
+?? p9_audit/P9-004B_GO_TO_LINE_AUDIT.txt
+
+== CURRENT DIFF ==
+diff --git a/src/const.h b/src/const.h
+index 1b0e38b..2771e89 100644
+--- a/src/const.h
++++ b/src/const.h
+@@ -81,6 +81,7 @@ struct AirpadDataMenuBar
+     GtkWidget *menu_item_file_save;                             // "File -> Save" menu item.
+     GtkWidget *menu_item_file_save_as;                          // "File -> Save As..." menu item.
+     GtkWidget *menu_item_file_close;                            // "File -> Close" menu item.
++    GtkWidget *menu_item_navigate_go_to_line;                 // "Navigate -> Go To Line..." menu item.
+     GtkWidget *menu_item_edit_copy;                             // "Edit -> Copy" menu item.
+     GtkWidget *menu_item_edit_paste;                            // "Edit -> Paste" menu item.
+     GtkWidget *menu_item_edit_paste_as_plain_text;              // "Edit -> Paste as Plain Text" menu item.
+@@ -149,6 +150,7 @@ struct AirpadDataSignals
+     gulong menu_item_file_save_activate;                            // "File -> Save" menu item: "activate"
+     gulong menu_item_file_save_as_activate;                         // "File -> Save As" menu item: "activate"
+     gulong menu_item_file_close_activate;                           // "File -> Close" menu item: "activate"
++    gulong menu_item_navigate_go_to_line_activate;             // "Navigate -> Go To Line..." menu item: "activate"
+     gulong menu_item_edit_copy_activate;                            // "Edit -> Copy" menu item: "activate"
+     gulong menu_item_edit_paste_activate;                           // "Edit -> Paste" menu item: "activate"
+     gulong menu_item_edit_paste_as_plain_text_activate;             // "Edit -> Paste as Plain Text" menu item: "activate"
+diff --git a/src/main.c b/src/main.c
+index cfbb5f9..24f51d3 100644
+--- a/src/main.c
++++ b/src/main.c
+@@ -28,6 +28,7 @@
+ #include "edit.h"
+ #include "undo.h"
+ #include "search.h"
++#include "stilus_commands.h"
+ #include "view.h"
+ #include "options.h"
+ #include "font.h"
+@@ -252,6 +253,7 @@ static void airpad_connect_signals(struct AirpadDataApplication *data_applicatio
+     data_application->data_signals->menu_item_file_save_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_file_save, "activate", G_CALLBACK(&airpad_file_save), data_application);
+     data_application->data_signals->menu_item_file_save_as_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_file_save_as, "activate", G_CALLBACK(&airpad_file_save_as), data_application);
+     data_application->data_signals->menu_item_file_close_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_file_close, "activate", G_CALLBACK(&airpad_file_close), data_application);
++    data_application->data_signals->menu_item_navigate_go_to_line_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_navigate_go_to_line, "activate", G_CALLBACK(&stilus_cmd_navigate_go_to_line), data_application);
+     data_application->data_signals->menu_item_edit_copy_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_edit_copy, "activate", G_CALLBACK(&airpad_edit_copy), data_application->data_window);
+     data_application->data_signals->menu_item_edit_paste_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_edit_paste, "activate", G_CALLBACK(&airpad_edit_paste), text_buffer);
+     data_application->data_signals->menu_item_edit_paste_as_plain_text_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_edit_paste_as_plain_text, "activate", G_CALLBACK(&airpad_edit_paste_as_plain_text), text_buffer);
+diff --git a/src/window.c b/src/window.c
+index 0ad0281..2729cf8 100644
+--- a/src/window.c
++++ b/src/window.c
+@@ -136,6 +136,9 @@ static void airpad_window_menu_bar_create(struct AirpadDataMenuBar *data_menu_ba
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_file), data_menu_bar->menu_item_file_save_as);
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_file), gtk_separator_menu_item_new());
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_file), data_menu_bar->menu_item_file_close);
++
++
++    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_navigate), data_menu_bar->menu_item_navigate_go_to_line);
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_copy);
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_paste);
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_paste_as_plain_text);
+
+== SEARCH GO TO LINE SYMBOLS ==
+src/stilus_commands.c:1:#include "stilus_commands.h"
+src/stilus_commands.c:7:        "Go To Line...",
+src/stilus_commands.c:8:        "Navigate/Go To Line...",
+src/stilus_commands.c:11:        stilus_cmd_navigate_go_to_line,
+src/stilus_commands.c:88:stilus_cmd_navigate_go_to_line(GtkWidget *widget, gpointer data)
+src/stilus_commands.h:31:void stilus_cmd_navigate_go_to_line(GtkWidget *widget, gpointer data);
+src/const.h:84:    GtkWidget *menu_item_navigate_go_to_line;                 // "Navigate -> Go To Line..." menu item.
+src/const.h:153:    gulong menu_item_navigate_go_to_line_activate;             // "Navigate -> Go To Line..." menu item: "activate"
+src/window.c:141:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_navigate), data_menu_bar->menu_item_navigate_go_to_line);
+src/main.c:31:#include "stilus_commands.h"
+src/main.c:256:    data_application->data_signals->menu_item_navigate_go_to_line_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_navigate_go_to_line, "activate", G_CALLBACK(&stilus_cmd_navigate_go_to_line), data_application);

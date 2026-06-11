@@ -1,0 +1,102 @@
+P9-004B1 WINDOW CREATE MICRO AUDIT
+DATE: 2026-06-11T22:54:24+02:00
+
+== WINDOW.C 45-130 ==
+    data_menu_bar->menu_tools = gtk_menu_new();
+    data_menu_bar->menu_options_text_wrap = gtk_menu_new();
+    data_menu_bar->menu_options_scrollbar_policy = gtk_menu_new();
+    data_menu_bar->menu_help = gtk_menu_new();
+
+    /* MENU ITEMS */
+
+    GSList *radio_group;    // Holds radio groups while building the interface.
+
+    // Submenu buttons.
+    data_menu_bar->menu_item_file = gtk_menu_item_new_with_mnemonic(_("_File"));
+    data_menu_bar->menu_item_edit = gtk_menu_item_new_with_mnemonic(_("_Edit"));
+    data_menu_bar->menu_item_research = gtk_menu_item_new_with_mnemonic(_("_Research"));
+    data_menu_bar->menu_item_navigate = gtk_menu_item_new_with_mnemonic(_("_Navigate"));
+    data_menu_bar->menu_item_writing = gtk_menu_item_new_with_mnemonic(_("_Writing"));
+    data_menu_bar->menu_item_revise = gtk_menu_item_new_with_mnemonic(_("Re_vise"));
+    data_menu_bar->menu_item_search = gtk_menu_item_new_with_mnemonic(_("_Search"));
+    data_menu_bar->menu_item_view = gtk_menu_item_new_with_mnemonic(_("_View"));
+    data_menu_bar->menu_item_options = gtk_menu_item_new_with_mnemonic(_("_Options"));
+    data_menu_bar->menu_item_tools = gtk_menu_item_new_with_mnemonic(_("_Tools"));
+    data_menu_bar->menu_item_help = gtk_menu_item_new_with_mnemonic(_("_Help"));
+
+    // "File" buttons.
+    data_menu_bar->menu_item_file_new = gtk_menu_item_new_with_mnemonic(_("_New"));
+    data_menu_bar->menu_item_file_open = gtk_menu_item_new_with_mnemonic(_("_Open\u2026"));
+    data_menu_bar->menu_item_file_save = gtk_menu_item_new_with_mnemonic(_("_Save"));
+    data_menu_bar->menu_item_file_save_as = gtk_menu_item_new_with_mnemonic(_("Save _As\u2026"));
+    data_menu_bar->menu_item_file_close = gtk_menu_item_new_with_mnemonic(_("_Close"));
+
+    // "Edit" buttons.
+    data_menu_bar->menu_item_edit_copy = gtk_menu_item_new_with_mnemonic(_("_Copy"));
+    data_menu_bar->menu_item_edit_paste = gtk_menu_item_new_with_mnemonic(_("_Paste"));
+    data_menu_bar->menu_item_edit_paste_as_plain_text = gtk_menu_item_new_with_mnemonic(_("Paste as Plain _Text"));
+    data_menu_bar->menu_item_edit_cut = gtk_menu_item_new_with_mnemonic(_("C_ut"));
+    data_menu_bar->menu_item_edit_delete = gtk_menu_item_new_with_mnemonic(_("_Delete"));
+    data_menu_bar->menu_item_edit_select_all = gtk_menu_item_new_with_mnemonic(_("_Select All"));
+    data_menu_bar->menu_item_edit_insert_date_time = gtk_menu_item_new_with_mnemonic(_("Insert Date / _Time"));
+    data_menu_bar->menu_item_edit_undo = gtk_menu_item_new_with_mnemonic(_("_Undo"));
+    data_menu_bar->menu_item_edit_redo = gtk_menu_item_new_with_mnemonic(_("_Redo"));
+
+    // "Search" buttons.
+    data_menu_bar->menu_item_search_find = gtk_menu_item_new_with_mnemonic(_("_Find\u2026"));
+    data_menu_bar->menu_item_search_find_next = gtk_menu_item_new_with_mnemonic(_("Find _Next"));
+    data_menu_bar->menu_item_search_find_prev = gtk_menu_item_new_with_mnemonic(_("Find _Previous"));
+    data_menu_bar->menu_item_search_replace = gtk_menu_item_new_with_mnemonic(_("_Replace\u2026"));
+
+    // "View" buttons.
+    data_menu_bar->menu_item_view_fullscreen = gtk_check_menu_item_new_with_mnemonic(_("_Fullscreen"));
+    data_menu_bar->menu_item_view_always_on_top = gtk_check_menu_item_new_with_mnemonic(_("_Always on Top"));
+
+    // "Options" buttons.
+    data_menu_bar->menu_item_options_font = gtk_menu_item_new_with_mnemonic(_("_Font\u2026"));
+    data_menu_bar->menu_item_options_text_wrap = gtk_menu_item_new_with_mnemonic(_("Text _Wrap"));
+    data_menu_bar->menu_item_options_text_wrap_none = gtk_radio_menu_item_new_with_mnemonic(NULL, _("_None"));
+    radio_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(data_menu_bar->menu_item_options_text_wrap_none));
+    data_menu_bar->menu_item_options_text_wrap_on_char = gtk_radio_menu_item_new_with_mnemonic(radio_group, _("On _Character"));
+    data_menu_bar->menu_item_options_text_wrap_on_word = gtk_radio_menu_item_new_with_mnemonic(radio_group, _("On _Word"));
+    data_menu_bar->menu_item_options_text_wrap_on_char_and_word = gtk_radio_menu_item_new_with_mnemonic(radio_group, _("On Character _And Word"));
+    data_menu_bar->menu_item_options_overlay_scrolling = gtk_check_menu_item_new_with_mnemonic(_("_Overlay Scrolling"));
+    data_menu_bar->menu_item_options_scrollbar_policy = gtk_menu_item_new_with_mnemonic(_("Scrollbar _Policy"));
+    data_menu_bar->menu_item_options_scrollbar_policy_auto = gtk_radio_menu_item_new_with_mnemonic(NULL, _("_Automatic"));
+    radio_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(data_menu_bar->menu_item_options_scrollbar_policy_auto));
+    data_menu_bar->menu_item_options_scrollbar_policy_always = gtk_radio_menu_item_new_with_mnemonic(radio_group, _("A_lways"));
+    data_menu_bar->menu_item_options_scrollbar_policy_never = gtk_radio_menu_item_new_with_mnemonic(radio_group, _("_Never"));
+
+    // "Help" buttons.
+    data_menu_bar->menu_item_help_about = gtk_menu_item_new_with_mnemonic("_About Stilus");
+    data_menu_bar->menu_item_help_writing_principles = gtk_menu_item_new_with_mnemonic("_Writing Principles");
+    data_menu_bar->menu_item_help_keyboard_shortcuts = gtk_menu_item_new_with_mnemonic("_Keyboard Shortcuts");
+    data_menu_bar->menu_item_help_writing_workflow = gtk_menu_item_new_with_mnemonic("Writing _Workflow");
+
+    // Attach the menus to items.
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_file), data_menu_bar->menu_file);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_edit), data_menu_bar->menu_edit);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_research), data_menu_bar->menu_research);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_navigate), data_menu_bar->menu_navigate);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_writing), data_menu_bar->menu_writing);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_revise), data_menu_bar->menu_revise);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_search), data_menu_bar->menu_search);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_view), data_menu_bar->menu_view);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_options), data_menu_bar->menu_options);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_tools), data_menu_bar->menu_tools);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_options_text_wrap), data_menu_bar->menu_options_text_wrap);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_options_scrollbar_policy), data_menu_bar->menu_options_scrollbar_policy);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_help), data_menu_bar->menu_help);
+
+
+== FILE CLOSE REFERENCES ==
+72:    data_menu_bar->menu_item_file_close = gtk_menu_item_new_with_mnemonic(_("_Close"));
+138:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_file), data_menu_bar->menu_item_file_close);
+243:    gtk_widget_add_accelerator(data_window->data_menu_bar->menu_item_file_close, "activate", accel_group, GDK_KEY_Q, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+
+== NAVIGATE REFERENCES ==
+39:    data_menu_bar->menu_navigate = gtk_menu_new();
+58:    data_menu_bar->menu_item_navigate = gtk_menu_item_new_with_mnemonic(_("_Navigate"));
+120:    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_navigate), data_menu_bar->menu_navigate);
+141:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_navigate), data_menu_bar->menu_item_navigate_go_to_line);
+181:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_bar), data_menu_bar->menu_item_navigate);

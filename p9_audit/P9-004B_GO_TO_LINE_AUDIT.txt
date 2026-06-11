@@ -1,0 +1,705 @@
+P9-004B GO TO LINE AUDIT
+DATE: 2026-06-11T22:50:29+02:00
+
+== GIT HEAD ==
+b826ada P9-004A Command Layer Foundation
+b1b3288 Migrate menu ownership to frozen architecture
+4e68fdf Add source gap audit
+73232c7 Add canonical corpus classification
+35cf6d6 Rewrite canonical menu spec after architecture freeze
+
+== GIT STATUS ==
+?? p9_audit/P9-004B_GO_TO_LINE_AUDIT.txt
+
+== COMMAND LAYER CURRENT STATE ==
+#ifndef STILUS_COMMANDS_H
+#define STILUS_COMMANDS_H
+
+#include <gtk/gtk.h>
+
+typedef enum
+{
+    STILUS_CMD_UI_ONLY            = 1 << 0,
+    STILUS_CMD_TEXT_MUTATION      = 1 << 1,
+    STILUS_CMD_FILE_LIFECYCLE     = 1 << 2,
+    STILUS_CMD_REQUIRES_SELECTION = 1 << 3,
+    STILUS_CMD_NAVIGATION         = 1 << 4,
+    STILUS_CMD_DIALOG             = 1 << 5,
+    STILUS_CMD_PERSISTENCE        = 1 << 6
+} StilusCommandFlags;
+
+typedef struct
+{
+    const char *id;
+    const char *label;
+    const char *menu_path;
+    const char *shortcut;
+    unsigned int flags;
+    void (*callback)(GtkWidget *widget, gpointer data);
+    const char *description;
+} StilusCommand;
+
+const StilusCommand *stilus_commands_get_all(gsize *count);
+const StilusCommand *stilus_commands_find_by_id(const char *id);
+
+void stilus_cmd_navigate_go_to_line(GtkWidget *widget, gpointer data);
+void stilus_cmd_revise_uppercase(GtkWidget *widget, gpointer data);
+void stilus_cmd_revise_lowercase(GtkWidget *widget, gpointer data);
+void stilus_cmd_revise_remove_trailing_spaces(GtkWidget *widget, gpointer data);
+void stilus_cmd_view_font_bigger(GtkWidget *widget, gpointer data);
+void stilus_cmd_view_font_smaller(GtkWidget *widget, gpointer data);
+
+#endif
+
+#include "stilus_commands.h"
+
+static const StilusCommand stilus_commands[] =
+{
+    {
+        "navigate.go-to-line",
+        "Go To Line...",
+        "Navigate/Go To Line...",
+        "<Control>L",
+        STILUS_CMD_NAVIGATION | STILUS_CMD_DIALOG,
+        stilus_cmd_navigate_go_to_line,
+        "Move the cursor to a specific line number."
+    },
+    {
+        "revise.uppercase",
+        "UPPERCASE",
+        "Revise/Case/UPPERCASE",
+        NULL,
+        STILUS_CMD_TEXT_MUTATION | STILUS_CMD_REQUIRES_SELECTION,
+        stilus_cmd_revise_uppercase,
+        "Convert the selected text to uppercase."
+    },
+    {
+        "revise.lowercase",
+        "Lowercase",
+        "Revise/Case/Lowercase",
+        NULL,
+        STILUS_CMD_TEXT_MUTATION | STILUS_CMD_REQUIRES_SELECTION,
+        stilus_cmd_revise_lowercase,
+        "Convert the selected text to lowercase."
+    },
+    {
+        "revise.remove-trailing-spaces",
+        "Remove Trailing Spaces",
+        "Revise/Cleanup/Remove Trailing Spaces",
+        NULL,
+        STILUS_CMD_TEXT_MUTATION,
+        stilus_cmd_revise_remove_trailing_spaces,
+        "Remove trailing spaces and tabs from document lines."
+    },
+    {
+        "view.font-bigger",
+        "Font Bigger",
+        "View/Font Bigger",
+        "<Control>plus",
+        STILUS_CMD_UI_ONLY | STILUS_CMD_PERSISTENCE,
+        stilus_cmd_view_font_bigger,
+        "Increase the editor font size."
+    },
+    {
+        "view.font-smaller",
+        "Font Smaller",
+        "View/Font Smaller",
+        "<Control>minus",
+        STILUS_CMD_UI_ONLY | STILUS_CMD_PERSISTENCE,
+        stilus_cmd_view_font_smaller,
+        "Decrease the editor font size."
+    }
+};
+
+const StilusCommand *
+stilus_commands_get_all(gsize *count)
+{
+    if (count != NULL)
+        *count = G_N_ELEMENTS(stilus_commands);
+
+    return stilus_commands;
+}
+
+const StilusCommand *
+stilus_commands_find_by_id(const char *id)
+{
+    gsize i;
+
+    if (id == NULL)
+        return NULL;
+
+    for (i = 0; i < G_N_ELEMENTS(stilus_commands); i++)
+    {
+        if (g_strcmp0(stilus_commands[i].id, id) == 0)
+            return &stilus_commands[i];
+    }
+
+    return NULL;
+}
+
+void
+stilus_cmd_navigate_go_to_line(GtkWidget *widget, gpointer data)
+{
+    (void)widget;
+    (void)data;
+}
+
+void
+stilus_cmd_revise_uppercase(GtkWidget *widget, gpointer data)
+{
+    (void)widget;
+    (void)data;
+}
+
+void
+stilus_cmd_revise_lowercase(GtkWidget *widget, gpointer data)
+{
+    (void)widget;
+    (void)data;
+}
+
+void
+stilus_cmd_revise_remove_trailing_spaces(GtkWidget *widget, gpointer data)
+{
+    (void)widget;
+    (void)data;
+}
+
+void
+stilus_cmd_view_font_bigger(GtkWidget *widget, gpointer data)
+{
+    (void)widget;
+    (void)data;
+}
+
+void
+stilus_cmd_view_font_smaller(GtkWidget *widget, gpointer data)
+{
+    (void)widget;
+    (void)data;
+}
+
+== WINDOW MENU CREATION AREA ==
+    data_menu_bar->menu_tools = gtk_menu_new();
+    data_menu_bar->menu_options_text_wrap = gtk_menu_new();
+    data_menu_bar->menu_options_scrollbar_policy = gtk_menu_new();
+    data_menu_bar->menu_help = gtk_menu_new();
+
+    /* MENU ITEMS */
+
+    GSList *radio_group;    // Holds radio groups while building the interface.
+
+    // Submenu buttons.
+    data_menu_bar->menu_item_file = gtk_menu_item_new_with_mnemonic(_("_File"));
+    data_menu_bar->menu_item_edit = gtk_menu_item_new_with_mnemonic(_("_Edit"));
+    data_menu_bar->menu_item_research = gtk_menu_item_new_with_mnemonic(_("_Research"));
+    data_menu_bar->menu_item_navigate = gtk_menu_item_new_with_mnemonic(_("_Navigate"));
+    data_menu_bar->menu_item_writing = gtk_menu_item_new_with_mnemonic(_("_Writing"));
+    data_menu_bar->menu_item_revise = gtk_menu_item_new_with_mnemonic(_("Re_vise"));
+    data_menu_bar->menu_item_search = gtk_menu_item_new_with_mnemonic(_("_Search"));
+    data_menu_bar->menu_item_view = gtk_menu_item_new_with_mnemonic(_("_View"));
+    data_menu_bar->menu_item_options = gtk_menu_item_new_with_mnemonic(_("_Options"));
+    data_menu_bar->menu_item_tools = gtk_menu_item_new_with_mnemonic(_("_Tools"));
+    data_menu_bar->menu_item_help = gtk_menu_item_new_with_mnemonic(_("_Help"));
+
+    // "File" buttons.
+    data_menu_bar->menu_item_file_new = gtk_menu_item_new_with_mnemonic(_("_New"));
+    data_menu_bar->menu_item_file_open = gtk_menu_item_new_with_mnemonic(_("_Open\u2026"));
+    data_menu_bar->menu_item_file_save = gtk_menu_item_new_with_mnemonic(_("_Save"));
+    data_menu_bar->menu_item_file_save_as = gtk_menu_item_new_with_mnemonic(_("Save _As\u2026"));
+    data_menu_bar->menu_item_file_close = gtk_menu_item_new_with_mnemonic(_("_Close"));
+
+    // "Edit" buttons.
+    data_menu_bar->menu_item_edit_copy = gtk_menu_item_new_with_mnemonic(_("_Copy"));
+    data_menu_bar->menu_item_edit_paste = gtk_menu_item_new_with_mnemonic(_("_Paste"));
+    data_menu_bar->menu_item_edit_paste_as_plain_text = gtk_menu_item_new_with_mnemonic(_("Paste as Plain _Text"));
+    data_menu_bar->menu_item_edit_cut = gtk_menu_item_new_with_mnemonic(_("C_ut"));
+    data_menu_bar->menu_item_edit_delete = gtk_menu_item_new_with_mnemonic(_("_Delete"));
+    data_menu_bar->menu_item_edit_select_all = gtk_menu_item_new_with_mnemonic(_("_Select All"));
+    data_menu_bar->menu_item_edit_insert_date_time = gtk_menu_item_new_with_mnemonic(_("Insert Date / _Time"));
+    data_menu_bar->menu_item_edit_undo = gtk_menu_item_new_with_mnemonic(_("_Undo"));
+    data_menu_bar->menu_item_edit_redo = gtk_menu_item_new_with_mnemonic(_("_Redo"));
+
+    // "Search" buttons.
+    data_menu_bar->menu_item_search_find = gtk_menu_item_new_with_mnemonic(_("_Find\u2026"));
+    data_menu_bar->menu_item_search_find_next = gtk_menu_item_new_with_mnemonic(_("Find _Next"));
+    data_menu_bar->menu_item_search_find_prev = gtk_menu_item_new_with_mnemonic(_("Find _Previous"));
+    data_menu_bar->menu_item_search_replace = gtk_menu_item_new_with_mnemonic(_("_Replace\u2026"));
+
+    // "View" buttons.
+    data_menu_bar->menu_item_view_fullscreen = gtk_check_menu_item_new_with_mnemonic(_("_Fullscreen"));
+    data_menu_bar->menu_item_view_always_on_top = gtk_check_menu_item_new_with_mnemonic(_("_Always on Top"));
+
+    // "Options" buttons.
+    data_menu_bar->menu_item_options_font = gtk_menu_item_new_with_mnemonic(_("_Font\u2026"));
+    data_menu_bar->menu_item_options_text_wrap = gtk_menu_item_new_with_mnemonic(_("Text _Wrap"));
+    data_menu_bar->menu_item_options_text_wrap_none = gtk_radio_menu_item_new_with_mnemonic(NULL, _("_None"));
+    radio_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(data_menu_bar->menu_item_options_text_wrap_none));
+    data_menu_bar->menu_item_options_text_wrap_on_char = gtk_radio_menu_item_new_with_mnemonic(radio_group, _("On _Character"));
+    data_menu_bar->menu_item_options_text_wrap_on_word = gtk_radio_menu_item_new_with_mnemonic(radio_group, _("On _Word"));
+    data_menu_bar->menu_item_options_text_wrap_on_char_and_word = gtk_radio_menu_item_new_with_mnemonic(radio_group, _("On Character _And Word"));
+    data_menu_bar->menu_item_options_overlay_scrolling = gtk_check_menu_item_new_with_mnemonic(_("_Overlay Scrolling"));
+    data_menu_bar->menu_item_options_scrollbar_policy = gtk_menu_item_new_with_mnemonic(_("Scrollbar _Policy"));
+    data_menu_bar->menu_item_options_scrollbar_policy_auto = gtk_radio_menu_item_new_with_mnemonic(NULL, _("_Automatic"));
+    radio_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(data_menu_bar->menu_item_options_scrollbar_policy_auto));
+    data_menu_bar->menu_item_options_scrollbar_policy_always = gtk_radio_menu_item_new_with_mnemonic(radio_group, _("A_lways"));
+    data_menu_bar->menu_item_options_scrollbar_policy_never = gtk_radio_menu_item_new_with_mnemonic(radio_group, _("_Never"));
+
+    // "Help" buttons.
+    data_menu_bar->menu_item_help_about = gtk_menu_item_new_with_mnemonic("_About Stilus");
+    data_menu_bar->menu_item_help_writing_principles = gtk_menu_item_new_with_mnemonic("_Writing Principles");
+    data_menu_bar->menu_item_help_keyboard_shortcuts = gtk_menu_item_new_with_mnemonic("_Keyboard Shortcuts");
+    data_menu_bar->menu_item_help_writing_workflow = gtk_menu_item_new_with_mnemonic("Writing _Workflow");
+
+    // Attach the menus to items.
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_file), data_menu_bar->menu_file);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_edit), data_menu_bar->menu_edit);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_research), data_menu_bar->menu_research);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_navigate), data_menu_bar->menu_navigate);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_writing), data_menu_bar->menu_writing);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_revise), data_menu_bar->menu_revise);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_search), data_menu_bar->menu_search);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_view), data_menu_bar->menu_view);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_options), data_menu_bar->menu_options);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_tools), data_menu_bar->menu_tools);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_options_text_wrap), data_menu_bar->menu_options_text_wrap);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_options_scrollbar_policy), data_menu_bar->menu_options_scrollbar_policy);
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_help), data_menu_bar->menu_help);
+
+    // Attach the items to menus.
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_file), data_menu_bar->menu_item_file_new);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_file), data_menu_bar->menu_item_file_open);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_file), gtk_separator_menu_item_new());
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_file), data_menu_bar->menu_item_file_save);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_file), data_menu_bar->menu_item_file_save_as);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_file), gtk_separator_menu_item_new());
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_file), data_menu_bar->menu_item_file_close);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_copy);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_paste);
+
+== WINDOW MENU APPEND AREA ==
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_paste);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_paste_as_plain_text);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_cut);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_delete);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), gtk_separator_menu_item_new());
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_select_all);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_insert_date_time);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), gtk_separator_menu_item_new());
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_undo);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_redo);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), gtk_separator_menu_item_new());
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_search_find);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_search_find_next);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_search_find_prev);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_search_replace);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_view), data_menu_bar->menu_item_view_fullscreen);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_view), data_menu_bar->menu_item_view_always_on_top);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_view), gtk_separator_menu_item_new());
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_view), data_menu_bar->menu_item_options_font);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_view), data_menu_bar->menu_item_options_text_wrap);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_options_text_wrap), data_menu_bar->menu_item_options_text_wrap_none);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_options_text_wrap), data_menu_bar->menu_item_options_text_wrap_on_char);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_options_text_wrap), data_menu_bar->menu_item_options_text_wrap_on_word);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_options_text_wrap), data_menu_bar->menu_item_options_text_wrap_on_char_and_word);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_view), data_menu_bar->menu_item_options_overlay_scrolling);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_view), data_menu_bar->menu_item_options_scrollbar_policy);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_options_scrollbar_policy), data_menu_bar->menu_item_options_scrollbar_policy_auto);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_options_scrollbar_policy), data_menu_bar->menu_item_options_scrollbar_policy_always);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_options_scrollbar_policy), data_menu_bar->menu_item_options_scrollbar_policy_never);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_help), data_menu_bar->menu_item_help_about);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_help), data_menu_bar->menu_item_help_writing_principles);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_help), data_menu_bar->menu_item_help_keyboard_shortcuts);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_help), data_menu_bar->menu_item_help_writing_workflow);
+
+    // Attach the menus to the menubar.
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_bar), data_menu_bar->menu_item_file);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_bar), data_menu_bar->menu_item_edit);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_bar), data_menu_bar->menu_item_research);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_bar), data_menu_bar->menu_item_navigate);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_bar), data_menu_bar->menu_item_writing);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_bar), data_menu_bar->menu_item_revise);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_bar), data_menu_bar->menu_item_view);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_bar), data_menu_bar->menu_item_tools);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_bar), data_menu_bar->menu_item_help);
+
+    // Set initial menu item states.
+    switch (data_options->text_wrap)
+    {
+        case GTK_WRAP_NONE:
+            gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data_menu_bar->menu_item_options_text_wrap_none), TRUE);
+            break;
+        case GTK_WRAP_CHAR:
+            gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data_menu_bar->menu_item_options_text_wrap_on_char), TRUE);
+            break;
+        case GTK_WRAP_WORD:
+            gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data_menu_bar->menu_item_options_text_wrap_on_word), TRUE);
+            break;
+        case GTK_WRAP_WORD_CHAR:
+            gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data_menu_bar->menu_item_options_text_wrap_on_char_and_word), TRUE);
+            break;
+    }
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data_menu_bar->menu_item_options_overlay_scrolling), data_options->overlay_scrolling);
+    switch (data_options->scrollbar_policy)
+    {
+        case GTK_POLICY_AUTOMATIC:
+            gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data_menu_bar->menu_item_options_scrollbar_policy_auto), TRUE);
+            break;
+        case GTK_POLICY_ALWAYS:
+            gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data_menu_bar->menu_item_options_scrollbar_policy_always), TRUE);
+            break;
+        case GTK_POLICY_NEVER:
+            gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data_menu_bar->menu_item_options_scrollbar_policy_never), TRUE);
+            break;
+        default:
+            break;
+    }
+
+== ACCELERATOR AREA ==
+    // ...and add them together.
+    gtk_container_add(GTK_CONTAINER(data_text_view->scrolled_window), data_text_view->text_view);
+}
+
+// Adds accelerators to the window.
+static void airpad_window_add_accelerators(const struct AirpadDataWindow *data_window)
+{
+    // Create the accelerator group and add it to the window.
+    GtkAccelGroup *accel_group = gtk_accel_group_new();
+    gtk_window_add_accel_group(GTK_WINDOW(data_window->window), accel_group);
+
+    // Set accelerators on the menu items.
+    gtk_widget_add_accelerator(data_window->data_menu_bar->menu_item_file_new, "activate", accel_group, GDK_KEY_N, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator(data_window->data_menu_bar->menu_item_file_open, "activate", accel_group, GDK_KEY_O, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator(data_window->data_menu_bar->menu_item_file_save, "activate", accel_group, GDK_KEY_S, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator(data_window->data_menu_bar->menu_item_file_close, "activate", accel_group, GDK_KEY_Q, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator(data_window->data_menu_bar->menu_item_edit_copy, "activate", accel_group, GDK_KEY_C, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator(data_window->data_menu_bar->menu_item_edit_paste, "activate", accel_group, GDK_KEY_V, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator(data_window->data_menu_bar->menu_item_edit_cut, "activate", accel_group, GDK_KEY_X, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator(data_window->data_menu_bar->menu_item_edit_select_all, "activate", accel_group, GDK_KEY_A, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator(data_window->data_menu_bar->menu_item_edit_undo, "activate", accel_group, GDK_KEY_Z, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator(data_window->data_menu_bar->menu_item_edit_redo, "activate", accel_group, GDK_KEY_Z, GDK_CONTROL_MASK | GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator(data_window->data_menu_bar->menu_item_search_find, "activate", accel_group, GDK_KEY_F, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator(data_window->data_menu_bar->menu_item_search_find_next, "activate", accel_group, GDK_KEY_G, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator(data_window->data_menu_bar->menu_item_search_find_prev, "activate", accel_group, GDK_KEY_G, GDK_CONTROL_MASK | GDK_SHIFT_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator(data_window->data_menu_bar->menu_item_search_replace, "activate", accel_group, GDK_KEY_R, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+    gtk_widget_add_accelerator(data_window->data_menu_bar->menu_item_view_fullscreen, "activate", accel_group, GDK_KEY_F11, 0, GTK_ACCEL_VISIBLE);
+}
+
+// Loads and sets the window icon.
+static void airpad_window_set_icon(struct AirpadDataWindow *data_window)
+{
+    if ((data_window->icon = gtk_icon_theme_load_icon(gtk_icon_theme_get_default(), AIRPAD_EXEC_NAME, 48, GTK_ICON_LOOKUP_FORCE_SIZE, NULL)))
+        gtk_window_set_icon(GTK_WINDOW(data_window->window), data_window->icon);
+}
+
+
+== MAIN SIGNAL CONNECTION AREA ==
+    g_signal_connect(text_buffer, "changed", G_CALLBACK(&airpad_window_update_status_bar), data_application->data_window);
+    g_signal_connect(text_buffer, "mark-set", G_CALLBACK(&airpad_window_text_buffer_mark_set), data_application->data_window);
+    data_application->data_signals->text_buffer_paste_done = g_signal_connect(text_buffer, "paste-done", G_CALLBACK(&airpad_edit_paste_done), data_application->data_window->data_text_view->text_view);
+
+    // Menu item signals.
+    data_application->data_signals->menu_item_file_new_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_file_new, "activate", G_CALLBACK(&airpad_file_new), data_application);
+    data_application->data_signals->menu_item_file_open_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_file_open, "activate", G_CALLBACK(&airpad_file_open), data_application);
+    data_application->data_signals->menu_item_file_save_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_file_save, "activate", G_CALLBACK(&airpad_file_save), data_application);
+    data_application->data_signals->menu_item_file_save_as_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_file_save_as, "activate", G_CALLBACK(&airpad_file_save_as), data_application);
+    data_application->data_signals->menu_item_file_close_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_file_close, "activate", G_CALLBACK(&airpad_file_close), data_application);
+    data_application->data_signals->menu_item_edit_copy_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_edit_copy, "activate", G_CALLBACK(&airpad_edit_copy), data_application->data_window);
+    data_application->data_signals->menu_item_edit_paste_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_edit_paste, "activate", G_CALLBACK(&airpad_edit_paste), text_buffer);
+    data_application->data_signals->menu_item_edit_paste_as_plain_text_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_edit_paste_as_plain_text, "activate", G_CALLBACK(&airpad_edit_paste_as_plain_text), text_buffer);
+    data_application->data_signals->menu_item_edit_cut_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_edit_cut, "activate", G_CALLBACK(&airpad_edit_cut), data_application->data_window);
+    data_application->data_signals->menu_item_edit_delete_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_edit_delete, "activate", G_CALLBACK(&airpad_edit_delete), text_buffer);
+    data_application->data_signals->menu_item_edit_select_all_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_edit_select_all, "activate", G_CALLBACK(&airpad_edit_select_all), text_buffer);
+    data_application->data_signals->menu_item_edit_insert_date_time_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_edit_insert_date_time, "activate", G_CALLBACK(&airpad_edit_insert_date_time), text_buffer);
+    data_application->data_signals->menu_item_edit_undo_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_edit_undo, "activate", G_CALLBACK(&airpad_undo_action_undo), data_application);
+    data_application->data_signals->menu_item_edit_redo_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_edit_redo, "activate", G_CALLBACK(&airpad_undo_action_redo), data_application);
+    data_application->data_signals->menu_item_search_find_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_search_find, "activate", G_CALLBACK(&airpad_find_find), data_application);
+    data_application->data_signals->menu_item_search_find_next_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_search_find_next, "activate", G_CALLBACK(&airpad_find_find_next), data_application);
+    data_application->data_signals->menu_item_search_find_prev_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_search_find_prev, "activate", G_CALLBACK(&airpad_find_find_prev), data_application);
+    data_application->data_signals->menu_item_search_replace_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_search_replace, "activate", G_CALLBACK(&airpad_replace_replace), data_application);
+    data_application->data_signals->menu_item_view_fullscreen_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_view_fullscreen, "activate", G_CALLBACK(&airpad_view_fullscreen), data_application->data_window->window);
+    data_application->data_signals->menu_item_view_always_on_top_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_view_always_on_top, "activate", G_CALLBACK(&airpad_view_always_on_top), data_application->data_window->window);
+    data_application->data_signals->menu_item_options_font_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_options_font, "activate", G_CALLBACK(&airpad_font_choose_font), data_application);
+    data_application->data_signals->menu_item_options_text_wrap_none_toggled = g_signal_connect_after(data_application->data_window->data_menu_bar->menu_item_options_text_wrap_none, "toggled", G_CALLBACK(&airpad_options_update_text_wrap), data_application);
+    data_application->data_signals->menu_item_options_text_wrap_on_char_toggled = g_signal_connect_after(data_application->data_window->data_menu_bar->menu_item_options_text_wrap_on_char, "toggled", G_CALLBACK(&airpad_options_update_text_wrap), data_application);
+    data_application->data_signals->menu_item_options_text_wrap_on_word_toggled = g_signal_connect_after(data_application->data_window->data_menu_bar->menu_item_options_text_wrap_on_word, "toggled", G_CALLBACK(&airpad_options_update_text_wrap), data_application);
+    data_application->data_signals->menu_item_options_text_wrap_on_char_and_word_toggled = g_signal_connect_after(data_application->data_window->data_menu_bar->menu_item_options_text_wrap_on_char_and_word, "toggled", G_CALLBACK(&airpad_options_update_text_wrap), data_application);
+    data_application->data_signals->menu_item_options_overlay_scrolling_toggled = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_options_overlay_scrolling, "toggled", G_CALLBACK(&airpad_options_update_overlay_scrolling), data_application);
+    data_application->data_signals->menu_item_options_scrollbar_policy_auto_toggled = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_options_scrollbar_policy_auto, "toggled", G_CALLBACK(&airpad_options_update_scrollbar_policy), data_application);
+    data_application->data_signals->menu_item_options_scrollbar_policy_always_toggled = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_options_scrollbar_policy_always, "toggled", G_CALLBACK(&airpad_options_update_scrollbar_policy), data_application);
+    data_application->data_signals->menu_item_options_scrollbar_policy_never_toggled = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_options_scrollbar_policy_never, "toggled", G_CALLBACK(&airpad_options_update_scrollbar_policy), data_application);
+    data_application->data_signals->menu_item_help_about_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_help_about, "activate", G_CALLBACK(&airpad_dialog_about), data_application->data_window->window);
+    data_application->data_signals->menu_item_help_writing_principles_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_help_writing_principles, "activate", G_CALLBACK(&airpad_dialog_writing_principles), data_application->data_window->window);
+    data_application->data_signals->menu_item_help_keyboard_shortcuts_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_help_keyboard_shortcuts, "activate", G_CALLBACK(&airpad_dialog_keyboard_shortcuts), data_application->data_window->window);
+    data_application->data_signals->menu_item_help_writing_workflow_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_help_writing_workflow, "activate", G_CALLBACK(&airpad_dialog_writing_workflow), data_application->data_window->window);
+}
+
+// Acts on the specified options that require local handling and
+
+== DATA STRUCTURES ==
+};
+
+// Menubar data.
+struct AirpadDataMenuBar
+{
+    GtkWidget *menu_bar;    // Menubar itself.
+
+    // Menus.
+    GtkWidget *menu_file;                       // "File" menu.
+    GtkWidget *menu_edit;                       // "Edit" menu.
+    GtkWidget *menu_research;                   // "Research" menu.
+    GtkWidget *menu_navigate;                   // "Navigate" menu.
+    GtkWidget *menu_writing;                    // "Writing" menu.
+    GtkWidget *menu_revise;                     // "Revise" menu.
+    GtkWidget *menu_search;                     // "Search" menu.
+    GtkWidget *menu_view;                       // "View" menu.
+    GtkWidget *menu_options;                    // "Options" menu.
+    GtkWidget *menu_tools;                      // "Tools" menu.
+    GtkWidget *menu_options_text_wrap;          // "Options -> Text Wrap" menu.
+    GtkWidget *menu_options_scrollbar_policy;   // "Options -> Scrollbar Policy" menu.
+    GtkWidget *menu_help;                       // "Help" menu.
+
+    // Menu items.
+    GtkWidget *menu_item_file;                                  // "File" menu item.
+    GtkWidget *menu_item_edit;                                  // "Edit" menu item.
+    GtkWidget *menu_item_research;                              // "Research" menu item.
+    GtkWidget *menu_item_navigate;                              // "Navigate" menu item.
+    GtkWidget *menu_item_writing;                               // "Writing" menu item.
+    GtkWidget *menu_item_revise;                                // "Revise" menu item.
+    GtkWidget *menu_item_search;                                // "Search" menu item.
+    GtkWidget *menu_item_view;                                  // "View" menu item.
+    GtkWidget *menu_item_options;                               // "Options" menu item.
+    GtkWidget *menu_item_tools;                                 // "Tools" menu item.
+    GtkWidget *menu_item_help;                                  // "Help" menu item.
+    GtkWidget *menu_item_file_new;                              // "File -> New" menu item.
+    GtkWidget *menu_item_file_open;                             // "File -> Open..." menu item.
+    GtkWidget *menu_item_file_save;                             // "File -> Save" menu item.
+    GtkWidget *menu_item_file_save_as;                          // "File -> Save As..." menu item.
+    GtkWidget *menu_item_file_close;                            // "File -> Close" menu item.
+    GtkWidget *menu_item_edit_copy;                             // "Edit -> Copy" menu item.
+    GtkWidget *menu_item_edit_paste;                            // "Edit -> Paste" menu item.
+    GtkWidget *menu_item_edit_paste_as_plain_text;              // "Edit -> Paste as Plain Text" menu item.
+    GtkWidget *menu_item_edit_cut;                              // "Edit -> Cut" menu item.
+    GtkWidget *menu_item_edit_delete;                           // "Edit -> Delete" menu item.
+    GtkWidget *menu_item_edit_select_all;                       // "Edit -> Select All" menu item.
+    GtkWidget *menu_item_edit_insert_date_time;                  // "Edit -> Insert Date / Time" menu item.
+    GtkWidget *menu_item_edit_undo;                             // "Edit -> Undo" menu item.
+    GtkWidget *menu_item_edit_redo;                             // "Edit -> Redo" menu item.
+    GtkWidget *menu_item_search_find;                           // "Search -> Find..." menu item.
+    GtkWidget *menu_item_search_find_next;                      // "Search -> Find Next" menu item.
+    GtkWidget *menu_item_search_find_prev;                      // "Search -> Find Previous" menu item.
+    GtkWidget *menu_item_search_replace;                        // "Search -> Replace..." menu item.
+    GtkWidget *menu_item_view_fullscreen;                       // "View -> Fullscreen" menu item.
+    GtkWidget *menu_item_view_always_on_top;                    // "View -> Always on Top" menu item.
+    GtkWidget *menu_item_options_font;                          // "Options-> Font..." menu item.
+    GtkWidget *menu_item_options_text_wrap;                     // "Options -> Text Wrap" menu item.
+    GtkWidget *menu_item_options_text_wrap_none;                // "Options -> Text Wrap -> None" menu item.
+    GtkWidget *menu_item_options_text_wrap_on_char;             // "Options -> Text Wrap -> On Character" menu item.
+    GtkWidget *menu_item_options_text_wrap_on_word;             // "Options -> Text Wrap -> On Word" menu item.
+    GtkWidget *menu_item_options_text_wrap_on_char_and_word;    // "Options -> Text Wrap -> On Character and Word " menu item.
+    GtkWidget *menu_item_options_overlay_scrolling;             // "Options -> Overlay Scrolling" menu item.
+    GtkWidget *menu_item_options_scrollbar_policy;              // "Options -> Scrollbar Policy" menu item.
+    GtkWidget *menu_item_options_scrollbar_policy_auto;         // "Options -> Scrollbar Policy -> Automatic" menu item.
+    GtkWidget *menu_item_options_scrollbar_policy_always;       // "Options -> Scrollbar Policy -> Always" menu item.
+    GtkWidget *menu_item_options_scrollbar_policy_never;        // "Options -> Scrollbar Policy -> Never" menu item.
+    GtkWidget *menu_item_help_about;                            // "Help -> About Stilus" menu item.
+    GtkWidget *menu_item_help_writing_principles;               // "Help -> Writing Principles" menu item.
+    GtkWidget *menu_item_help_keyboard_shortcuts;                // "Help -> Keyboard Shortcuts" menu item.
+    GtkWidget *menu_item_help_writing_workflow;                 // "Help -> Writing Workflow" menu item.
+};
+
+// Text view data.
+struct AirpadDataTextView
+{
+    GtkWidget *text_view;       // Text view itself.
+    GtkWidget *scrolled_window; // Scrollable area that holds the text view.
+};
+
+// Window data.
+struct AirpadDataWindow
+{
+    GtkWidget *window;                          // Window itself.
+    GdkPixbuf *icon;                            // Icon of the window.
+    GtkWidget *content;                         // Grid that holds the window contents.
+    GtkWidget *status_bar;                      // Status bar.
+    struct AirpadDataMenuBar *data_menu_bar;    // Menubar of the window.
+    struct AirpadDataTextView *data_text_view;  // Text area of the window.
+};
+
+// Signal IDs.
+struct AirpadDataSignals
+
+== SIGNAL STRUCTURES ==
+    gulong text_buffer_delete_range;                                // Text buffer: "delete-range"
+    gulong text_buffer_paste_done;                                  // Text buffer: "paste-done"
+    gulong menu_item_file_new_activate;                             // "File -> New" menu item: "activate"
+    gulong menu_item_file_open_activate;                            // "File -> Open" menu item: "activate"
+    gulong menu_item_file_save_activate;                            // "File -> Save" menu item: "activate"
+    gulong menu_item_file_save_as_activate;                         // "File -> Save As" menu item: "activate"
+    gulong menu_item_file_close_activate;                           // "File -> Close" menu item: "activate"
+    gulong menu_item_edit_copy_activate;                            // "Edit -> Copy" menu item: "activate"
+    gulong menu_item_edit_paste_activate;                           // "Edit -> Paste" menu item: "activate"
+    gulong menu_item_edit_paste_as_plain_text_activate;             // "Edit -> Paste as Plain Text" menu item: "activate"
+    gulong menu_item_edit_cut_activate;                             // "Edit -> Cut" menu item: "activate"
+    gulong menu_item_edit_delete_activate;                          // "Edit -> Delete" menu item: "activate"
+    gulong menu_item_edit_select_all_activate;                      // "Edit -> Select All" menu item: "activate"
+    gulong menu_item_edit_insert_date_time_activate;                 // "Edit -> Insert Date / Time" menu item: "activate"
+    gulong menu_item_edit_undo_activate;                            // "Edit -> Undo" menu item: "activate"
+    gulong menu_item_edit_redo_activate;                            // "Edit -> Redo" menu item: "activate"
+    gulong menu_item_search_find_activate;                          // "Search -> Find" menu item: "activate"
+    gulong menu_item_search_find_next_activate;                     // "Search -> Find Next" menu item: "activate"
+    gulong menu_item_search_find_prev_activate;                     // "Search -> Find Previous" menu item: "activate"
+    gulong menu_item_search_replace_activate;                       // "Search -> Replace" menu item: "activate"
+    gulong menu_item_view_fullscreen_activate;                      // "View -> Fullscreen" menu item: "activate"
+    gulong menu_item_view_always_on_top_activate;                 // "View -> Always on Top" menu item: "activate"
+    gulong menu_item_options_font_activate;                         // "Options -> Font" menu item: "activate"
+    gulong menu_item_options_text_wrap_none_toggled;                // "Options -> Text Wrap -> None": "toggled"
+    gulong menu_item_options_text_wrap_on_word_toggled;             // "Options -> Text Wrap -> On Word": "toggled"
+    gulong menu_item_options_text_wrap_on_char_toggled;             // "Options -> Text Wrap -> On Character": "toggled"
+    gulong menu_item_options_text_wrap_on_char_and_word_toggled;    // "Options -> Text Wrap -> On Character and Word": "toggled"
+    gulong menu_item_options_overlay_scrolling_toggled;             // "Options -> Overlay Scrollbars": "toggled"
+    gulong menu_item_options_scrollbar_policy_auto_toggled;         // "Options -> Scrollbar Policy -> Automatic": "toggled"
+    gulong menu_item_options_scrollbar_policy_always_toggled;       // "Options -> Scrollbar Policy -> Always": "toggled"
+    gulong menu_item_options_scrollbar_policy_never_toggled;        // "Options -> Scrollbar Policy -> Never": "toggled"
+    gulong menu_item_help_about_activate;                           // "Help -> About Stilus": "activate"
+    gulong menu_item_help_writing_principles_activate;              // "Help -> Writing Principles": "activate"
+    gulong menu_item_help_keyboard_shortcuts_activate;               // "Help -> Keyboard Shortcuts": "activate"
+    gulong menu_item_help_writing_workflow_activate;                 // "Help -> Writing Workflow": "activate"
+};
+
+// Data used by the searching facility.
+struct AirpadDataSearch
+{
+    // Text.
+
+== TEXT VIEW HELPERS ==
+src/find.c:135:            gtk_text_buffer_get_end_iter(text_buffer, &iter_start);
+src/find.c:142:            gtk_text_buffer_get_start_iter(text_buffer, &iter_start);
+src/find.c:158:            gtk_text_buffer_get_end_iter(text_buffer, &iter_start);
+src/find.c:163:            gtk_text_buffer_get_start_iter(text_buffer, &iter_start);
+src/find.c:178:    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view));
+src/find.c:181:    GtkTextMark *mark_insert = gtk_text_buffer_get_insert(text_buffer);
+src/find.c:182:    GtkTextMark *mark_selection_bound = gtk_text_buffer_get_selection_bound(text_buffer);
+src/find.c:186:    gtk_text_buffer_get_iter_at_mark(text_buffer, &iter_insert, mark_insert);
+src/find.c:187:    gtk_text_buffer_get_iter_at_mark(text_buffer, &iter_selection_bound, mark_selection_bound);
+src/find.c:192:        gtk_text_buffer_select_range(text_buffer, &iter_insert, &iter_selection_bound);
+src/find.c:200:        gtk_text_buffer_select_range(text_buffer, &bounds[0], &bounds[1]);
+src/find.c:201:        gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view), mark_insert, 0.0, TRUE, 0.5, 0.5);
+src/find.c:206:        gtk_text_buffer_select_range(text_buffer, &iter_insert, &iter_selection_bound);
+src/find.c:219:    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view));
+src/find.c:222:    GtkTextMark *mark_insert = gtk_text_buffer_get_insert(text_buffer);
+src/find.c:223:    GtkTextMark *mark_selection_bound = gtk_text_buffer_get_selection_bound(text_buffer);
+src/find.c:227:    gtk_text_buffer_get_iter_at_mark(text_buffer, &iter_insert, mark_insert);
+src/find.c:228:    gtk_text_buffer_get_iter_at_mark(text_buffer, &iter_selection_bound, mark_selection_bound);
+src/find.c:234:        gtk_text_buffer_select_range(text_buffer, &bounds[0], &bounds[1]);
+src/find.c:235:        gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view), mark_insert, 0.0, TRUE, 0.5, 0.5);
+src/find.c:240:        gtk_text_buffer_select_range(text_buffer, &iter_insert, &iter_selection_bound);
+src/find.c:250:    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view));
+src/find.c:253:    GtkTextMark *mark_insert = gtk_text_buffer_get_insert(text_buffer);
+src/find.c:254:    GtkTextMark *mark_selection_bound = gtk_text_buffer_get_selection_bound(text_buffer);
+src/find.c:258:    gtk_text_buffer_get_iter_at_mark(text_buffer, &iter_insert, mark_insert);
+src/find.c:259:    gtk_text_buffer_get_iter_at_mark(text_buffer, &iter_selection_bound, mark_selection_bound);
+src/find.c:267:        gtk_text_buffer_select_range(text_buffer, &bounds[0], &bounds[1]);
+src/find.c:268:        gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view), mark_insert, 0.0, TRUE, 0.5, 0.5);
+src/find.c:273:        gtk_text_buffer_select_range(text_buffer, &iter_insert, &iter_selection_bound);
+src/aux.c:30:    gtk_text_buffer_get_start_iter(text_buffer, &start);
+src/aux.c:31:    gtk_text_buffer_place_cursor(text_buffer, &start);
+src/aux.c:41:    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_window->data_text_view->text_view));
+src/aux.c:44:    if (gtk_text_buffer_get_modified(text_buffer))
+src/aux.c:62:                gtk_text_buffer_get_start_iter(text_buffer, &start);
+src/aux.c:63:                gtk_text_buffer_get_end_iter(text_buffer, &end);
+src/aux.c:64:                char *contents = gtk_text_buffer_get_text(text_buffer, &start, &end, FALSE);
+src/edit.c:27:    const gboolean has_selection = gtk_text_buffer_get_has_selection(GTK_TEXT_BUFFER(object));
+src/edit.c:37:    gtk_text_view_scroll_mark_onscreen(text_view, gtk_text_buffer_get_insert(text_buffer));
+src/edit.c:59:    gtk_text_buffer_copy_clipboard(gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_window->data_text_view->text_view)), clipboard);
+src/edit.c:66:    gtk_text_buffer_paste_clipboard(text_buffer, gtk_clipboard_get(GDK_SELECTION_CLIPBOARD), NULL, TRUE);
+src/edit.c:78:    gtk_text_buffer_insert_at_cursor(text_buffer, text, -1);
+src/edit.c:87:    gtk_text_buffer_cut_clipboard(gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_window->data_text_view->text_view)), clipboard, TRUE);
+src/edit.c:94:    gtk_text_buffer_delete_selection(text_buffer, FALSE, TRUE);
+src/edit.c:101:    gtk_text_buffer_get_start_iter(text_buffer, &start);
+src/edit.c:102:    gtk_text_buffer_get_end_iter(text_buffer, &end);
+src/edit.c:103:    gtk_text_buffer_select_range(text_buffer, &start, &end);
+src/edit.c:121:    gtk_text_buffer_insert_at_cursor(text_buffer, date_time, -1);
+src/undo.c:110:            gtk_text_buffer_get_iter_at_offset(text_buffer, &start, undo_buffer.buffer[undo_buffer.next].position[0]);
+src/undo.c:111:            gtk_text_buffer_get_iter_at_offset(text_buffer, &end, undo_buffer.buffer[undo_buffer.next].position[1]);
+src/undo.c:112:            gtk_text_buffer_delete(text_buffer, &start, &end);
+src/undo.c:113:            gtk_text_buffer_get_iter_at_offset(text_buffer, &start, undo_buffer.buffer[undo_buffer.next].position[0]);
+src/undo.c:114:            gtk_text_buffer_place_cursor(text_buffer, &start);
+src/undo.c:119:            gtk_text_buffer_get_iter_at_offset(text_buffer, &start, undo_buffer.buffer[undo_buffer.next].position[0]);
+src/undo.c:120:            gtk_text_buffer_insert(text_buffer, &start, undo_buffer.buffer[undo_buffer.next].text, -1);
+src/undo.c:121:            gtk_text_buffer_get_iter_at_offset(text_buffer, &start, undo_buffer.buffer[undo_buffer.next].position[0]);
+src/undo.c:122:            gtk_text_buffer_get_iter_at_offset(text_buffer, &end, undo_buffer.buffer[undo_buffer.next].position[1]);
+src/undo.c:123:            gtk_text_buffer_select_range(text_buffer, &start, &end);
+src/undo.c:152:            gtk_text_buffer_get_iter_at_offset(text_buffer, &start, undo_buffer.buffer[undo_buffer.next].position[0]);
+src/undo.c:153:            gtk_text_buffer_insert(text_buffer, &start, undo_buffer.buffer[undo_buffer.next].text, -1);
+src/undo.c:154:            gtk_text_buffer_get_iter_at_offset(text_buffer, &start, undo_buffer.buffer[undo_buffer.next].position[0]);
+src/undo.c:155:            gtk_text_buffer_get_iter_at_offset(text_buffer, &end, undo_buffer.buffer[undo_buffer.next].position[1]);
+src/undo.c:156:            gtk_text_buffer_select_range(text_buffer, &start, &end);
+src/undo.c:161:            gtk_text_buffer_get_iter_at_offset(text_buffer, &start, undo_buffer.buffer[undo_buffer.next].position[0]);
+src/undo.c:162:            gtk_text_buffer_get_iter_at_offset(text_buffer, &end, undo_buffer.buffer[undo_buffer.next].position[1]);
+src/undo.c:163:            gtk_text_buffer_delete(text_buffer, &start, &end);
+src/undo.c:164:            gtk_text_buffer_get_iter_at_offset(text_buffer, &start, undo_buffer.buffer[undo_buffer.next].position[0]);
+src/undo.c:165:            gtk_text_buffer_place_cursor(text_buffer, &start);
+src/undo.c:262:    if (!gtk_text_buffer_get_modified(text_buffer))
+src/undo.c:357:    airpad_undo_update_current_action(AIRPAD_UNDO_BUFFER_ITEM_TYPE_DELETE, gtk_text_buffer_get_text(text_buffer, start, end, FALSE), pos_start, pos_end, unit_marker_next);
+src/undo.c:371:    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view));
+src/undo.c:389:    const gboolean modified = gtk_text_buffer_get_modified(text_buffer);
+src/undo.c:391:    gtk_text_buffer_set_modified(text_buffer, modified);
+src/undo.c:399:    gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view), gtk_text_buffer_get_selection_bound(text_buffer), 0.1, FALSE, 0.0, 0.0);
+src/undo.c:406:    gtk_text_buffer_set_modified(text_buffer, saved_item_no != undo_buffer.next);
+src/undo.c:414:    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view));
+src/undo.c:425:    const gboolean modified = gtk_text_buffer_get_modified(text_buffer);
+src/undo.c:427:    gtk_text_buffer_set_modified(text_buffer, modified);
+src/undo.c:435:    gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view), gtk_text_buffer_get_selection_bound(text_buffer), 0.1, FALSE, 0.0, 0.0);
+src/undo.c:442:    gtk_text_buffer_set_modified(text_buffer, saved_item_no != undo_buffer.next);
+src/replace.c:158:    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view));
+src/replace.c:170:            gtk_text_buffer_get_end_iter(text_buffer, &iter_start);
+src/replace.c:177:            gtk_text_buffer_get_start_iter(text_buffer, &iter_start);
+src/replace.c:202:            gtk_text_buffer_select_range(text_buffer, &bounds[0], &bounds[1]);
+src/replace.c:203:            gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view), gtk_text_buffer_get_insert(text_buffer), 0.0, TRUE, 0.5, 0.1);
+src/replace.c:231:        gtk_text_buffer_delete(text_buffer, &bounds[0], &bounds[1]);
+src/replace.c:232:        gtk_text_buffer_place_cursor(text_buffer, &bounds[0]);
+src/replace.c:233:        gtk_text_buffer_insert_at_cursor(text_buffer, data_application->data_search->text_replace, -1);
+src/replace.c:243:        gtk_text_buffer_get_iter_at_offset(text_buffer, &iter_start, data_application->data_search->backward_search ? pos_bounds[0] : pos_bounds[1] + replace_adjustment);
+src/replace.c:260:        gtk_text_buffer_get_iter_at_offset(text_buffer, &iter_last_cursor_pos, last_cursor_pos);
+src/replace.c:261:        gtk_text_buffer_place_cursor(text_buffer, &iter_last_cursor_pos);
+src/replace.c:271:    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view));
+src/replace.c:274:    GtkTextMark *mark_insert = gtk_text_buffer_get_insert(text_buffer);
+src/replace.c:275:    GtkTextMark *mark_selection_bound = gtk_text_buffer_get_selection_bound(text_buffer);
+src/replace.c:279:    gtk_text_buffer_get_iter_at_mark(text_buffer, &iter_insert, mark_insert);
+src/replace.c:280:    gtk_text_buffer_get_iter_at_mark(text_buffer, &iter_selection_bound, mark_selection_bound);
+src/replace.c:285:        gtk_text_buffer_select_range(text_buffer, &iter_insert, &iter_selection_bound);
+src/replace.c:294:        gtk_text_buffer_select_range(text_buffer, &iter_insert, &iter_selection_bound);
+src/file.c:32:    gtk_text_buffer_get_start_iter(text_buffer, &start);
+src/file.c:33:    gtk_text_buffer_get_end_iter(text_buffer, &end);
+src/file.c:34:    char *contents = gtk_text_buffer_get_text(text_buffer, &start, &end, FALSE);
+src/file.c:123:    const gboolean modified = gtk_text_buffer_get_modified(text_buffer);
+src/file.c:148:    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view));
+src/file.c:164:    const gboolean modified = gtk_text_buffer_get_modified(text_buffer);
+src/file.c:165:    gtk_text_buffer_set_text(text_buffer, "", 0);
+src/file.c:166:    gtk_text_buffer_set_modified(text_buffer, modified);
+src/file.c:181:    gtk_text_buffer_set_modified(text_buffer, FALSE);
+src/file.c:195:    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view));
+src/file.c:279:    const gboolean modified = gtk_text_buffer_get_modified(text_buffer);
+src/file.c:280:    gtk_text_buffer_set_text(text_buffer, contents, length);
+src/file.c:281:    gtk_text_buffer_set_modified(text_buffer, modified);
+src/file.c:298:    gtk_text_buffer_set_modified(text_buffer, FALSE);
+src/file.c:324:    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view));
+src/file.c:335:    gtk_text_buffer_set_modified(text_buffer, !success);
+src/file.c:352:    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view));
+src/file.c:369:        gtk_text_buffer_set_modified(text_buffer, FALSE);
+src/window.c:222:    data_text_view->text_view = gtk_text_view_new();
+src/window.c:351:    gtk_text_buffer_get_bounds(text_buffer, &start, &end);
+src/window.c:353:    char *text = gtk_text_buffer_get_text(text_buffer, &start, &end, FALSE);
+src/window.c:381:    gtk_text_buffer_get_bounds(text_buffer, &start, &end);
+src/window.c:383:    char *text = gtk_text_buffer_get_text(text_buffer, &start, &end, FALSE);
+src/window.c:396:    const gboolean modified = gtk_text_buffer_get_modified(text_buffer);
+src/window.c:400:    GtkTextMark *insert_mark = gtk_text_buffer_get_insert(text_buffer);
+src/window.c:401:    gtk_text_buffer_get_iter_at_mark(text_buffer, &cursor, insert_mark);
+src/window.c:430:    if (mark != gtk_text_buffer_get_insert(text_buffer))
+src/window.c:482:    gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(data_window->data_text_view->text_view), wrap_mode);
+src/main.c:215:    gtk_text_buffer_set_text(text_buffer, contents, length);
+src/main.c:220:    gtk_text_buffer_set_modified(text_buffer, FALSE);
+src/main.c:229:    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view));
+src/main.c:349:        if (!airpad_load_contents(data_application->data_window->window, gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view)), data_application->data_file))
+src/main.c:373:    airpad_window_update_status_bar(gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view)), data_application->data_window);
