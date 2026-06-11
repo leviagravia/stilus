@@ -1,0 +1,47 @@
+P9-004 BUILD EVIDENCE
+DATE: 2026-06-11T22:44:17+02:00
+
+== GIT STATUS BEFORE BUILD ==
+?? p9_audit/
+?? src/stilus_commands.c
+?? src/stilus_commands.h
+
+== CLEAN ==
+Cleaning directory...
+
+== BUILD ==
+VARIABLES
+================================================================================
+PROG:        Name of the executable.
+IDEN:        Application identifier.
+DEBUG:       Embed debugging information.
+PROFILE:     Embed profiling information.
+OPTIMIZE:    Enable compiler optimizations.
+SWITCHES:    Macros passed on the command-line.
+CC:          Compiler to use.
+CFLAGS:      Compiler flags.
+LDFLAGS:     Linker flags.
+SRCDIR:      Source directory.
+OBJDIR:      Object directory.
+PODIR:       PO directory.
+DEPSDIR:     Directory that contains dependency information.
+ICON:        Name of the icon file (without extension).
+INSTALLDIR:  Executable installation directory.
+DESKTOPDIR:  Desktop file installation directory.
+ICONDIR:     Icon installation directory.
+LOCALEDIR:   Locale installation directory.
+
+RULES
+================================================================================
+help:         Display this help menu.
+deps:         Create dependency information for compiling objects.
+all:          Build object files and link them into executable.
+clean:        Remove files produced by the building process.
+install:      Install the program and its data.
+uninstall:    Uninstall the program and its data.
+make: Nothing to be done for 'help'.
+
+== GIT STATUS AFTER BUILD ==
+?? p9_audit/
+?? src/stilus_commands.c
+?? src/stilus_commands.h
