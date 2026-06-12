@@ -143,8 +143,32 @@ stilus_cmd_navigate_go_to_line(GtkWidget *widget, gpointer data)
 void
 stilus_cmd_revise_uppercase(GtkWidget *widget, gpointer data)
 {
+    struct AirpadDataApplication *data_application = data;
+
     (void)widget;
-    (void)data;
+
+    if (data_application == NULL ||
+        data_application->data_window == NULL ||
+        data_application->data_window->data_text_view == NULL ||
+        data_application->data_window->data_text_view->text_view == NULL)
+        return;
+
+    GtkWidget *text_view = data_application->data_window->data_text_view->text_view;
+    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
+    GtkTextIter start;
+    GtkTextIter end;
+
+    if (!gtk_text_buffer_get_selection_bounds(text_buffer, &start, &end))
+        return;
+
+    char *selected_text = gtk_text_buffer_get_text(text_buffer, &start, &end, FALSE);
+    char *upper_text = g_utf8_strup(selected_text, -1);
+
+    gtk_text_buffer_delete(text_buffer, &start, &end);
+    gtk_text_buffer_insert(text_buffer, &start, upper_text, -1);
+
+    g_free(upper_text);
+    g_free(selected_text);
 }
 
 void

@@ -74,6 +74,9 @@ static void airpad_window_menu_bar_create(struct AirpadDataMenuBar *data_menu_ba
     // "Navigate" buttons.
     data_menu_bar->menu_item_navigate_go_to_line = gtk_menu_item_new_with_mnemonic(_("_Go To Line..."));
 
+    // "Revise" buttons.
+    data_menu_bar->menu_item_revise_uppercase = gtk_menu_item_new_with_mnemonic(_("_UPPERCASE"));
+
     // "Edit" buttons.
     data_menu_bar->menu_item_edit_copy = gtk_menu_item_new_with_mnemonic(_("_Copy"));
     data_menu_bar->menu_item_edit_paste = gtk_menu_item_new_with_mnemonic(_("_Paste"));
@@ -142,6 +145,7 @@ static void airpad_window_menu_bar_create(struct AirpadDataMenuBar *data_menu_ba
 
 
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_navigate), data_menu_bar->menu_item_navigate_go_to_line);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_revise), data_menu_bar->menu_item_revise_uppercase);
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_copy);
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_paste);
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_paste_as_plain_text);

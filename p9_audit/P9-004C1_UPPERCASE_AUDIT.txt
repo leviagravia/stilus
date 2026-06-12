@@ -1,0 +1,122 @@
+P9-004C1 UPPERCASE AUDIT
+DATE: 2026-06-12T21:04:12+02:00
+
+== GIT STATE ==
+e27d738 (HEAD -> p9-004-command-layer-foundation, origin/p9-004-command-layer-foundation) P9-004B2B Implement Go To Line behavior
+3dee8fa P9-004B2A Align command metadata
+6faf169 P9-004B1 Wire Go To Line menu infrastructure
+b826ada P9-004A Command Layer Foundation
+b1b3288 (origin/p2-code-cleanup-audit, p2-code-cleanup-audit) Migrate menu ownership to frozen architecture
+?? p9_audit/P9-004C1_UPPERCASE_AUDIT.txt
+
+== CURRENT UPPERCASE REGISTRY ENTRY ==
+15-    },
+16-    {
+17:        "revise.uppercase",
+18-        "UPPERCASE",
+19-        "Revise/Case/UPPERCASE",
+20-        NULL,
+21-        STILUS_CMD_TEXT_MUTATION | STILUS_CMD_REQUIRES_SELECTION,
+22:        stilus_cmd_revise_uppercase,
+23-        "Convert the selected text to uppercase."
+24-    },
+25-    {
+26-        "revise.lowercase",
+27-        "Lowercase",
+28-        "Revise/Case/Lowercase",
+29-        NULL,
+30-        STILUS_CMD_TEXT_MUTATION | STILUS_CMD_REQUIRES_SELECTION,
+--
+142-
+143-void
+144:stilus_cmd_revise_uppercase(GtkWidget *widget, gpointer data)
+145-{
+146-    (void)widget;
+147-    (void)data;
+148-}
+149-
+150-void
+151-stilus_cmd_revise_lowercase(GtkWidget *widget, gpointer data)
+152-{
+
+== CURRENT UPPERCASE CALLBACK ==
+20-        NULL,
+21-        STILUS_CMD_TEXT_MUTATION | STILUS_CMD_REQUIRES_SELECTION,
+22:        stilus_cmd_revise_uppercase,
+23-        "Convert the selected text to uppercase."
+24-    },
+25-    {
+26-        "revise.lowercase",
+27-        "Lowercase",
+28-        "Revise/Case/Lowercase",
+29-        NULL,
+30-        STILUS_CMD_TEXT_MUTATION | STILUS_CMD_REQUIRES_SELECTION,
+31-        stilus_cmd_revise_lowercase,
+32-        "Convert the selected text to lowercase."
+33-    },
+34-    {
+--
+142-
+143-void
+144:stilus_cmd_revise_uppercase(GtkWidget *widget, gpointer data)
+145-{
+146-    (void)widget;
+147-    (void)data;
+148-}
+149-
+150-void
+151-stilus_cmd_revise_lowercase(GtkWidget *widget, gpointer data)
+152-{
+153-    (void)widget;
+154-    (void)data;
+155-}
+156-
+
+== TEXT BUFFER ACCESS PATTERNS ==
+src/find.c:178:    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view));
+src/find.c:219:    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view));
+src/find.c:250:    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view));
+src/aux.c:41:    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_window->data_text_view->text_view));
+src/edit.c:59:    gtk_text_buffer_copy_clipboard(gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_window->data_text_view->text_view)), clipboard);
+src/edit.c:87:    gtk_text_buffer_cut_clipboard(gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_window->data_text_view->text_view)), clipboard, TRUE);
+src/stilus_commands.c:103:    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
+src/undo.c:371:    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view));
+src/undo.c:414:    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view));
+src/replace.c:158:    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view));
+src/replace.c:271:    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view));
+src/file.c:148:    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view));
+src/file.c:195:    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view));
+src/file.c:324:    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view));
+src/file.c:352:    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view));
+src/main.c:230:    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view));
+src/main.c:351:        if (!airpad_load_contents(data_application->data_window->window, gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view)), data_application->data_file))
+src/main.c:375:    airpad_window_update_status_bar(gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view)), data_application->data_window);
+
+== SELECTION PATTERNS ==
+
+== UTF8 CASE CONVERSION PATTERNS ==
+
+== INSERT DELETE TEXT PATTERNS ==
+src/edit.c:78:    gtk_text_buffer_insert_at_cursor(text_buffer, text, -1);
+src/edit.c:94:    gtk_text_buffer_delete_selection(text_buffer, FALSE, TRUE);
+src/edit.c:121:    gtk_text_buffer_insert_at_cursor(text_buffer, date_time, -1);
+src/undo.c:112:            gtk_text_buffer_delete(text_buffer, &start, &end);
+src/undo.c:120:            gtk_text_buffer_insert(text_buffer, &start, undo_buffer.buffer[undo_buffer.next].text, -1);
+src/undo.c:153:            gtk_text_buffer_insert(text_buffer, &start, undo_buffer.buffer[undo_buffer.next].text, -1);
+src/undo.c:163:            gtk_text_buffer_delete(text_buffer, &start, &end);
+src/replace.c:231:        gtk_text_buffer_delete(text_buffer, &bounds[0], &bounds[1]);
+src/replace.c:233:        gtk_text_buffer_insert_at_cursor(text_buffer, data_application->data_search->text_replace, -1);
+
+== DATA STRUCTURES ==
+223:struct AirpadDataApplication
+224-{
+225-    GtkApplication *application;                // Application itself.
+226-    struct AirpadDataArguments *data_arguments; // Argument holder.
+227-    struct AirpadDataOptions *data_options;     // Configuration options.
+228-    struct AirpadDataFile *data_file;           // Currently opened file.
+229-    struct AirpadDataSearch *data_search;       // Options used for find/replace.
+230-    struct AirpadDataSignals *data_signals;     // Signal connections.
+231-    struct AirpadDataWindow *data_window;       // Application window.
+232-};
+233-
+234-#endif
