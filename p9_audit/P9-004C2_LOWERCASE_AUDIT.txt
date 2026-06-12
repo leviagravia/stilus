@@ -1,0 +1,119 @@
+P9-004C2 LOWERCASE AUDIT
+DATE: 2026-06-12T21:21:18+02:00
+
+== GIT STATE ==
+b17d697 (HEAD -> p9-004-command-layer-foundation, origin/p9-004-command-layer-foundation) P9-004C1 Implement uppercase command
+e27d738 P9-004B2B Implement Go To Line behavior
+3dee8fa P9-004B2A Align command metadata
+6faf169 P9-004B1 Wire Go To Line menu infrastructure
+b826ada P9-004A Command Layer Foundation
+b1b3288 (origin/p2-code-cleanup-audit, p2-code-cleanup-audit) Migrate menu ownership to frozen architecture
+4e68fdf Add source gap audit
+?? p9_audit/P9-004C2_LOWERCASE_AUDIT.txt
+
+== LOWERCASE REGISTRY ENTRY ==
+24-    },
+25-    {
+26:        "revise.lowercase",
+27-        "Lowercase",
+28-        "Revise/Case/Lowercase",
+29-        NULL,
+30-        STILUS_CMD_TEXT_MUTATION | STILUS_CMD_REQUIRES_SELECTION,
+31:        stilus_cmd_revise_lowercase,
+32-        "Convert the selected text to lowercase."
+33-    },
+34-    {
+35-        "revise.remove-trailing-spaces",
+36-        "Remove Trailing Spaces",
+37-        "Revise/Cleanup/Remove Trailing Spaces",
+38-        NULL,
+39-        STILUS_CMD_TEXT_MUTATION,
+--
+173-
+174-void
+175:stilus_cmd_revise_lowercase(GtkWidget *widget, gpointer data)
+176-{
+177-    (void)widget;
+178-    (void)data;
+179-}
+180-
+181-void
+182-stilus_cmd_revise_remove_trailing_spaces(GtkWidget *widget, gpointer data)
+183-{
+
+== LOWERCASE CALLBACK ==
+29-        NULL,
+30-        STILUS_CMD_TEXT_MUTATION | STILUS_CMD_REQUIRES_SELECTION,
+31:        stilus_cmd_revise_lowercase,
+32-        "Convert the selected text to lowercase."
+33-    },
+34-    {
+35-        "revise.remove-trailing-spaces",
+36-        "Remove Trailing Spaces",
+37-        "Revise/Cleanup/Remove Trailing Spaces",
+38-        NULL,
+39-        STILUS_CMD_TEXT_MUTATION,
+40-        stilus_cmd_revise_remove_trailing_spaces,
+41-        "Remove trailing spaces and tabs from document lines."
+42-    },
+43-    {
+--
+173-
+174-void
+175:stilus_cmd_revise_lowercase(GtkWidget *widget, gpointer data)
+176-{
+177-    (void)widget;
+178-    (void)data;
+179-}
+180-
+181-void
+182-stilus_cmd_revise_remove_trailing_spaces(GtkWidget *widget, gpointer data)
+183-{
+184-    (void)widget;
+185-    (void)data;
+186-}
+187-
+
+== UPPERCASE IMPLEMENTATION REFERENCE ==
+    gtk_widget_destroy(dialog);
+}
+
+void
+stilus_cmd_revise_uppercase(GtkWidget *widget, gpointer data)
+{
+    struct AirpadDataApplication *data_application = data;
+
+    (void)widget;
+
+    if (data_application == NULL ||
+        data_application->data_window == NULL ||
+        data_application->data_window->data_text_view == NULL ||
+        data_application->data_window->data_text_view->text_view == NULL)
+        return;
+
+    GtkWidget *text_view = data_application->data_window->data_text_view->text_view;
+    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
+    GtkTextIter start;
+    GtkTextIter end;
+
+    if (!gtk_text_buffer_get_selection_bounds(text_buffer, &start, &end))
+        return;
+
+    char *selected_text = gtk_text_buffer_get_text(text_buffer, &start, &end, FALSE);
+    char *upper_text = g_utf8_strup(selected_text, -1);
+
+    gtk_text_buffer_delete(text_buffer, &start, &end);
+    gtk_text_buffer_insert(text_buffer, &start, upper_text, -1);
+
+    g_free(upper_text);
+    g_free(selected_text);
+}
+
+void
+stilus_cmd_revise_lowercase(GtkWidget *widget, gpointer data)
+
+== LOWERCASE WIRING STATUS ==
+src/stilus_commands.c:27:        "Lowercase",
+src/stilus_commands.c:28:        "Revise/Case/Lowercase",
+src/stilus_commands.c:31:        stilus_cmd_revise_lowercase,
+src/stilus_commands.c:175:stilus_cmd_revise_lowercase(GtkWidget *widget, gpointer data)

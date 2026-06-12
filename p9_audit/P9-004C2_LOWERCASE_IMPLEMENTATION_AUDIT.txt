@@ -1,0 +1,112 @@
+P9-004C2 LOWERCASE IMPLEMENTATION AUDIT
+DATE: 2026-06-12T21:23:19+02:00
+
+== GIT STATUS ==
+ M src/const.h
+ M src/main.c
+ M src/stilus_commands.c
+ M src/window.c
+?? p9_audit/P9-004C2_LOWERCASE_AUDIT.txt
+?? p9_audit/P9-004C2_LOWERCASE_IMPLEMENTATION_AUDIT.txt
+
+== LOWERCASE SYMBOLS ==
+src/const.h:86:    GtkWidget *menu_item_revise_lowercase;                    // "Revise -> Lowercase" menu item.
+src/const.h:157:    gulong menu_item_revise_lowercase_activate;                // "Revise -> Lowercase" menu item: "activate"
+src/window.c:79:    data_menu_bar->menu_item_revise_lowercase = gtk_menu_item_new_with_mnemonic(_("_Lowercase"));
+src/window.c:150:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_revise), data_menu_bar->menu_item_revise_lowercase);
+src/main.c:258:    data_application->data_signals->menu_item_revise_lowercase_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_revise_lowercase, "activate", G_CALLBACK(&stilus_cmd_revise_lowercase), data_application);
+src/stilus_commands.c:31:        stilus_cmd_revise_lowercase,
+src/stilus_commands.c:175:stilus_cmd_revise_lowercase(GtkWidget *widget, gpointer data)
+src/stilus_commands.c:196:    char *lower_text = g_utf8_strdown(selected_text, -1);
+
+== DIFF ==
+diff --git a/src/const.h b/src/const.h
+index 1c843f6..3caae72 100644
+--- a/src/const.h
++++ b/src/const.h
+@@ -83,6 +83,7 @@ struct AirpadDataMenuBar
+     GtkWidget *menu_item_file_close;                            // "File -> Close" menu item.
+     GtkWidget *menu_item_navigate_go_to_line;                 // "Navigate -> Go To Line..." menu item.
+     GtkWidget *menu_item_revise_uppercase;                    // "Revise -> UPPERCASE" menu item.
++    GtkWidget *menu_item_revise_lowercase;                    // "Revise -> Lowercase" menu item.
+     GtkWidget *menu_item_edit_copy;                             // "Edit -> Copy" menu item.
+     GtkWidget *menu_item_edit_paste;                            // "Edit -> Paste" menu item.
+     GtkWidget *menu_item_edit_paste_as_plain_text;              // "Edit -> Paste as Plain Text" menu item.
+@@ -153,6 +154,7 @@ struct AirpadDataSignals
+     gulong menu_item_file_close_activate;                           // "File -> Close" menu item: "activate"
+     gulong menu_item_navigate_go_to_line_activate;             // "Navigate -> Go To Line..." menu item: "activate"
+     gulong menu_item_revise_uppercase_activate;                // "Revise -> UPPERCASE" menu item: "activate"
++    gulong menu_item_revise_lowercase_activate;                // "Revise -> Lowercase" menu item: "activate"
+     gulong menu_item_edit_copy_activate;                            // "Edit -> Copy" menu item: "activate"
+     gulong menu_item_edit_paste_activate;                           // "Edit -> Paste" menu item: "activate"
+     gulong menu_item_edit_paste_as_plain_text_activate;             // "Edit -> Paste as Plain Text" menu item: "activate"
+diff --git a/src/main.c b/src/main.c
+index 3d155f9..52c596f 100644
+--- a/src/main.c
++++ b/src/main.c
+@@ -255,6 +255,7 @@ static void airpad_connect_signals(struct AirpadDataApplication *data_applicatio
+     data_application->data_signals->menu_item_file_close_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_file_close, "activate", G_CALLBACK(&airpad_file_close), data_application);
+     data_application->data_signals->menu_item_navigate_go_to_line_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_navigate_go_to_line, "activate", G_CALLBACK(&stilus_cmd_navigate_go_to_line), data_application);
+     data_application->data_signals->menu_item_revise_uppercase_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_revise_uppercase, "activate", G_CALLBACK(&stilus_cmd_revise_uppercase), data_application);
++    data_application->data_signals->menu_item_revise_lowercase_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_revise_lowercase, "activate", G_CALLBACK(&stilus_cmd_revise_lowercase), data_application);
+     data_application->data_signals->menu_item_edit_copy_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_edit_copy, "activate", G_CALLBACK(&airpad_edit_copy), data_application->data_window);
+     data_application->data_signals->menu_item_edit_paste_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_edit_paste, "activate", G_CALLBACK(&airpad_edit_paste), text_buffer);
+     data_application->data_signals->menu_item_edit_paste_as_plain_text_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_edit_paste_as_plain_text, "activate", G_CALLBACK(&airpad_edit_paste_as_plain_text), text_buffer);
+diff --git a/src/stilus_commands.c b/src/stilus_commands.c
+index f935410..475e979 100644
+--- a/src/stilus_commands.c
++++ b/src/stilus_commands.c
+@@ -174,8 +174,32 @@ stilus_cmd_revise_uppercase(GtkWidget *widget, gpointer data)
+ void
+ stilus_cmd_revise_lowercase(GtkWidget *widget, gpointer data)
+ {
++    struct AirpadDataApplication *data_application = data;
++
+     (void)widget;
+-    (void)data;
++
++    if (data_application == NULL ||
++        data_application->data_window == NULL ||
++        data_application->data_window->data_text_view == NULL ||
++        data_application->data_window->data_text_view->text_view == NULL)
++        return;
++
++    GtkWidget *text_view = data_application->data_window->data_text_view->text_view;
++    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
++    GtkTextIter start;
++    GtkTextIter end;
++
++    if (!gtk_text_buffer_get_selection_bounds(text_buffer, &start, &end))
++        return;
++
++    char *selected_text = gtk_text_buffer_get_text(text_buffer, &start, &end, FALSE);
++    char *lower_text = g_utf8_strdown(selected_text, -1);
++
++    gtk_text_buffer_delete(text_buffer, &start, &end);
++    gtk_text_buffer_insert(text_buffer, &start, lower_text, -1);
++
++    g_free(lower_text);
++    g_free(selected_text);
+ }
+ 
+ void
+diff --git a/src/window.c b/src/window.c
+index 6c8d264..1481fa0 100644
+--- a/src/window.c
++++ b/src/window.c
+@@ -76,6 +76,7 @@ static void airpad_window_menu_bar_create(struct AirpadDataMenuBar *data_menu_ba
+ 
+     // "Revise" buttons.
+     data_menu_bar->menu_item_revise_uppercase = gtk_menu_item_new_with_mnemonic(_("_UPPERCASE"));
++    data_menu_bar->menu_item_revise_lowercase = gtk_menu_item_new_with_mnemonic(_("_Lowercase"));
+ 
+     // "Edit" buttons.
+     data_menu_bar->menu_item_edit_copy = gtk_menu_item_new_with_mnemonic(_("_Copy"));
+@@ -146,6 +147,7 @@ static void airpad_window_menu_bar_create(struct AirpadDataMenuBar *data_menu_ba
+ 
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_navigate), data_menu_bar->menu_item_navigate_go_to_line);
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_revise), data_menu_bar->menu_item_revise_uppercase);
++    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_revise), data_menu_bar->menu_item_revise_lowercase);
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_copy);
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_paste);
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_paste_as_plain_text);
