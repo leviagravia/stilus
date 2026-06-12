@@ -1,0 +1,160 @@
+P9-004C3 REMOVE TRAILING SPACES IMPLEMENTATION AUDIT
+DATE: 2026-06-12T21:33:09+02:00
+
+== GIT STATUS ==
+ M src/const.h
+ M src/main.c
+ M src/stilus_commands.c
+ M src/window.c
+?? p9_audit/P9-004C3_REMOVE_TRAILING_SPACES_AUDIT.txt
+?? p9_audit/P9-004C3_REMOVE_TRAILING_SPACES_IMPLEMENTATION_AUDIT.txt
+
+== REMOVE TRAILING SYMBOLS ==
+src/const.h:87:    GtkWidget *menu_item_revise_remove_trailing_spaces;       // "Revise -> Remove Trailing Spaces" menu item.
+src/const.h:159:    gulong menu_item_revise_remove_trailing_spaces_activate;   // "Revise -> Remove Trailing Spaces" menu item: "activate"
+src/window.c:80:    data_menu_bar->menu_item_revise_remove_trailing_spaces = gtk_menu_item_new_with_mnemonic(_("Remove _Trailing Spaces"));
+src/window.c:152:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_revise), data_menu_bar->menu_item_revise_remove_trailing_spaces);
+src/main.c:259:    data_application->data_signals->menu_item_revise_remove_trailing_spaces_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_revise_remove_trailing_spaces, "activate", G_CALLBACK(&stilus_cmd_revise_remove_trailing_spaces), data_application);
+src/stilus_commands.c:40:        stilus_cmd_revise_remove_trailing_spaces,
+src/stilus_commands.c:207:stilus_remove_trailing_spaces_from_text(const char *text)
+src/stilus_commands.c:247:stilus_cmd_revise_remove_trailing_spaces(GtkWidget *widget, gpointer data)
+src/stilus_commands.c:268:    char *cleaned = stilus_remove_trailing_spaces_from_text(text);
+
+== DIFF ==
+diff --git a/src/const.h b/src/const.h
+index 3caae72..a1a0033 100644
+--- a/src/const.h
++++ b/src/const.h
+@@ -84,6 +84,7 @@ struct AirpadDataMenuBar
+     GtkWidget *menu_item_navigate_go_to_line;                 // "Navigate -> Go To Line..." menu item.
+     GtkWidget *menu_item_revise_uppercase;                    // "Revise -> UPPERCASE" menu item.
+     GtkWidget *menu_item_revise_lowercase;                    // "Revise -> Lowercase" menu item.
++    GtkWidget *menu_item_revise_remove_trailing_spaces;       // "Revise -> Remove Trailing Spaces" menu item.
+     GtkWidget *menu_item_edit_copy;                             // "Edit -> Copy" menu item.
+     GtkWidget *menu_item_edit_paste;                            // "Edit -> Paste" menu item.
+     GtkWidget *menu_item_edit_paste_as_plain_text;              // "Edit -> Paste as Plain Text" menu item.
+@@ -155,6 +156,7 @@ struct AirpadDataSignals
+     gulong menu_item_navigate_go_to_line_activate;             // "Navigate -> Go To Line..." menu item: "activate"
+     gulong menu_item_revise_uppercase_activate;                // "Revise -> UPPERCASE" menu item: "activate"
+     gulong menu_item_revise_lowercase_activate;                // "Revise -> Lowercase" menu item: "activate"
++    gulong menu_item_revise_remove_trailing_spaces_activate;   // "Revise -> Remove Trailing Spaces" menu item: "activate"
+     gulong menu_item_edit_copy_activate;                            // "Edit -> Copy" menu item: "activate"
+     gulong menu_item_edit_paste_activate;                           // "Edit -> Paste" menu item: "activate"
+     gulong menu_item_edit_paste_as_plain_text_activate;             // "Edit -> Paste as Plain Text" menu item: "activate"
+diff --git a/src/main.c b/src/main.c
+index 52c596f..2bb3a0e 100644
+--- a/src/main.c
++++ b/src/main.c
+@@ -256,6 +256,7 @@ static void airpad_connect_signals(struct AirpadDataApplication *data_applicatio
+     data_application->data_signals->menu_item_navigate_go_to_line_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_navigate_go_to_line, "activate", G_CALLBACK(&stilus_cmd_navigate_go_to_line), data_application);
+     data_application->data_signals->menu_item_revise_uppercase_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_revise_uppercase, "activate", G_CALLBACK(&stilus_cmd_revise_uppercase), data_application);
+     data_application->data_signals->menu_item_revise_lowercase_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_revise_lowercase, "activate", G_CALLBACK(&stilus_cmd_revise_lowercase), data_application);
++    data_application->data_signals->menu_item_revise_remove_trailing_spaces_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_revise_remove_trailing_spaces, "activate", G_CALLBACK(&stilus_cmd_revise_remove_trailing_spaces), data_application);
+     data_application->data_signals->menu_item_edit_copy_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_edit_copy, "activate", G_CALLBACK(&airpad_edit_copy), data_application->data_window);
+     data_application->data_signals->menu_item_edit_paste_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_edit_paste, "activate", G_CALLBACK(&airpad_edit_paste), text_buffer);
+     data_application->data_signals->menu_item_edit_paste_as_plain_text_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_edit_paste_as_plain_text, "activate", G_CALLBACK(&airpad_edit_paste_as_plain_text), text_buffer);
+diff --git a/src/stilus_commands.c b/src/stilus_commands.c
+index 475e979..488ce07 100644
+--- a/src/stilus_commands.c
++++ b/src/stilus_commands.c
+@@ -202,11 +202,79 @@ stilus_cmd_revise_lowercase(GtkWidget *widget, gpointer data)
+     g_free(selected_text);
+ }
+ 
++
++static char *
++stilus_remove_trailing_spaces_from_text(const char *text)
++{
++    GString *out = g_string_new(NULL);
++    gsize i = 0;
++
++    while (text[i] != '\0')
++    {
++        gsize line_start = i;
++        gsize line_end = i;
++
++        while (text[line_end] != '\0' && text[line_end] != '\n' && text[line_end] != '\r')
++            line_end++;
++
++        gsize trimmed_end = line_end;
++        while (trimmed_end > line_start &&
++               (text[trimmed_end - 1] == ' ' || text[trimmed_end - 1] == '\t'))
++            trimmed_end--;
++
++        g_string_append_len(out, text + line_start, trimmed_end - line_start);
++
++        if (text[line_end] == '\r' && text[line_end + 1] == '\n')
++        {
++            g_string_append(out, "\r\n");
++            i = line_end + 2;
++        }
++        else if (text[line_end] == '\n' || text[line_end] == '\r')
++        {
++            g_string_append_c(out, text[line_end]);
++            i = line_end + 1;
++        }
++        else
++        {
++            i = line_end;
++        }
++    }
++
++    return g_string_free(out, FALSE);
++}
++
+ void
+ stilus_cmd_revise_remove_trailing_spaces(GtkWidget *widget, gpointer data)
+ {
++    struct AirpadDataApplication *data_application = data;
++
+     (void)widget;
+-    (void)data;
++
++    if (data_application == NULL ||
++        data_application->data_window == NULL ||
++        data_application->data_window->data_text_view == NULL ||
++        data_application->data_window->data_text_view->text_view == NULL)
++        return;
++
++    GtkWidget *text_view = data_application->data_window->data_text_view->text_view;
++    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
++    GtkTextIter start;
++    GtkTextIter end;
++
++    gtk_text_buffer_get_start_iter(text_buffer, &start);
++    gtk_text_buffer_get_end_iter(text_buffer, &end);
++
++    char *text = gtk_text_buffer_get_text(text_buffer, &start, &end, FALSE);
++    char *cleaned = stilus_remove_trailing_spaces_from_text(text);
++
++    if (g_strcmp0(text, cleaned) != 0)
++    {
++        gtk_text_buffer_delete(text_buffer, &start, &end);
++        gtk_text_buffer_insert(text_buffer, &start, cleaned, -1);
++    }
++
++    g_free(cleaned);
++    g_free(text);
+ }
+ 
+ void
+diff --git a/src/window.c b/src/window.c
+index 1481fa0..290fc78 100644
+--- a/src/window.c
++++ b/src/window.c
+@@ -77,6 +77,7 @@ static void airpad_window_menu_bar_create(struct AirpadDataMenuBar *data_menu_ba
+     // "Revise" buttons.
+     data_menu_bar->menu_item_revise_uppercase = gtk_menu_item_new_with_mnemonic(_("_UPPERCASE"));
+     data_menu_bar->menu_item_revise_lowercase = gtk_menu_item_new_with_mnemonic(_("_Lowercase"));
++    data_menu_bar->menu_item_revise_remove_trailing_spaces = gtk_menu_item_new_with_mnemonic(_("Remove _Trailing Spaces"));
+ 
+     // "Edit" buttons.
+     data_menu_bar->menu_item_edit_copy = gtk_menu_item_new_with_mnemonic(_("_Copy"));
+@@ -148,6 +149,7 @@ static void airpad_window_menu_bar_create(struct AirpadDataMenuBar *data_menu_ba
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_navigate), data_menu_bar->menu_item_navigate_go_to_line);
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_revise), data_menu_bar->menu_item_revise_uppercase);
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_revise), data_menu_bar->menu_item_revise_lowercase);
++    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_revise), data_menu_bar->menu_item_revise_remove_trailing_spaces);
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_copy);
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_paste);
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_edit), data_menu_bar->menu_item_edit_paste_as_plain_text);

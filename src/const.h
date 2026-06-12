@@ -84,6 +84,7 @@ struct AirpadDataMenuBar
     GtkWidget *menu_item_navigate_go_to_line;                 // "Navigate -> Go To Line..." menu item.
     GtkWidget *menu_item_revise_uppercase;                    // "Revise -> UPPERCASE" menu item.
     GtkWidget *menu_item_revise_lowercase;                    // "Revise -> Lowercase" menu item.
+    GtkWidget *menu_item_revise_remove_trailing_spaces;       // "Revise -> Remove Trailing Spaces" menu item.
     GtkWidget *menu_item_edit_copy;                             // "Edit -> Copy" menu item.
     GtkWidget *menu_item_edit_paste;                            // "Edit -> Paste" menu item.
     GtkWidget *menu_item_edit_paste_as_plain_text;              // "Edit -> Paste as Plain Text" menu item.
@@ -155,6 +156,7 @@ struct AirpadDataSignals
     gulong menu_item_navigate_go_to_line_activate;             // "Navigate -> Go To Line..." menu item: "activate"
     gulong menu_item_revise_uppercase_activate;                // "Revise -> UPPERCASE" menu item: "activate"
     gulong menu_item_revise_lowercase_activate;                // "Revise -> Lowercase" menu item: "activate"
+    gulong menu_item_revise_remove_trailing_spaces_activate;   // "Revise -> Remove Trailing Spaces" menu item: "activate"
     gulong menu_item_edit_copy_activate;                            // "Edit -> Copy" menu item: "activate"
     gulong menu_item_edit_paste_activate;                           // "Edit -> Paste" menu item: "activate"
     gulong menu_item_edit_paste_as_plain_text_activate;             // "Edit -> Paste as Plain Text" menu item: "activate"

@@ -1,0 +1,117 @@
+P9-004C3 REMOVE TRAILING SPACES AUDIT
+DATE: 2026-06-12T21:30:27+02:00
+
+== GIT STATE ==
+56c4476 (HEAD -> p9-004-command-layer-foundation, origin/p9-004-command-layer-foundation) P9-004C2 Implement lowercase command
+b17d697 P9-004C1 Implement uppercase command
+e27d738 P9-004B2B Implement Go To Line behavior
+3dee8fa P9-004B2A Align command metadata
+6faf169 P9-004B1 Wire Go To Line menu infrastructure
+b826ada P9-004A Command Layer Foundation
+b1b3288 (origin/p2-code-cleanup-audit, p2-code-cleanup-audit) Migrate menu ownership to frozen architecture
+4e68fdf Add source gap audit
+?? p9_audit/P9-004C3_REMOVE_TRAILING_SPACES_AUDIT.txt
+
+== REGISTRY ENTRY ==
+33-    },
+34-    {
+35:        "revise.remove-trailing-spaces",
+36-        "Remove Trailing Spaces",
+37-        "Revise/Cleanup/Remove Trailing Spaces",
+38-        NULL,
+39-        STILUS_CMD_TEXT_MUTATION,
+40-        stilus_cmd_revise_remove_trailing_spaces,
+41-        "Remove trailing spaces and tabs from document lines."
+42-    },
+43-    {
+
+== CALLBACK STUB ==
+38-        NULL,
+39-        STILUS_CMD_TEXT_MUTATION,
+40:        stilus_cmd_revise_remove_trailing_spaces,
+41-        "Remove trailing spaces and tabs from document lines."
+42-    },
+43-    {
+44-        "view.font-bigger",
+45-        "Font Bigger",
+46-        "View/Font Bigger",
+47-        "<Control>plus",
+48-        STILUS_CMD_UI_ONLY | STILUS_CMD_PERSISTENCE,
+49-        stilus_cmd_view_font_bigger,
+50-        "Increase the editor font size."
+51-    },
+52-    {
+--
+204-
+205-void
+206:stilus_cmd_revise_remove_trailing_spaces(GtkWidget *widget, gpointer data)
+207-{
+208-    (void)widget;
+209-    (void)data;
+210-}
+211-
+212-void
+213-stilus_cmd_view_font_bigger(GtkWidget *widget, gpointer data)
+214-{
+215-    (void)widget;
+216-    (void)data;
+217-}
+218-
+
+== REVISE MENU WIRING CURRENT ==
+src/const.h:85:    GtkWidget *menu_item_revise_uppercase;                    // "Revise -> UPPERCASE" menu item.
+src/const.h:86:    GtkWidget *menu_item_revise_lowercase;                    // "Revise -> Lowercase" menu item.
+src/const.h:156:    gulong menu_item_revise_uppercase_activate;                // "Revise -> UPPERCASE" menu item: "activate"
+src/const.h:157:    gulong menu_item_revise_lowercase_activate;                // "Revise -> Lowercase" menu item: "activate"
+src/window.c:78:    data_menu_bar->menu_item_revise_uppercase = gtk_menu_item_new_with_mnemonic(_("_UPPERCASE"));
+src/window.c:79:    data_menu_bar->menu_item_revise_lowercase = gtk_menu_item_new_with_mnemonic(_("_Lowercase"));
+src/window.c:149:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_revise), data_menu_bar->menu_item_revise_uppercase);
+src/window.c:150:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_revise), data_menu_bar->menu_item_revise_lowercase);
+src/main.c:257:    data_application->data_signals->menu_item_revise_uppercase_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_revise_uppercase, "activate", G_CALLBACK(&stilus_cmd_revise_uppercase), data_application);
+src/main.c:258:    data_application->data_signals->menu_item_revise_lowercase_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_revise_lowercase, "activate", G_CALLBACK(&stilus_cmd_revise_lowercase), data_application);
+src/stilus_commands.c:22:        stilus_cmd_revise_uppercase,
+src/stilus_commands.c:31:        stilus_cmd_revise_lowercase,
+src/stilus_commands.c:40:        stilus_cmd_revise_remove_trailing_spaces,
+src/stilus_commands.c:144:stilus_cmd_revise_uppercase(GtkWidget *widget, gpointer data)
+src/stilus_commands.c:175:stilus_cmd_revise_lowercase(GtkWidget *widget, gpointer data)
+src/stilus_commands.c:206:stilus_cmd_revise_remove_trailing_spaces(GtkWidget *widget, gpointer data)
+
+== TEXT BUFFER WHOLE DOCUMENT PATTERNS ==
+src/find.c:135:            gtk_text_buffer_get_end_iter(text_buffer, &iter_start);
+src/find.c:142:            gtk_text_buffer_get_start_iter(text_buffer, &iter_start);
+src/find.c:158:            gtk_text_buffer_get_end_iter(text_buffer, &iter_start);
+src/find.c:163:            gtk_text_buffer_get_start_iter(text_buffer, &iter_start);
+src/aux.c:30:    gtk_text_buffer_get_start_iter(text_buffer, &start);
+src/aux.c:62:                gtk_text_buffer_get_start_iter(text_buffer, &start);
+src/aux.c:63:                gtk_text_buffer_get_end_iter(text_buffer, &end);
+src/aux.c:64:                char *contents = gtk_text_buffer_get_text(text_buffer, &start, &end, FALSE);
+src/edit.c:101:    gtk_text_buffer_get_start_iter(text_buffer, &start);
+src/edit.c:102:    gtk_text_buffer_get_end_iter(text_buffer, &end);
+src/stilus_commands.c:164:    char *selected_text = gtk_text_buffer_get_text(text_buffer, &start, &end, FALSE);
+src/stilus_commands.c:195:    char *selected_text = gtk_text_buffer_get_text(text_buffer, &start, &end, FALSE);
+src/undo.c:357:    airpad_undo_update_current_action(AIRPAD_UNDO_BUFFER_ITEM_TYPE_DELETE, gtk_text_buffer_get_text(text_buffer, start, end, FALSE), pos_start, pos_end, unit_marker_next);
+src/replace.c:170:            gtk_text_buffer_get_end_iter(text_buffer, &iter_start);
+src/replace.c:177:            gtk_text_buffer_get_start_iter(text_buffer, &iter_start);
+src/file.c:32:    gtk_text_buffer_get_start_iter(text_buffer, &start);
+src/file.c:33:    gtk_text_buffer_get_end_iter(text_buffer, &end);
+src/file.c:34:    char *contents = gtk_text_buffer_get_text(text_buffer, &start, &end, FALSE);
+src/file.c:165:    gtk_text_buffer_set_text(text_buffer, "", 0);
+src/file.c:280:    gtk_text_buffer_set_text(text_buffer, contents, length);
+src/window.c:365:    char *text = gtk_text_buffer_get_text(text_buffer, &start, &end, FALSE);
+src/window.c:395:    char *text = gtk_text_buffer_get_text(text_buffer, &start, &end, FALSE);
+src/main.c:216:    gtk_text_buffer_set_text(text_buffer, contents, length);
+
+== DELETE INSERT PATTERNS ==
+src/edit.c:78:    gtk_text_buffer_insert_at_cursor(text_buffer, text, -1);
+src/edit.c:94:    gtk_text_buffer_delete_selection(text_buffer, FALSE, TRUE);
+src/edit.c:121:    gtk_text_buffer_insert_at_cursor(text_buffer, date_time, -1);
+src/stilus_commands.c:167:    gtk_text_buffer_delete(text_buffer, &start, &end);
+src/stilus_commands.c:168:    gtk_text_buffer_insert(text_buffer, &start, upper_text, -1);
+src/stilus_commands.c:198:    gtk_text_buffer_delete(text_buffer, &start, &end);
+src/stilus_commands.c:199:    gtk_text_buffer_insert(text_buffer, &start, lower_text, -1);
+src/undo.c:112:            gtk_text_buffer_delete(text_buffer, &start, &end);
+src/undo.c:120:            gtk_text_buffer_insert(text_buffer, &start, undo_buffer.buffer[undo_buffer.next].text, -1);
+src/undo.c:153:            gtk_text_buffer_insert(text_buffer, &start, undo_buffer.buffer[undo_buffer.next].text, -1);
+src/undo.c:163:            gtk_text_buffer_delete(text_buffer, &start, &end);
+src/replace.c:231:        gtk_text_buffer_delete(text_buffer, &bounds[0], &bounds[1]);
+src/replace.c:233:        gtk_text_buffer_insert_at_cursor(text_buffer, data_application->data_search->text_replace, -1);

@@ -202,11 +202,58 @@ stilus_cmd_revise_lowercase(GtkWidget *widget, gpointer data)
     g_free(selected_text);
 }
 
+
 void
 stilus_cmd_revise_remove_trailing_spaces(GtkWidget *widget, gpointer data)
 {
+    struct AirpadDataApplication *data_application = data;
+
     (void)widget;
-    (void)data;
+
+    if (data_application == NULL ||
+        data_application->data_window == NULL ||
+        data_application->data_window->data_text_view == NULL ||
+        data_application->data_window->data_text_view->text_view == NULL)
+        return;
+
+    GtkWidget *text_view = data_application->data_window->data_text_view->text_view;
+    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
+    gint line_count = gtk_text_buffer_get_line_count(text_buffer);
+
+    for (gint line = line_count - 1; line >= 0; line--)
+    {
+        GtkTextIter line_start;
+        GtkTextIter line_end;
+        GtkTextIter trim_start;
+
+        gtk_text_buffer_get_iter_at_line(text_buffer, &line_start, line);
+        line_end = line_start;
+
+        if (!gtk_text_iter_ends_line(&line_end))
+            gtk_text_iter_forward_to_line_end(&line_end);
+
+        trim_start = line_end;
+
+        while (!gtk_text_iter_equal(&trim_start, &line_start))
+        {
+            GtkTextIter previous = trim_start;
+
+            if (!gtk_text_iter_backward_char(&previous))
+                break;
+
+            gunichar ch = gtk_text_iter_get_char(&previous);
+
+            if (ch == ' ' || ch == '\t')
+                trim_start = previous;
+            else
+                break;
+        }
+
+        if (!gtk_text_iter_equal(&trim_start, &line_end))
+            gtk_text_buffer_delete(text_buffer, &trim_start, &line_end);
+    }
+
+    gtk_widget_grab_focus(text_view);
 }
 
 void

@@ -1,0 +1,153 @@
+P9-004C3 ITERATIVE DELETE FIX AUDIT
+DATE: 2026-06-12T21:54:59+02:00
+
+== GIT STATUS ==
+ M src/const.h
+ M src/main.c
+ M src/stilus_commands.c
+ M src/window.c
+?? p9_audit/P9-004C3_ITERATIVE_DELETE_FIX_AUDIT.txt
+?? p9_audit/P9-004C3_REMOVE_TRAILING_SPACES_AUDIT.txt
+?? p9_audit/P9-004C3_REMOVE_TRAILING_SPACES_BUILD_EVIDENCE.txt
+?? p9_audit/P9-004C3_REMOVE_TRAILING_SPACES_IMPLEMENTATION_AUDIT.txt
+?? p9_audit/P9-004C3_SCROLL_RESET_FAILURE_AUDIT.txt
+?? p9_audit/P9-004C3_SCROLL_RESET_FIX_AUDIT.txt
+?? p9_audit/P9-004C3_SCROLL_RESET_FIX_BUILD_EVIDENCE.txt
+?? p9_audit/P9-004C3_SECOND_FAILURE_AUDIT.txt
+
+== REMOVE TRAILING FUNCTION ==
+    g_free(selected_text);
+}
+
+
+void
+stilus_cmd_revise_remove_trailing_spaces(GtkWidget *widget, gpointer data)
+{
+    struct AirpadDataApplication *data_application = data;
+
+    (void)widget;
+
+    if (data_application == NULL ||
+        data_application->data_window == NULL ||
+        data_application->data_window->data_text_view == NULL ||
+        data_application->data_window->data_text_view->text_view == NULL)
+        return;
+
+    GtkWidget *text_view = data_application->data_window->data_text_view->text_view;
+    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
+    gint line_count = gtk_text_buffer_get_line_count(text_buffer);
+
+    for (gint line = line_count - 1; line >= 0; line--)
+    {
+        GtkTextIter line_start;
+        GtkTextIter line_end;
+        GtkTextIter trim_start;
+
+        gtk_text_buffer_get_iter_at_line(text_buffer, &line_start, line);
+        line_end = line_start;
+
+        if (!gtk_text_iter_ends_line(&line_end))
+            gtk_text_iter_forward_to_line_end(&line_end);
+
+        trim_start = line_end;
+
+        while (!gtk_text_iter_equal(&trim_start, &line_start))
+        {
+            GtkTextIter previous = trim_start;
+
+            if (!gtk_text_iter_backward_char(&previous))
+                break;
+
+            gunichar ch = gtk_text_iter_get_char(&previous);
+
+            if (ch == ' ' || ch == '\t')
+                trim_start = previous;
+            else
+                break;
+        }
+
+        if (!gtk_text_iter_equal(&trim_start, &line_end))
+            gtk_text_buffer_delete(text_buffer, &trim_start, &line_end);
+    }
+
+    gtk_widget_grab_focus(text_view);
+}
+
+void
+stilus_cmd_view_font_bigger(GtkWidget *widget, gpointer data)
+{
+    (void)widget;
+    (void)data;
+}
+
+void
+stilus_cmd_view_font_smaller(GtkWidget *widget, gpointer data)
+{
+    (void)widget;
+    (void)data;
+
+== DIFF ==
+diff --git a/src/stilus_commands.c b/src/stilus_commands.c
+index 475e979..47b37bc 100644
+--- a/src/stilus_commands.c
++++ b/src/stilus_commands.c
+@@ -202,11 +202,58 @@ stilus_cmd_revise_lowercase(GtkWidget *widget, gpointer data)
+     g_free(selected_text);
+ }
+ 
++
+ void
+ stilus_cmd_revise_remove_trailing_spaces(GtkWidget *widget, gpointer data)
+ {
++    struct AirpadDataApplication *data_application = data;
++
+     (void)widget;
+-    (void)data;
++
++    if (data_application == NULL ||
++        data_application->data_window == NULL ||
++        data_application->data_window->data_text_view == NULL ||
++        data_application->data_window->data_text_view->text_view == NULL)
++        return;
++
++    GtkWidget *text_view = data_application->data_window->data_text_view->text_view;
++    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
++    gint line_count = gtk_text_buffer_get_line_count(text_buffer);
++
++    for (gint line = line_count - 1; line >= 0; line--)
++    {
++        GtkTextIter line_start;
++        GtkTextIter line_end;
++        GtkTextIter trim_start;
++
++        gtk_text_buffer_get_iter_at_line(text_buffer, &line_start, line);
++        line_end = line_start;
++
++        if (!gtk_text_iter_ends_line(&line_end))
++            gtk_text_iter_forward_to_line_end(&line_end);
++
++        trim_start = line_end;
++
++        while (!gtk_text_iter_equal(&trim_start, &line_start))
++        {
++            GtkTextIter previous = trim_start;
++
++            if (!gtk_text_iter_backward_char(&previous))
++                break;
++
++            gunichar ch = gtk_text_iter_get_char(&previous);
++
++            if (ch == ' ' || ch == '\t')
++                trim_start = previous;
++            else
++                break;
++        }
++
++        if (!gtk_text_iter_equal(&trim_start, &line_end))
++            gtk_text_buffer_delete(text_buffer, &trim_start, &line_end);
++    }
++
++    gtk_widget_grab_focus(text_view);
+ }
+ 
+ void

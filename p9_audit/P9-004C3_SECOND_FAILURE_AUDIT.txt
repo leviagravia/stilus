@@ -1,0 +1,121 @@
+P9-004C3 SECOND FAILURE AUDIT
+DATE: 2026-06-12T21:52:07+02:00
+
+== GIT STATUS ==
+ M src/const.h
+ M src/main.c
+ M src/stilus_commands.c
+ M src/window.c
+?? p9_audit/P9-004C3_REMOVE_TRAILING_SPACES_AUDIT.txt
+?? p9_audit/P9-004C3_REMOVE_TRAILING_SPACES_BUILD_EVIDENCE.txt
+?? p9_audit/P9-004C3_REMOVE_TRAILING_SPACES_IMPLEMENTATION_AUDIT.txt
+?? p9_audit/P9-004C3_SCROLL_RESET_FAILURE_AUDIT.txt
+?? p9_audit/P9-004C3_SCROLL_RESET_FIX_AUDIT.txt
+?? p9_audit/P9-004C3_SCROLL_RESET_FIX_BUILD_EVIDENCE.txt
+?? p9_audit/P9-004C3_SECOND_FAILURE_AUDIT.txt
+
+== CURRENT REMOVE TRAILING FUNCTION ==
+    g_free(selected_text);
+}
+
+
+static char *
+stilus_remove_trailing_spaces_from_text(const char *text)
+{
+    GString *out = g_string_new(NULL);
+    gsize i = 0;
+
+    while (text[i] != '\0')
+    {
+        gsize line_start = i;
+        gsize line_end = i;
+
+        while (text[line_end] != '\0' && text[line_end] != '\n' && text[line_end] != '\r')
+            line_end++;
+
+        gsize trimmed_end = line_end;
+        while (trimmed_end > line_start &&
+               (text[trimmed_end - 1] == ' ' || text[trimmed_end - 1] == '\t'))
+            trimmed_end--;
+
+        g_string_append_len(out, text + line_start, trimmed_end - line_start);
+
+        if (text[line_end] == '\r' && text[line_end + 1] == '\n')
+        {
+            g_string_append(out, "\r\n");
+            i = line_end + 2;
+        }
+        else if (text[line_end] == '\n' || text[line_end] == '\r')
+        {
+            g_string_append_c(out, text[line_end]);
+            i = line_end + 1;
+        }
+        else
+        {
+            i = line_end;
+        }
+    }
+
+    return g_string_free(out, FALSE);
+}
+
+void
+stilus_cmd_revise_remove_trailing_spaces(GtkWidget *widget, gpointer data)
+{
+    struct AirpadDataApplication *data_application = data;
+
+    (void)widget;
+
+    if (data_application == NULL ||
+        data_application->data_window == NULL ||
+        data_application->data_window->data_text_view == NULL ||
+        data_application->data_window->data_text_view->text_view == NULL)
+        return;
+
+    GtkWidget *text_view = data_application->data_window->data_text_view->text_view;
+    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
+    GtkTextIter start;
+    GtkTextIter end;
+
+    GtkTextMark *insert_mark = gtk_text_buffer_get_insert(text_buffer);
+    GtkTextIter cursor_iter;
+    gtk_text_buffer_get_iter_at_mark(text_buffer, &cursor_iter, insert_mark);
+    const gint cursor_offset = gtk_text_iter_get_offset(&cursor_iter);
+
+    gtk_text_buffer_get_start_iter(text_buffer, &start);
+    gtk_text_buffer_get_end_iter(text_buffer, &end);
+
+    char *text = gtk_text_buffer_get_text(text_buffer, &start, &end, FALSE);
+    char *cleaned = stilus_remove_trailing_spaces_from_text(text);
+
+    if (g_strcmp0(text, cleaned) != 0)
+    {
+        gtk_text_buffer_delete(text_buffer, &start, &end);
+        gtk_text_buffer_insert(text_buffer, &start, cleaned, -1);
+
+        GtkTextIter new_end;
+        GtkTextIter restored_cursor;
+        gtk_text_buffer_get_end_iter(text_buffer, &new_end);
+
+        const gint new_end_offset = gtk_text_iter_get_offset(&new_end);
+        const gint restored_offset = MIN(cursor_offset, new_end_offset);
+
+        gtk_text_buffer_get_iter_at_offset(text_buffer, &restored_cursor, restored_offset);
+        gtk_text_buffer_place_cursor(text_buffer, &restored_cursor);
+        gtk_text_view_scroll_to_iter(GTK_TEXT_VIEW(text_view), &restored_cursor, 0.1, TRUE, 0.5, 0.5);
+        gtk_widget_grab_focus(text_view);
+    }
+
+    g_free(cleaned);
+    g_free(text);
+}
+
+
+== GTK TEXT ITER LINE APIs USED IN SOURCE ==
+src/find.c:146:    if (backward ? gtk_text_iter_backward_search(&iter_start, data_search->text_find, search_flags, &bounds[0], &bounds[1], NULL) : gtk_text_iter_forward_search(&iter_start, data_search->text_find, search_flags, &bounds[0], &bounds[1], NULL))
+src/find.c:157:            gtk_text_iter_backward_chars(&iter_end, g_utf8_strlen(data_search->text_find, -1) - 1);
+src/find.c:162:            gtk_text_iter_forward_chars(&iter_end, g_utf8_strlen(data_search->text_find, -1) - 1);
+src/find.c:167:        if (backward ? gtk_text_iter_backward_search(&iter_start, data_search->text_find, search_flags, &bounds[0], &bounds[1], &iter_end) : gtk_text_iter_forward_search(&iter_start, data_search->text_find, search_flags, &bounds[0], &bounds[1], &iter_end))
+src/replace.c:196:    for (GtkTextIter bounds[2];data_application->data_search->backward_search ? gtk_text_iter_backward_search(&iter_start, data_application->data_search->text_find, search_flags, &bounds[0], &bounds[1], NULL) : gtk_text_iter_forward_search(&iter_start, data_application->data_search->text_find, search_flags, &bounds[0], &bounds[1], NULL);)
+src/window.c:417:    const int line = gtk_text_iter_get_line(&cursor) + 1;
+src/window.c:418:    const int column = gtk_text_iter_get_line_offset(&cursor) + 1;

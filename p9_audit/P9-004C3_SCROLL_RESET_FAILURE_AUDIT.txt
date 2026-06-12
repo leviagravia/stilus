@@ -1,0 +1,96 @@
+P9-004C3 SCROLL RESET FAILURE AUDIT
+DATE: 2026-06-12T21:45:52+02:00
+
+== GIT STATUS ==
+ M src/const.h
+ M src/main.c
+ M src/stilus_commands.c
+ M src/window.c
+?? p9_audit/P9-004C3_REMOVE_TRAILING_SPACES_AUDIT.txt
+?? p9_audit/P9-004C3_REMOVE_TRAILING_SPACES_BUILD_EVIDENCE.txt
+?? p9_audit/P9-004C3_REMOVE_TRAILING_SPACES_IMPLEMENTATION_AUDIT.txt
+?? p9_audit/P9-004C3_SCROLL_RESET_FAILURE_AUDIT.txt
+
+== REMOVE TRAILING FUNCTION ==
+        }
+    }
+
+    return g_string_free(out, FALSE);
+}
+
+void
+stilus_cmd_revise_remove_trailing_spaces(GtkWidget *widget, gpointer data)
+{
+    struct AirpadDataApplication *data_application = data;
+
+    (void)widget;
+
+    if (data_application == NULL ||
+        data_application->data_window == NULL ||
+        data_application->data_window->data_text_view == NULL ||
+        data_application->data_window->data_text_view->text_view == NULL)
+        return;
+
+    GtkWidget *text_view = data_application->data_window->data_text_view->text_view;
+    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
+    GtkTextIter start;
+    GtkTextIter end;
+
+    gtk_text_buffer_get_start_iter(text_buffer, &start);
+    gtk_text_buffer_get_end_iter(text_buffer, &end);
+
+    char *text = gtk_text_buffer_get_text(text_buffer, &start, &end, FALSE);
+    char *cleaned = stilus_remove_trailing_spaces_from_text(text);
+
+    if (g_strcmp0(text, cleaned) != 0)
+    {
+        gtk_text_buffer_delete(text_buffer, &start, &end);
+        gtk_text_buffer_insert(text_buffer, &start, cleaned, -1);
+    }
+
+    g_free(cleaned);
+    g_free(text);
+}
+
+void
+stilus_cmd_view_font_bigger(GtkWidget *widget, gpointer data)
+{
+    (void)widget;
+    (void)data;
+}
+
+== EXISTING CURSOR OFFSET PATTERNS ==
+src/find.c:181:    GtkTextMark *mark_insert = gtk_text_buffer_get_insert(text_buffer);
+src/find.c:201:        gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view), mark_insert, 0.0, TRUE, 0.5, 0.5);
+src/find.c:222:    GtkTextMark *mark_insert = gtk_text_buffer_get_insert(text_buffer);
+src/find.c:235:        gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view), mark_insert, 0.0, TRUE, 0.5, 0.5);
+src/find.c:253:    GtkTextMark *mark_insert = gtk_text_buffer_get_insert(text_buffer);
+src/find.c:268:        gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view), mark_insert, 0.0, TRUE, 0.5, 0.5);
+src/edit.c:37:    gtk_text_view_scroll_mark_onscreen(text_view, gtk_text_buffer_get_insert(text_buffer));
+src/stilus_commands.c:136:        gtk_text_view_scroll_to_iter(GTK_TEXT_VIEW(text_view), &iter, 0.1, TRUE, 0.5, 0.5);
+src/undo.c:110:            gtk_text_buffer_get_iter_at_offset(text_buffer, &start, undo_buffer.buffer[undo_buffer.next].position[0]);
+src/undo.c:111:            gtk_text_buffer_get_iter_at_offset(text_buffer, &end, undo_buffer.buffer[undo_buffer.next].position[1]);
+src/undo.c:113:            gtk_text_buffer_get_iter_at_offset(text_buffer, &start, undo_buffer.buffer[undo_buffer.next].position[0]);
+src/undo.c:119:            gtk_text_buffer_get_iter_at_offset(text_buffer, &start, undo_buffer.buffer[undo_buffer.next].position[0]);
+src/undo.c:121:            gtk_text_buffer_get_iter_at_offset(text_buffer, &start, undo_buffer.buffer[undo_buffer.next].position[0]);
+src/undo.c:122:            gtk_text_buffer_get_iter_at_offset(text_buffer, &end, undo_buffer.buffer[undo_buffer.next].position[1]);
+src/undo.c:152:            gtk_text_buffer_get_iter_at_offset(text_buffer, &start, undo_buffer.buffer[undo_buffer.next].position[0]);
+src/undo.c:154:            gtk_text_buffer_get_iter_at_offset(text_buffer, &start, undo_buffer.buffer[undo_buffer.next].position[0]);
+src/undo.c:155:            gtk_text_buffer_get_iter_at_offset(text_buffer, &end, undo_buffer.buffer[undo_buffer.next].position[1]);
+src/undo.c:161:            gtk_text_buffer_get_iter_at_offset(text_buffer, &start, undo_buffer.buffer[undo_buffer.next].position[0]);
+src/undo.c:162:            gtk_text_buffer_get_iter_at_offset(text_buffer, &end, undo_buffer.buffer[undo_buffer.next].position[1]);
+src/undo.c:164:            gtk_text_buffer_get_iter_at_offset(text_buffer, &start, undo_buffer.buffer[undo_buffer.next].position[0]);
+src/undo.c:319:    const int pos_start = gtk_text_iter_get_offset(position);
+src/undo.c:344:    const int pos_start = gtk_text_iter_get_offset(start);
+src/undo.c:345:    const int pos_end = gtk_text_iter_get_offset(end);
+src/undo.c:399:    gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view), gtk_text_buffer_get_selection_bound(text_buffer), 0.1, FALSE, 0.0, 0.0);
+src/undo.c:435:    gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view), gtk_text_buffer_get_selection_bound(text_buffer), 0.1, FALSE, 0.0, 0.0);
+src/replace.c:203:            gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view), gtk_text_buffer_get_insert(text_buffer), 0.0, TRUE, 0.5, 0.1);
+src/replace.c:204:            last_cursor_pos = gtk_text_iter_get_offset(&bounds[0]);
+src/replace.c:224:        else if (last_cursor_pos > gtk_text_iter_get_offset(&bounds[0]))
+src/replace.c:228:        const int pos_bounds[2] = {gtk_text_iter_get_offset(&bounds[0]), gtk_text_iter_get_offset(&bounds[1])};
+src/replace.c:243:        gtk_text_buffer_get_iter_at_offset(text_buffer, &iter_start, data_application->data_search->backward_search ? pos_bounds[0] : pos_bounds[1] + replace_adjustment);
+src/replace.c:260:        gtk_text_buffer_get_iter_at_offset(text_buffer, &iter_last_cursor_pos, last_cursor_pos);
+src/replace.c:274:    GtkTextMark *mark_insert = gtk_text_buffer_get_insert(text_buffer);
+src/window.c:414:    GtkTextMark *insert_mark = gtk_text_buffer_get_insert(text_buffer);
+src/window.c:444:    if (mark != gtk_text_buffer_get_insert(text_buffer))
