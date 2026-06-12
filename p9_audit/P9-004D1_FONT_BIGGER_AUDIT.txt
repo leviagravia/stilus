@@ -1,0 +1,121 @@
+P9-004D1 FONT BIGGER AUDIT
+DATE: 2026-06-12T22:05:01+02:00
+
+== GIT STATE ==
+e67248e (HEAD -> p9-004-command-layer-foundation, origin/p9-004-command-layer-foundation) P9-004C3 Implement remove trailing spaces command
+56c4476 P9-004C2 Implement lowercase command
+b17d697 P9-004C1 Implement uppercase command
+e27d738 P9-004B2B Implement Go To Line behavior
+3dee8fa P9-004B2A Align command metadata
+6faf169 P9-004B1 Wire Go To Line menu infrastructure
+b826ada P9-004A Command Layer Foundation
+b1b3288 (origin/p2-code-cleanup-audit, p2-code-cleanup-audit) Migrate menu ownership to frozen architecture
+4e68fdf Add source gap audit
+73232c7 Add canonical corpus classification
+?? p9_audit/P9-004D1_FONT_BIGGER_AUDIT.txt
+
+== REGISTRY ENTRY ==
+42-    },
+43-    {
+44:        "view.font-bigger",
+45-        "Font Bigger",
+46-        "View/Font Bigger",
+47-        "<Control>plus",
+48-        STILUS_CMD_UI_ONLY | STILUS_CMD_PERSISTENCE,
+49-        stilus_cmd_view_font_bigger,
+50-        "Increase the editor font size."
+51-    },
+52-    {
+
+== CALLBACK STUB ==
+47-        "<Control>plus",
+48-        STILUS_CMD_UI_ONLY | STILUS_CMD_PERSISTENCE,
+49:        stilus_cmd_view_font_bigger,
+50-        "Increase the editor font size."
+51-    },
+52-    {
+53-        "view.font-smaller",
+54-        "Font Smaller",
+55-        "View/Font Smaller",
+56-        "<Control>minus",
+57-        STILUS_CMD_UI_ONLY | STILUS_CMD_PERSISTENCE,
+58-        stilus_cmd_view_font_smaller,
+59-        "Decrease the editor font size."
+60-    }
+61-};
+--
+258-
+259-void
+260:stilus_cmd_view_font_bigger(GtkWidget *widget, gpointer data)
+261-{
+262-    (void)widget;
+263-    (void)data;
+264-}
+265-
+266-void
+267-stilus_cmd_view_font_smaller(GtkWidget *widget, gpointer data)
+268-{
+269-    (void)widget;
+270-    (void)data;
+271-}
+
+== VIEW/FONT MENU CURRENT ==
+src/const.h:75:    GtkWidget *menu_item_view;                                  // "View" menu item.
+src/const.h:101:    GtkWidget *menu_item_view_fullscreen;                       // "View -> Fullscreen" menu item.
+src/const.h:102:    GtkWidget *menu_item_view_always_on_top;                    // "View -> Always on Top" menu item.
+src/const.h:103:    GtkWidget *menu_item_options_font;                          // "Options-> Font..." menu item.
+src/const.h:173:    gulong menu_item_view_fullscreen_activate;                      // "View -> Fullscreen" menu item: "activate"
+src/const.h:174:    gulong menu_item_view_always_on_top_activate;                 // "View -> Always on Top" menu item: "activate"
+src/const.h:175:    gulong menu_item_options_font_activate;                         // "Options -> Font" menu item: "activate"
+src/window.c:62:    data_menu_bar->menu_item_view = gtk_menu_item_new_with_mnemonic(_("_View"));
+src/window.c:100:    data_menu_bar->menu_item_view_fullscreen = gtk_check_menu_item_new_with_mnemonic(_("_Fullscreen"));
+src/window.c:101:    data_menu_bar->menu_item_view_always_on_top = gtk_check_menu_item_new_with_mnemonic(_("_Always on Top"));
+src/window.c:104:    data_menu_bar->menu_item_options_font = gtk_menu_item_new_with_mnemonic(_("_Font\u2026"));
+src/window.c:132:    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_view), data_menu_bar->menu_view);
+src/window.c:169:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_view), data_menu_bar->menu_item_view_fullscreen);
+src/window.c:170:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_view), data_menu_bar->menu_item_view_always_on_top);
+src/window.c:172:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_view), data_menu_bar->menu_item_options_font);
+src/window.c:195:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_bar), data_menu_bar->menu_item_view);
+src/window.c:265:    gtk_widget_add_accelerator(data_window->data_menu_bar->menu_item_view_fullscreen, "activate", accel_group, GDK_KEY_F11, 0, GTK_ACCEL_VISIBLE);
+src/window.c:279:        gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data_window->data_menu_bar->menu_item_view_fullscreen), event->new_window_state & GDK_WINDOW_STATE_FULLSCREEN);
+src/main.c:273:    data_application->data_signals->menu_item_view_fullscreen_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_view_fullscreen, "activate", G_CALLBACK(&airpad_view_fullscreen), data_application->data_window->window);
+src/main.c:274:    data_application->data_signals->menu_item_view_always_on_top_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_view_always_on_top, "activate", G_CALLBACK(&airpad_view_always_on_top), data_application->data_window->window);
+src/main.c:275:    data_application->data_signals->menu_item_options_font_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_options_font, "activate", G_CALLBACK(&airpad_font_choose_font), data_application);
+src/stilus_commands.c:45:        "Font Bigger",
+src/stilus_commands.c:46:        "View/Font Bigger",
+src/stilus_commands.c:49:        stilus_cmd_view_font_bigger,
+src/stilus_commands.c:54:        "Font Smaller",
+src/stilus_commands.c:55:        "View/Font Smaller",
+src/stilus_commands.c:58:        stilus_cmd_view_font_smaller,
+src/stilus_commands.c:260:stilus_cmd_view_font_bigger(GtkWidget *widget, gpointer data)
+src/stilus_commands.c:267:stilus_cmd_view_font_smaller(GtkWidget *widget, gpointer data)
+
+== FONT FUNCTIONS ==
+src/font.c:25:// Displays a font chooser dialog to the user.
+src/font.c:27:// and option values are updated if the user selects a font.
+src/font.c:28:void airpad_font_choose_font(GtkWidget *widget, const struct AirpadDataApplication *data_application)
+src/font.c:30:    GtkWidget *dialog = gtk_font_chooser_dialog_new(_("Select font"), GTK_WINDOW(data_application->data_window->window));
+src/font.c:32:    if (data_application->data_options->font)
+src/font.c:33:        gtk_font_chooser_set_font(GTK_FONT_CHOOSER(dialog), data_application->data_options->font);
+src/font.c:37:        g_free(data_application->data_options->font);
+src/font.c:38:        data_application->data_options->font = gtk_font_chooser_get_font(GTK_FONT_CHOOSER(dialog));
+src/font.c:40:        airpad_window_set_font(data_application->data_window, data_application->data_options->font);
+src/window.c:104:    data_menu_bar->menu_item_options_font = gtk_menu_item_new_with_mnemonic(_("_Font\u2026"));
+src/window.c:172:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_view), data_menu_bar->menu_item_options_font);
+src/window.c:479:// Overrides the font of the text view.
+src/window.c:480:void airpad_window_set_font(const struct AirpadDataWindow *data_window, const char *font)
+src/window.c:482:    PangoFontDescription *font_desc = pango_font_description_from_string(font);
+src/window.c:483:    gtk_widget_override_font(data_window->data_text_view->text_view, font_desc);
+src/window.c:484:    pango_font_description_free(font_desc);
+src/options.c:111:    AIRPAD_OPTIONS_READ_VALUE(string, data_options->font, "font", NULL)
+src/options.c:125:    AIRPAD_OPTIONS_WRITE_VALUE(g_key_file_set_string, data_options->font, data_options->font, "font")
+src/const.h:103:    GtkWidget *menu_item_options_font;                          // "Options-> Font..." menu item.
+src/const.h:175:    gulong menu_item_options_font_activate;                         // "Options -> Font" menu item: "activate"
+src/const.h:215:    char *font;
+
+== OPTIONS FONT STORAGE ==
+src/options.c:111:    AIRPAD_OPTIONS_READ_VALUE(string, data_options->font, "font", NULL)
+src/options.c:125:    AIRPAD_OPTIONS_WRITE_VALUE(g_key_file_set_string, data_options->font, data_options->font, "font")
+src/const.h:103:    GtkWidget *menu_item_options_font;                          // "Options-> Font..." menu item.
+src/const.h:175:    gulong menu_item_options_font_activate;                         // "Options -> Font" menu item: "activate"
+src/const.h:215:    char *font;

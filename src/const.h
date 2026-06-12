@@ -100,6 +100,7 @@ struct AirpadDataMenuBar
     GtkWidget *menu_item_search_replace;                        // "Search -> Replace..." menu item.
     GtkWidget *menu_item_view_fullscreen;                       // "View -> Fullscreen" menu item.
     GtkWidget *menu_item_view_always_on_top;                    // "View -> Always on Top" menu item.
+    GtkWidget *menu_item_view_font_bigger;                      // "View -> Font Bigger" menu item.
     GtkWidget *menu_item_options_font;                          // "Options-> Font..." menu item.
     GtkWidget *menu_item_options_text_wrap;                     // "Options -> Text Wrap" menu item.
     GtkWidget *menu_item_options_text_wrap_none;                // "Options -> Text Wrap -> None" menu item.
@@ -172,6 +173,7 @@ struct AirpadDataSignals
     gulong menu_item_search_replace_activate;                       // "Search -> Replace" menu item: "activate"
     gulong menu_item_view_fullscreen_activate;                      // "View -> Fullscreen" menu item: "activate"
     gulong menu_item_view_always_on_top_activate;                 // "View -> Always on Top" menu item: "activate"
+    gulong menu_item_view_font_bigger_activate;                   // "View -> Font Bigger" menu item: "activate"
     gulong menu_item_options_font_activate;                         // "Options -> Font" menu item: "activate"
     gulong menu_item_options_text_wrap_none_toggled;                // "Options -> Text Wrap -> None": "toggled"
     gulong menu_item_options_text_wrap_on_word_toggled;             // "Options -> Text Wrap -> On Word": "toggled"
