@@ -1,0 +1,247 @@
+P10-002 WORD GOAL FUNCTION RECOVERY AUDIT
+DATE: 2026-06-13T09:24:05+02:00
+
+== FUNCTION CHECK ==
+27-        "writing.word-goal",
+28-        "Word Goal...",
+29-        "Writing/Word Goal...",
+30-        NULL,
+31-        STILUS_CMD_UI_ONLY | STILUS_CMD_DIALOG | STILUS_CMD_PERSISTENCE,
+32:        stilus_cmd_writing_word_goal,
+33-        "Set the document word goal."
+34-    },
+35-    {
+36-        "revise.uppercase",
+37-        "UPPERCASE",
+38-        "Revise/Case/UPPERCASE",
+39-        NULL,
+40-        STILUS_CMD_TEXT_MUTATION | STILUS_CMD_REQUIRES_SELECTION,
+41-        stilus_cmd_revise_uppercase,
+42-        "Convert the selected text to uppercase."
+43-    },
+44-    {
+45-        "revise.lowercase",
+46-        "Lowercase",
+47-        "Revise/Case/Lowercase",
+48-        NULL,
+49-        STILUS_CMD_TEXT_MUTATION | STILUS_CMD_REQUIRES_SELECTION,
+50-        stilus_cmd_revise_lowercase,
+51-        "Convert the selected text to lowercase."
+52-    },
+53-    {
+54-        "revise.remove-trailing-spaces",
+55-        "Remove Trailing Spaces",
+56-        "Revise/Cleanup/Remove Trailing Spaces",
+57-        NULL,
+58-        STILUS_CMD_TEXT_MUTATION,
+59-        stilus_cmd_revise_remove_trailing_spaces,
+60-        "Remove trailing spaces and tabs from document lines."
+61-    },
+62-    {
+63-        "view.font-bigger",
+64-        "Font Bigger",
+65-        "View/Font Bigger",
+66-        "<Control>plus",
+67-        STILUS_CMD_UI_ONLY | STILUS_CMD_PERSISTENCE,
+68-        stilus_cmd_view_font_bigger,
+69-        "Increase the editor font size."
+70-    },
+71-    {
+72-        "view.font-smaller",
+73-        "Font Smaller",
+74-        "View/Font Smaller",
+75-        "<Control>minus",
+76-        STILUS_CMD_UI_ONLY | STILUS_CMD_PERSISTENCE,
+77-        stilus_cmd_view_font_smaller,
+78-        "Decrease the editor font size."
+79-    }
+80-};
+81-
+82-const StilusCommand *
+83-stilus_commands_get_all(gsize *count)
+84-{
+85-    if (count != NULL)
+86-        *count = G_N_ELEMENTS(stilus_commands);
+87-
+88-    return stilus_commands;
+89-}
+90-
+91-const StilusCommand *
+92-stilus_commands_find_by_id(const char *id)
+93-{
+94-    gsize i;
+95-
+96-    if (id == NULL)
+97-        return NULL;
+98-
+99-    for (i = 0; i < G_N_ELEMENTS(stilus_commands); i++)
+100-    {
+101-        if (g_strcmp0(stilus_commands[i].id, id) == 0)
+102-            return &stilus_commands[i];
+--
+106-}
+107-
+108-
+109-
+110-void
+111:stilus_cmd_writing_word_goal(GtkWidget *widget, gpointer data)
+112-{
+113-    struct AirpadDataApplication *data_application = data;
+114-
+115-    (void)widget;
+116-
+117-    if (data_application == NULL ||
+118-        data_application->data_window == NULL ||
+119-        data_application->data_options == NULL)
+120-        return;
+121-
+122-    GtkWidget *dialog = gtk_dialog_new_with_buttons(
+123-        _("Word Goal"),
+124-        GTK_WINDOW(data_application->data_window->window),
+125-        GTK_DIALOG_MODAL,
+126-        _("Cancel"),
+127-        GTK_RESPONSE_CANCEL,
+128-        _("OK"),
+129-        GTK_RESPONSE_ACCEPT,
+130-        NULL);
+131-
+132-    GtkWidget *content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+133-    GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
+134-    GtkWidget *label = gtk_label_new(_("Target word count:"));
+135-    GtkAdjustment *adjustment = gtk_adjustment_new(
+136-        data_application->data_options->word_goal,
+137-        0,
+138-        1000000,
+139-        100,
+140-        1000,
+141-        0);
+142-    GtkWidget *spin_button = gtk_spin_button_new(adjustment, 1, 0);
+143-
+144-    gtk_container_set_border_width(GTK_CONTAINER(box), 8);
+145-    gtk_box_pack_start(GTK_BOX(box), label, FALSE, FALSE, 0);
+146-    gtk_box_pack_start(GTK_BOX(box), spin_button, FALSE, FALSE, 0);
+147-    gtk_container_add(GTK_CONTAINER(content_area), box);
+148-
+149-    gtk_widget_show_all(dialog);
+150-
+151-    if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
+152-        data_application->data_options->word_goal = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spin_button));
+153-
+154-    gtk_widget_destroy(dialog);
+155-}
+156-
+157-static guint
+158-stilus_count_words_in_text(const char *text)
+159-{
+160-    guint words = 0;
+161-    gboolean in_word = FALSE;
+162-
+163-    for (const char *p = text; p != NULL && *p != '\0'; p = g_utf8_next_char(p))
+164-    {
+165-        gunichar ch = g_utf8_get_char(p);
+166-
+167-        if (g_unichar_isspace(ch))
+168-        {
+169-            in_word = FALSE;
+170-        }
+171-        else if (!in_word)
+172-        {
+173-            in_word = TRUE;
+174-            words++;
+175-        }
+176-    }
+177-
+178-    return words;
+179-}
+180-
+181-static guint
+
+== GIT STATUS ==
+ M src/const.h
+ M src/main.c
+ M src/options.c
+ M src/stilus_commands.c
+ M src/stilus_commands.h
+ M src/window.c
+?? p9_audit/P10-002_IMPLEMENTATION_READINESS.txt
+?? p9_audit/P10-002_WORD_GOAL_AUDIT.txt
+?? p9_audit/P10-002_WORD_GOAL_FUNCTION_RECOVERY_AUDIT.txt
+?? p9_audit/P10-002_WORD_GOAL_IMPLEMENTATION_AUDIT.txt
+?? p9_audit/P10-002_WORD_GOAL_OPTIONS_MICRO_AUDIT.txt
+
+== DIFF ==
+diff --git a/src/stilus_commands.c b/src/stilus_commands.c
+index 5fa4716..dd18d7c 100644
+--- a/src/stilus_commands.c
++++ b/src/stilus_commands.c
+@@ -23,6 +23,15 @@ static const StilusCommand stilus_commands[] =
+         stilus_cmd_writing_statistics,
+         "Show document writing statistics."
+     },
++    {
++        "writing.word-goal",
++        "Word Goal...",
++        "Writing/Word Goal...",
++        NULL,
++        STILUS_CMD_UI_ONLY | STILUS_CMD_DIALOG | STILUS_CMD_PERSISTENCE,
++        stilus_cmd_writing_word_goal,
++        "Set the document word goal."
++    },
+     {
+         "revise.uppercase",
+         "UPPERCASE",
+@@ -97,6 +106,54 @@ stilus_commands_find_by_id(const char *id)
+ }
+ 
+ 
++
++void
++stilus_cmd_writing_word_goal(GtkWidget *widget, gpointer data)
++{
++    struct AirpadDataApplication *data_application = data;
++
++    (void)widget;
++
++    if (data_application == NULL ||
++        data_application->data_window == NULL ||
++        data_application->data_options == NULL)
++        return;
++
++    GtkWidget *dialog = gtk_dialog_new_with_buttons(
++        _("Word Goal"),
++        GTK_WINDOW(data_application->data_window->window),
++        GTK_DIALOG_MODAL,
++        _("Cancel"),
++        GTK_RESPONSE_CANCEL,
++        _("OK"),
++        GTK_RESPONSE_ACCEPT,
++        NULL);
++
++    GtkWidget *content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
++    GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
++    GtkWidget *label = gtk_label_new(_("Target word count:"));
++    GtkAdjustment *adjustment = gtk_adjustment_new(
++        data_application->data_options->word_goal,
++        0,
++        1000000,
++        100,
++        1000,
++        0);
++    GtkWidget *spin_button = gtk_spin_button_new(adjustment, 1, 0);
++
++    gtk_container_set_border_width(GTK_CONTAINER(box), 8);
++    gtk_box_pack_start(GTK_BOX(box), label, FALSE, FALSE, 0);
++    gtk_box_pack_start(GTK_BOX(box), spin_button, FALSE, FALSE, 0);
++    gtk_container_add(GTK_CONTAINER(content_area), box);
++
++    gtk_widget_show_all(dialog);
++
++    if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
++        data_application->data_options->word_goal = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spin_button));
++
++    gtk_widget_destroy(dialog);
++}
++
+ static guint
+ stilus_count_words_in_text(const char *text)
+ {

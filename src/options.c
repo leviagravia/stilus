@@ -112,6 +112,7 @@ void airpad_options_read(struct AirpadDataOptions *data_options)
     AIRPAD_OPTIONS_READ_VALUE(boolean, data_options->overlay_scrolling, "overlay-scrolling", TRUE)
     AIRPAD_OPTIONS_READ_VALUE(integer, data_options->text_wrap, "text-wrap", GTK_WRAP_NONE)
     AIRPAD_OPTIONS_READ_VALUE(integer, data_options->scrollbar_policy, "scrollbar-policy", GTK_POLICY_AUTOMATIC)
+    AIRPAD_OPTIONS_READ_VALUE(integer, data_options->word_goal, "word-goal", 0)
 
 #undef AIRPAD_OPTIONS_READ_VALUE
 }
@@ -126,6 +127,7 @@ void airpad_options_write(const struct AirpadDataOptions *data_options)
     AIRPAD_OPTIONS_WRITE_VALUE(g_key_file_set_boolean, TRUE, data_options->overlay_scrolling, "overlay-scrolling")
     AIRPAD_OPTIONS_WRITE_VALUE(g_key_file_set_integer, TRUE, data_options->text_wrap, "text-wrap")
     AIRPAD_OPTIONS_WRITE_VALUE(g_key_file_set_integer, TRUE, data_options->scrollbar_policy, "scrollbar-policy")
+    AIRPAD_OPTIONS_WRITE_VALUE(g_key_file_set_integer, TRUE, data_options->word_goal, "word-goal")
 
 #undef AIRPAD_OPTIONS_WRITE_VALUE
 }

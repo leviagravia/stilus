@@ -24,6 +24,15 @@ static const StilusCommand stilus_commands[] =
         "Show document writing statistics."
     },
     {
+        "writing.word-goal",
+        "Word Goal...",
+        "Writing/Word Goal...",
+        NULL,
+        STILUS_CMD_UI_ONLY | STILUS_CMD_DIALOG | STILUS_CMD_PERSISTENCE,
+        stilus_cmd_writing_word_goal,
+        "Set the document word goal."
+    },
+    {
         "revise.uppercase",
         "UPPERCASE",
         "Revise/Case/UPPERCASE",
@@ -96,6 +105,54 @@ stilus_commands_find_by_id(const char *id)
     return NULL;
 }
 
+
+
+void
+stilus_cmd_writing_word_goal(GtkWidget *widget, gpointer data)
+{
+    struct AirpadDataApplication *data_application = data;
+
+    (void)widget;
+
+    if (data_application == NULL ||
+        data_application->data_window == NULL ||
+        data_application->data_options == NULL)
+        return;
+
+    GtkWidget *dialog = gtk_dialog_new_with_buttons(
+        _("Word Goal"),
+        GTK_WINDOW(data_application->data_window->window),
+        GTK_DIALOG_MODAL,
+        _("Cancel"),
+        GTK_RESPONSE_CANCEL,
+        _("OK"),
+        GTK_RESPONSE_ACCEPT,
+        NULL);
+
+    GtkWidget *content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+    GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
+    GtkWidget *label = gtk_label_new(_("Target word count:"));
+    GtkAdjustment *adjustment = gtk_adjustment_new(
+        data_application->data_options->word_goal,
+        0,
+        1000000,
+        100,
+        1000,
+        0);
+    GtkWidget *spin_button = gtk_spin_button_new(adjustment, 1, 0);
+
+    gtk_container_set_border_width(GTK_CONTAINER(box), 8);
+    gtk_box_pack_start(GTK_BOX(box), label, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(box), spin_button, FALSE, FALSE, 0);
+    gtk_container_add(GTK_CONTAINER(content_area), box);
+
+    gtk_widget_show_all(dialog);
+
+    if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
+        data_application->data_options->word_goal = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spin_button));
+
+    gtk_widget_destroy(dialog);
+}
 
 static guint
 stilus_count_words_in_text(const char *text)

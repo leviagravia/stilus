@@ -1,0 +1,149 @@
+P10-003 CLEAR WORD GOAL AUDIT
+DATE: 2026-06-13T09:31:15+02:00
+
+45-Word Goal
+46-
+47-Reason:
+48-Can be implemented as simple numeric target.
+49-No TextBuffer mutation.
+50-No undo impact.
+51-No file lifecycle impact.
+52-
+53-----------------------------------------------------
+54-
+55:Clear Word Goal
+56-
+57-Reason:
+58-Clears stored numeric target.
+59-No document mutation.
+60-
+61-====================================================
+62-LOW / MEDIUM RISK
+63-====================================================
+64-
+65-Reading Layout
+66-
+67-Reason:
+68-Can reuse existing font, wrap and scroll policy infrastructure.
+69-Requires UI policy but not document mutation.
+70-
+71-====================================================
+72-MEDIUM RISK
+73-====================================================
+74-
+75-Focus Mode
+76-
+77-Reason:
+78-Requires temporary UI hiding/showing policy:
+79-menu bar
+80-status bar
+81-future panels.
+82-
+83-No file lifecycle impact.
+84-
+85-----------------------------------------------------
+86-
+87-Typewriter Mode
+88-
+89-Reason:
+90-Requires cursor tracking and scroll synchronization.
+91-Source already uses scroll_to_mark patterns.
+92-
+93-====================================================
+94-MEDIUM / HIGH RISK
+95-====================================================
+96-
+97-Focus Paragraph
+98-
+99-Reason:
+100-Requires paragraph detection, highlight/dimming policy and redraw behavior.
+101-GtkTextView does not provide this for free.
+102-
+103-====================================================
+104-HIGH RISK
+105-====================================================
+106-
+107-None currently classified as HIGH in Writing Menu Phase 1.
+108-
+109-====================================================
+110-IMPLEMENTATION ORDER
+111-====================================================
+112-
+113-Phase 1
+114-
+115-Writing Statistics
+116-Word Goal
+117:Clear Word Goal
+118-
+119-----------------------------------------------------
+120-
+121-Phase 2
+122-
+123-Reading Layout
+124-
+125-----------------------------------------------------
+126-
+127-Phase 3
+128-
+129-Focus Mode
+130-
+131-----------------------------------------------------
+132-
+133-Phase 4
+134-
+135-Typewriter Mode
+136-
+137-----------------------------------------------------
+138-
+139-Deferred
+140-
+141-Focus Paragraph
+142-
+143-====================================================
+144-POLICY
+145-====================================================
+146-
+147-No Writing Menu implementation may bypass this classification.
+148-
+149-Writing features must not mutate document text unless explicitly designed to insert text.
+150-
+151-Writing features must preserve:
+152-file lifecycle
+153-save lifecycle
+154-undo/redo behavior
+155-TextBuffer integrity
+
+== CURRENT WORD GOAL IMPLEMENTATION ==
+src/stilus_commands.c:27:        "writing.word-goal",
+src/stilus_commands.c:28:        "Word Goal...",
+src/stilus_commands.c:29:        "Writing/Word Goal...",
+src/stilus_commands.c:32:        stilus_cmd_writing_word_goal,
+src/stilus_commands.c:111:stilus_cmd_writing_word_goal(GtkWidget *widget, gpointer data)
+src/stilus_commands.c:123:        _("Word Goal"),
+src/stilus_commands.c:136:        data_application->data_options->word_goal,
+src/stilus_commands.c:152:        data_application->data_options->word_goal = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spin_button));
+src/stilus_commands.h:34:void stilus_cmd_writing_word_goal(GtkWidget *widget, gpointer data);
+src/options.c:115:    AIRPAD_OPTIONS_READ_VALUE(integer, data_options->word_goal, "word-goal", 0)
+src/options.c:130:    AIRPAD_OPTIONS_WRITE_VALUE(g_key_file_set_integer, TRUE, data_options->word_goal, "word-goal")
+src/const.h:74:    GtkWidget *menu_item_writing_word_goal;                     // "Writing -> Word Goal..." menu item.
+src/const.h:162:    gulong menu_item_writing_word_goal_activate;               // "Writing -> Word Goal..." menu item: "activate"
+src/const.h:227:    gint word_goal;
+src/window.c:61:    data_menu_bar->menu_item_writing_word_goal = gtk_menu_item_new_with_mnemonic(_("Word _Goal..."));
+src/window.c:155:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_writing), data_menu_bar->menu_item_writing_word_goal);
+src/main.c:258:    data_application->data_signals->menu_item_writing_word_goal_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_writing_word_goal, "activate", G_CALLBACK(&stilus_cmd_writing_word_goal), data_application);
+
+== WRITING MENU SIGNALS ==
+src/const.h:72:    GtkWidget *menu_item_writing;                               // "Writing" menu item.
+src/const.h:73:    GtkWidget *menu_item_writing_statistics;                    // "Writing -> Writing Statistics" menu item.
+src/const.h:74:    GtkWidget *menu_item_writing_word_goal;                     // "Writing -> Word Goal..." menu item.
+src/const.h:161:    gulong menu_item_writing_statistics_activate;              // "Writing -> Writing Statistics" menu item: "activate"
+src/const.h:162:    gulong menu_item_writing_word_goal_activate;               // "Writing -> Word Goal..." menu item: "activate"
+src/window.c:59:    data_menu_bar->menu_item_writing = gtk_menu_item_new_with_mnemonic(_("_Writing"));
+src/window.c:60:    data_menu_bar->menu_item_writing_statistics = gtk_menu_item_new_with_mnemonic(_("Writing _Statistics"));
+src/window.c:61:    data_menu_bar->menu_item_writing_word_goal = gtk_menu_item_new_with_mnemonic(_("Word _Goal..."));
+src/window.c:133:    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_writing), data_menu_bar->menu_writing);
+src/window.c:154:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_writing), data_menu_bar->menu_item_writing_statistics);
+src/window.c:155:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_writing), data_menu_bar->menu_item_writing_word_goal);
+src/window.c:201:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_bar), data_menu_bar->menu_item_writing);
+src/main.c:257:    data_application->data_signals->menu_item_writing_statistics_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_writing_statistics, "activate", G_CALLBACK(&stilus_cmd_writing_statistics), data_application);
+src/main.c:258:    data_application->data_signals->menu_item_writing_word_goal_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_writing_word_goal, "activate", G_CALLBACK(&stilus_cmd_writing_word_goal), data_application);

@@ -1,0 +1,182 @@
+P10-002 IMPLEMENTATION READINESS
+DATE: 2026-06-13T09:17:56+02:00
+
+== WRITING MENU STRUCTURES ==
+68-    GtkWidget *menu_item_file;                                  // "File" menu item.
+69-    GtkWidget *menu_item_edit;                                  // "Edit" menu item.
+70-    GtkWidget *menu_item_research;                              // "Research" menu item.
+71-    GtkWidget *menu_item_navigate;                              // "Navigate" menu item.
+72-    GtkWidget *menu_item_writing;                               // "Writing" menu item.
+73:    GtkWidget *menu_item_writing_statistics;                    // "Writing -> Writing Statistics" menu item.
+74-    GtkWidget *menu_item_revise;                                // "Revise" menu item.
+75-    GtkWidget *menu_item_search;                                // "Search" menu item.
+76-    GtkWidget *menu_item_view;                                  // "View" menu item.
+77-    GtkWidget *menu_item_options;                               // "Options" menu item.
+78-    GtkWidget *menu_item_tools;                                 // "Tools" menu item.
+79-    GtkWidget *menu_item_help;                                  // "Help" menu item.
+80-    GtkWidget *menu_item_file_new;                              // "File -> New" menu item.
+81-    GtkWidget *menu_item_file_open;                             // "File -> Open..." menu item.
+82-    GtkWidget *menu_item_file_save;                             // "File -> Save" menu item.
+83-    GtkWidget *menu_item_file_save_as;                          // "File -> Save As..." menu item.
+84-    GtkWidget *menu_item_file_close;                            // "File -> Close" menu item.
+85-    GtkWidget *menu_item_navigate_go_to_line;                 // "Navigate -> Go To Line..." menu item.
+86-    GtkWidget *menu_item_revise_uppercase;                    // "Revise -> UPPERCASE" menu item.
+87-    GtkWidget *menu_item_revise_lowercase;                    // "Revise -> Lowercase" menu item.
+88-    GtkWidget *menu_item_revise_remove_trailing_spaces;       // "Revise -> Remove Trailing Spaces" menu item.
+89-    GtkWidget *menu_item_edit_copy;                             // "Edit -> Copy" menu item.
+90-    GtkWidget *menu_item_edit_paste;                            // "Edit -> Paste" menu item.
+91-    GtkWidget *menu_item_edit_paste_as_plain_text;              // "Edit -> Paste as Plain Text" menu item.
+92-    GtkWidget *menu_item_edit_cut;                              // "Edit -> Cut" menu item.
+93-    GtkWidget *menu_item_edit_delete;                           // "Edit -> Delete" menu item.
+--
+155-    gulong menu_item_file_open_activate;                            // "File -> Open" menu item: "activate"
+156-    gulong menu_item_file_save_activate;                            // "File -> Save" menu item: "activate"
+157-    gulong menu_item_file_save_as_activate;                         // "File -> Save As" menu item: "activate"
+158-    gulong menu_item_file_close_activate;                           // "File -> Close" menu item: "activate"
+159-    gulong menu_item_navigate_go_to_line_activate;             // "Navigate -> Go To Line..." menu item: "activate"
+160:    gulong menu_item_writing_statistics_activate;              // "Writing -> Writing Statistics" menu item: "activate"
+161-    gulong menu_item_revise_uppercase_activate;                // "Revise -> UPPERCASE" menu item: "activate"
+162-    gulong menu_item_revise_lowercase_activate;                // "Revise -> Lowercase" menu item: "activate"
+163-    gulong menu_item_revise_remove_trailing_spaces_activate;   // "Revise -> Remove Trailing Spaces" menu item: "activate"
+164-    gulong menu_item_edit_copy_activate;                            // "Edit -> Copy" menu item: "activate"
+165-    gulong menu_item_edit_paste_activate;                           // "Edit -> Paste" menu item: "activate"
+166-    gulong menu_item_edit_paste_as_plain_text_activate;             // "Edit -> Paste as Plain Text" menu item: "activate"
+167-    gulong menu_item_edit_cut_activate;                             // "Edit -> Cut" menu item: "activate"
+168-    gulong menu_item_edit_delete_activate;                          // "Edit -> Delete" menu item: "activate"
+169-    gulong menu_item_edit_select_all_activate;                      // "Edit -> Select All" menu item: "activate"
+170-    gulong menu_item_edit_insert_date_time_activate;                 // "Edit -> Insert Date / Time" menu item: "activate"
+171-    gulong menu_item_edit_undo_activate;                            // "Edit -> Undo" menu item: "activate"
+172-    gulong menu_item_edit_redo_activate;                            // "Edit -> Redo" menu item: "activate"
+173-    gulong menu_item_search_find_activate;                          // "Search -> Find" menu item: "activate"
+174-    gulong menu_item_search_find_next_activate;                     // "Search -> Find Next" menu item: "activate"
+175-    gulong menu_item_search_find_prev_activate;                     // "Search -> Find Previous" menu item: "activate"
+176-    gulong menu_item_search_replace_activate;                       // "Search -> Replace" menu item: "activate"
+177-    gulong menu_item_view_fullscreen_activate;                      // "View -> Fullscreen" menu item: "activate"
+178-    gulong menu_item_view_always_on_top_activate;                 // "View -> Always on Top" menu item: "activate"
+179-    gulong menu_item_view_font_bigger_activate;                   // "View -> Font Bigger" menu item: "activate"
+180-    gulong menu_item_view_font_smaller_activate;                  // "View -> Font Smaller" menu item: "activate"
+
+== OPTIONS STRUCT ==
+// Program options, read from the configuration file.
+struct AirpadDataOptions
+{
+    char *font;
+    gboolean overlay_scrolling;
+    GtkWrapMode text_wrap;
+    GtkPolicyType scrollbar_policy;
+};
+
+// Holds command-line option values.
+struct AirpadDataArguments
+{
+    // File options.
+
+== OPTIONS READ WRITE ==
+
+// Sets the `data_options` fields to the data stored in the keyfile.
+void airpad_options_read(struct AirpadDataOptions *data_options)
+{
+#define AIRPAD_OPTIONS_READ_VALUE(type, value, key, def)  value = g_key_file_has_key(key_file, "general", key, NULL) ? g_key_file_get_ ## type(key_file, "general", key, NULL) : def;
+
+    AIRPAD_OPTIONS_READ_VALUE(string, data_options->font, "font", NULL)
+    AIRPAD_OPTIONS_READ_VALUE(boolean, data_options->overlay_scrolling, "overlay-scrolling", TRUE)
+    AIRPAD_OPTIONS_READ_VALUE(integer, data_options->text_wrap, "text-wrap", GTK_WRAP_NONE)
+    AIRPAD_OPTIONS_READ_VALUE(integer, data_options->scrollbar_policy, "scrollbar-policy", GTK_POLICY_AUTOMATIC)
+
+#undef AIRPAD_OPTIONS_READ_VALUE
+}
+
+// Writes the data stored in `data_options` to the keyfile.
+void airpad_options_write(const struct AirpadDataOptions *data_options)
+{
+#define AIRPAD_OPTIONS_WRITE_VALUE(setter, cond, value, key)    if (cond)                                   \
+                                                                    setter(key_file, "general", key, value);
+
+    AIRPAD_OPTIONS_WRITE_VALUE(g_key_file_set_string, data_options->font, data_options->font, "font")
+    AIRPAD_OPTIONS_WRITE_VALUE(g_key_file_set_boolean, TRUE, data_options->overlay_scrolling, "overlay-scrolling")
+    AIRPAD_OPTIONS_WRITE_VALUE(g_key_file_set_integer, TRUE, data_options->text_wrap, "text-wrap")
+    AIRPAD_OPTIONS_WRITE_VALUE(g_key_file_set_integer, TRUE, data_options->scrollbar_policy, "scrollbar-policy")
+
+#undef AIRPAD_OPTIONS_WRITE_VALUE
+}
+
+== WRITING COMMAND BLOCK ==
+13-        STILUS_CMD_NAVIGATION | STILUS_CMD_DIALOG | STILUS_CMD_READ_ONLY,
+14-        stilus_cmd_navigate_go_to_line,
+15-        "Move the cursor to a specific line number."
+16-    },
+17-    {
+18:        "writing.statistics",
+19-        "Writing Statistics",
+20-        "Writing/Writing Statistics",
+21-        NULL,
+22-        STILUS_CMD_UI_ONLY | STILUS_CMD_DIALOG | STILUS_CMD_READ_ONLY,
+23:        stilus_cmd_writing_statistics,
+24:        "Show document writing statistics."
+25-    },
+26-    {
+27-        "revise.uppercase",
+28-        "UPPERCASE",
+29-        "Revise/Case/UPPERCASE",
+30-        NULL,
+31-        STILUS_CMD_TEXT_MUTATION | STILUS_CMD_REQUIRES_SELECTION,
+32-        stilus_cmd_revise_uppercase,
+33-        "Convert the selected text to uppercase."
+34-    },
+35-    {
+36-        "revise.lowercase",
+37-        "Lowercase",
+38-        "Revise/Case/Lowercase",
+39-        NULL,
+40-        STILUS_CMD_TEXT_MUTATION | STILUS_CMD_REQUIRES_SELECTION,
+41-        stilus_cmd_revise_lowercase,
+42-        "Convert the selected text to lowercase."
+43-    },
+44-    {
+45-        "revise.remove-trailing-spaces",
+46-        "Remove Trailing Spaces",
+47-        "Revise/Cleanup/Remove Trailing Spaces",
+48-        NULL,
+49-        STILUS_CMD_TEXT_MUTATION,
+50-        stilus_cmd_revise_remove_trailing_spaces,
+51-        "Remove trailing spaces and tabs from document lines."
+52-    },
+53-    {
+54-        "view.font-bigger",
+--
+131-
+132-    return characters;
+133-}
+134-
+135-void
+136:stilus_cmd_writing_statistics(GtkWidget *widget, gpointer data)
+137-{
+138-    struct AirpadDataApplication *data_application = data;
+139-
+140-    (void)widget;
+141-
+142-    if (data_application == NULL ||
+143-        data_application->data_window == NULL ||
+144-        data_application->data_window->data_text_view == NULL ||
+145-        data_application->data_window->data_text_view->text_view == NULL)
+146-        return;
+147-
+148-    GtkWidget *text_view = data_application->data_window->data_text_view->text_view;
+149-    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
+150-    GtkTextIter start;
+151-    GtkTextIter end;
+152-
+153-    gtk_text_buffer_get_start_iter(text_buffer, &start);
+154-    gtk_text_buffer_get_end_iter(text_buffer, &end);
+155-
+156-    char *text = gtk_text_buffer_get_text(text_buffer, &start, &end, FALSE);
+157-
+158-    const guint words = stilus_count_words_in_text(text);
+159-    const guint characters = stilus_count_characters_in_text(text);
+160-    const gint lines = gtk_text_buffer_get_line_count(text_buffer);
+161-    const gsize bytes = strlen(text);
+162-    const guint kb = (bytes + 1023) / 1024;
+163-
+164-    char *message = g_strdup_printf(
+165-        "Words: %u\nLines: %d\nCharacters: %u\nSize: %u KB",
+166-        words,

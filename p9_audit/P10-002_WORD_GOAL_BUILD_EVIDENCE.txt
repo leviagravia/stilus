@@ -1,0 +1,92 @@
+P10-002 WORD GOAL BUILD EVIDENCE
+DATE: 2026-06-13T09:25:08+02:00
+
+== GIT STATUS BEFORE BUILD ==
+ M src/const.h
+ M src/main.c
+ M src/options.c
+ M src/stilus_commands.c
+ M src/stilus_commands.h
+ M src/window.c
+?? p9_audit/P10-002_IMPLEMENTATION_READINESS.txt
+?? p9_audit/P10-002_WORD_GOAL_AUDIT.txt
+?? p9_audit/P10-002_WORD_GOAL_BUILD_EVIDENCE.txt
+?? p9_audit/P10-002_WORD_GOAL_FUNCTION_RECOVERY_AUDIT.txt
+?? p9_audit/P10-002_WORD_GOAL_IMPLEMENTATION_AUDIT.txt
+?? p9_audit/P10-002_WORD_GOAL_OPTIONS_MICRO_AUDIT.txt
+
+== CLEAN ==
+Cleaning directory...
+
+== BUILD ==
+cc -std=c99 -Wall -c -DAIRPAD_EXEC_NAME="\"stilus\"" -DAIRPAD_LOCALE_DIR="\"/usr/share/locale\"" -DAIRPAD_INFO_IDEN=\"com.leviagravia.Stilus\" -o 'obj/aux.o' 'src/aux.c' -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/x86_64-linux-gnu -I/usr/include/webp -I/usr/include/gio-unix-2.0 -I/usr/include/atk-1.0 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/dbus-1.0 -I/usr/lib/x86_64-linux-gnu/dbus-1.0/include -pthread 
+cc -std=c99 -Wall -c -DAIRPAD_EXEC_NAME="\"stilus\"" -DAIRPAD_LOCALE_DIR="\"/usr/share/locale\"" -DAIRPAD_INFO_IDEN=\"com.leviagravia.Stilus\" -o 'obj/dialog.o' 'src/dialog.c' -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/x86_64-linux-gnu -I/usr/include/webp -I/usr/include/gio-unix-2.0 -I/usr/include/atk-1.0 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/dbus-1.0 -I/usr/lib/x86_64-linux-gnu/dbus-1.0/include -pthread 
+src/dialog.c: In function ‘airpad_dialog_error’:
+src/dialog.c:89:5: warning: ‘gtk_message_dialog_set_image’ is deprecated [-Wdeprecated-declarations]
+   89 |     gtk_message_dialog_set_image(GTK_MESSAGE_DIALOG(dialog), dialog_image);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /usr/include/gtk-3.0/gtk/gtk.h:150,
+                 from src/dialog.c:21:
+/usr/include/gtk-3.0/gtk/gtkmessagedialog.h:115:12: note: declared here
+  115 | void       gtk_message_dialog_set_image    (GtkMessageDialog *dialog,
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc -std=c99 -Wall -c -DAIRPAD_EXEC_NAME="\"stilus\"" -DAIRPAD_LOCALE_DIR="\"/usr/share/locale\"" -DAIRPAD_INFO_IDEN=\"com.leviagravia.Stilus\" -o 'obj/edit.o' 'src/edit.c' -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/x86_64-linux-gnu -I/usr/include/webp -I/usr/include/gio-unix-2.0 -I/usr/include/atk-1.0 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/dbus-1.0 -I/usr/lib/x86_64-linux-gnu/dbus-1.0/include -pthread 
+cc -std=c99 -Wall -c -DAIRPAD_EXEC_NAME="\"stilus\"" -DAIRPAD_LOCALE_DIR="\"/usr/share/locale\"" -DAIRPAD_INFO_IDEN=\"com.leviagravia.Stilus\" -o 'obj/file.o' 'src/file.c' -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/x86_64-linux-gnu -I/usr/include/webp -I/usr/include/gio-unix-2.0 -I/usr/include/atk-1.0 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/dbus-1.0 -I/usr/lib/x86_64-linux-gnu/dbus-1.0/include -pthread 
+cc -std=c99 -Wall -c -DAIRPAD_EXEC_NAME="\"stilus\"" -DAIRPAD_LOCALE_DIR="\"/usr/share/locale\"" -DAIRPAD_INFO_IDEN=\"com.leviagravia.Stilus\" -o 'obj/find.o' 'src/find.c' -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/x86_64-linux-gnu -I/usr/include/webp -I/usr/include/gio-unix-2.0 -I/usr/include/atk-1.0 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/dbus-1.0 -I/usr/lib/x86_64-linux-gnu/dbus-1.0/include -pthread 
+cc -std=c99 -Wall -c -DAIRPAD_EXEC_NAME="\"stilus\"" -DAIRPAD_LOCALE_DIR="\"/usr/share/locale\"" -DAIRPAD_INFO_IDEN=\"com.leviagravia.Stilus\" -o 'obj/font.o' 'src/font.c' -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/x86_64-linux-gnu -I/usr/include/webp -I/usr/include/gio-unix-2.0 -I/usr/include/atk-1.0 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/dbus-1.0 -I/usr/lib/x86_64-linux-gnu/dbus-1.0/include -pthread 
+cc -std=c99 -Wall -c -DAIRPAD_EXEC_NAME="\"stilus\"" -DAIRPAD_LOCALE_DIR="\"/usr/share/locale\"" -DAIRPAD_INFO_IDEN=\"com.leviagravia.Stilus\" -o 'obj/main.o' 'src/main.c' -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/x86_64-linux-gnu -I/usr/include/webp -I/usr/include/gio-unix-2.0 -I/usr/include/atk-1.0 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/dbus-1.0 -I/usr/lib/x86_64-linux-gnu/dbus-1.0/include -pthread 
+cc -std=c99 -Wall -c -DAIRPAD_EXEC_NAME="\"stilus\"" -DAIRPAD_LOCALE_DIR="\"/usr/share/locale\"" -DAIRPAD_INFO_IDEN=\"com.leviagravia.Stilus\" -o 'obj/options.o' 'src/options.c' -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/x86_64-linux-gnu -I/usr/include/webp -I/usr/include/gio-unix-2.0 -I/usr/include/atk-1.0 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/dbus-1.0 -I/usr/lib/x86_64-linux-gnu/dbus-1.0/include -pthread 
+cc -std=c99 -Wall -c -DAIRPAD_EXEC_NAME="\"stilus\"" -DAIRPAD_LOCALE_DIR="\"/usr/share/locale\"" -DAIRPAD_INFO_IDEN=\"com.leviagravia.Stilus\" -o 'obj/quit.o' 'src/quit.c' -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/x86_64-linux-gnu -I/usr/include/webp -I/usr/include/gio-unix-2.0 -I/usr/include/atk-1.0 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/dbus-1.0 -I/usr/lib/x86_64-linux-gnu/dbus-1.0/include -pthread 
+cc -std=c99 -Wall -c -DAIRPAD_EXEC_NAME="\"stilus\"" -DAIRPAD_LOCALE_DIR="\"/usr/share/locale\"" -DAIRPAD_INFO_IDEN=\"com.leviagravia.Stilus\" -o 'obj/replace.o' 'src/replace.c' -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/x86_64-linux-gnu -I/usr/include/webp -I/usr/include/gio-unix-2.0 -I/usr/include/atk-1.0 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/dbus-1.0 -I/usr/lib/x86_64-linux-gnu/dbus-1.0/include -pthread 
+cc -std=c99 -Wall -c -DAIRPAD_EXEC_NAME="\"stilus\"" -DAIRPAD_LOCALE_DIR="\"/usr/share/locale\"" -DAIRPAD_INFO_IDEN=\"com.leviagravia.Stilus\" -o 'obj/search.o' 'src/search.c' -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/x86_64-linux-gnu -I/usr/include/webp -I/usr/include/gio-unix-2.0 -I/usr/include/atk-1.0 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/dbus-1.0 -I/usr/lib/x86_64-linux-gnu/dbus-1.0/include -pthread 
+cc -std=c99 -Wall -c -DAIRPAD_EXEC_NAME="\"stilus\"" -DAIRPAD_LOCALE_DIR="\"/usr/share/locale\"" -DAIRPAD_INFO_IDEN=\"com.leviagravia.Stilus\" -o 'obj/stilus_commands.o' 'src/stilus_commands.c' -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/x86_64-linux-gnu -I/usr/include/webp -I/usr/include/gio-unix-2.0 -I/usr/include/atk-1.0 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/dbus-1.0 -I/usr/lib/x86_64-linux-gnu/dbus-1.0/include -pthread 
+cc -std=c99 -Wall -c -DAIRPAD_EXEC_NAME="\"stilus\"" -DAIRPAD_LOCALE_DIR="\"/usr/share/locale\"" -DAIRPAD_INFO_IDEN=\"com.leviagravia.Stilus\" -o 'obj/undo.o' 'src/undo.c' -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/x86_64-linux-gnu -I/usr/include/webp -I/usr/include/gio-unix-2.0 -I/usr/include/atk-1.0 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/dbus-1.0 -I/usr/lib/x86_64-linux-gnu/dbus-1.0/include -pthread 
+cc -std=c99 -Wall -c -DAIRPAD_EXEC_NAME="\"stilus\"" -DAIRPAD_LOCALE_DIR="\"/usr/share/locale\"" -DAIRPAD_INFO_IDEN=\"com.leviagravia.Stilus\" -o 'obj/view.o' 'src/view.c' -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/x86_64-linux-gnu -I/usr/include/webp -I/usr/include/gio-unix-2.0 -I/usr/include/atk-1.0 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/dbus-1.0 -I/usr/lib/x86_64-linux-gnu/dbus-1.0/include -pthread 
+cc -std=c99 -Wall -c -DAIRPAD_EXEC_NAME="\"stilus\"" -DAIRPAD_LOCALE_DIR="\"/usr/share/locale\"" -DAIRPAD_INFO_IDEN=\"com.leviagravia.Stilus\" -o 'obj/window.o' 'src/window.c' -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/x86_64-linux-gnu -I/usr/include/webp -I/usr/include/gio-unix-2.0 -I/usr/include/atk-1.0 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/dbus-1.0 -I/usr/lib/x86_64-linux-gnu/dbus-1.0/include -pthread 
+src/window.c: In function ‘airpad_window_set_font’:
+src/window.c:491:5: warning: ‘gtk_widget_override_font’ is deprecated [-Wdeprecated-declarations]
+  491 |     gtk_widget_override_font(data_window->data_text_view->text_view, font_desc);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /usr/include/gtk-3.0/gtk/gtkapplication.h:27,
+                 from /usr/include/gtk-3.0/gtk/gtkwindow.h:33,
+                 from /usr/include/gtk-3.0/gtk/gtkdialog.h:32,
+                 from /usr/include/gtk-3.0/gtk/gtkaboutdialog.h:30,
+                 from /usr/include/gtk-3.0/gtk/gtk.h:31,
+                 from src/window.c:22:
+/usr/include/gtk-3.0/gtk/gtkwidget.h:1153:14: note: declared here
+ 1153 | void         gtk_widget_override_font             (GtkWidget                  *widget,
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~
+cc  -o 'stilus' 'obj/aux.o' 'obj/dialog.o' 'obj/edit.o' 'obj/file.o' 'obj/find.o' 'obj/font.o' 'obj/main.o' 'obj/options.o' 'obj/quit.o' 'obj/replace.o' 'obj/search.o' 'obj/stilus_commands.o' 'obj/undo.o' 'obj/view.o' 'obj/window.o' -lgtk-3 -lgdk-3 -lz -lpangocairo-1.0 -lpango-1.0 -lharfbuzz -latk-1.0 -lcairo-gobject -lcairo -lgdk_pixbuf-2.0 -lgio-2.0 -lgobject-2.0 -lglib-2.0 
+
+== WORD GOAL SYMBOLS ==
+src/const.h:74:    GtkWidget *menu_item_writing_word_goal;                     // "Writing -> Word Goal..." menu item.
+src/const.h:162:    gulong menu_item_writing_word_goal_activate;               // "Writing -> Word Goal..." menu item: "activate"
+src/const.h:227:    gint word_goal;
+src/window.c:61:    data_menu_bar->menu_item_writing_word_goal = gtk_menu_item_new_with_mnemonic(_("Word _Goal..."));
+src/window.c:155:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_writing), data_menu_bar->menu_item_writing_word_goal);
+src/main.c:258:    data_application->data_signals->menu_item_writing_word_goal_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_writing_word_goal, "activate", G_CALLBACK(&stilus_cmd_writing_word_goal), data_application);
+src/options.c:115:    AIRPAD_OPTIONS_READ_VALUE(integer, data_options->word_goal, "word-goal", 0)
+src/options.c:130:    AIRPAD_OPTIONS_WRITE_VALUE(g_key_file_set_integer, TRUE, data_options->word_goal, "word-goal")
+src/stilus_commands.h:34:void stilus_cmd_writing_word_goal(GtkWidget *widget, gpointer data);
+src/stilus_commands.c:27:        "writing.word-goal",
+src/stilus_commands.c:28:        "Word Goal...",
+src/stilus_commands.c:29:        "Writing/Word Goal...",
+src/stilus_commands.c:32:        stilus_cmd_writing_word_goal,
+src/stilus_commands.c:111:stilus_cmd_writing_word_goal(GtkWidget *widget, gpointer data)
+src/stilus_commands.c:123:        _("Word Goal"),
+src/stilus_commands.c:136:        data_application->data_options->word_goal,
+src/stilus_commands.c:152:        data_application->data_options->word_goal = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spin_button));
+
+== GIT STATUS AFTER BUILD ==
+ M src/const.h
+ M src/main.c
+ M src/options.c
+ M src/stilus_commands.c
+ M src/stilus_commands.h
+ M src/window.c
+?? p9_audit/P10-002_IMPLEMENTATION_READINESS.txt
+?? p9_audit/P10-002_WORD_GOAL_AUDIT.txt
+?? p9_audit/P10-002_WORD_GOAL_BUILD_EVIDENCE.txt
+?? p9_audit/P10-002_WORD_GOAL_FUNCTION_RECOVERY_AUDIT.txt
+?? p9_audit/P10-002_WORD_GOAL_IMPLEMENTATION_AUDIT.txt
+?? p9_audit/P10-002_WORD_GOAL_OPTIONS_MICRO_AUDIT.txt

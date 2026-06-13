@@ -58,6 +58,7 @@ static void airpad_window_menu_bar_create(struct AirpadDataMenuBar *data_menu_ba
     data_menu_bar->menu_item_navigate = gtk_menu_item_new_with_mnemonic(_("_Navigate"));
     data_menu_bar->menu_item_writing = gtk_menu_item_new_with_mnemonic(_("_Writing"));
     data_menu_bar->menu_item_writing_statistics = gtk_menu_item_new_with_mnemonic(_("Writing _Statistics"));
+    data_menu_bar->menu_item_writing_word_goal = gtk_menu_item_new_with_mnemonic(_("Word _Goal..."));
     data_menu_bar->menu_item_revise = gtk_menu_item_new_with_mnemonic(_("Re_vise"));
     data_menu_bar->menu_item_search = gtk_menu_item_new_with_mnemonic(_("_Search"));
     data_menu_bar->menu_item_view = gtk_menu_item_new_with_mnemonic(_("_View"));
@@ -151,6 +152,7 @@ static void airpad_window_menu_bar_create(struct AirpadDataMenuBar *data_menu_ba
 
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_navigate), data_menu_bar->menu_item_navigate_go_to_line);
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_writing), data_menu_bar->menu_item_writing_statistics);
+    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_writing), data_menu_bar->menu_item_writing_word_goal);
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_revise), data_menu_bar->menu_item_revise_uppercase);
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_revise), data_menu_bar->menu_item_revise_lowercase);
     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_revise), data_menu_bar->menu_item_revise_remove_trailing_spaces);

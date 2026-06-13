@@ -1,0 +1,303 @@
+P10-002 WORD GOAL OPTIONS MICRO AUDIT
+DATE: 2026-06-13T09:16:35+02:00
+
+== OPTIONS.C FULL RELEVANT AREA ==
+/*
+ * Copyright (C) 2018-2022 Nikola Hadžić
+ *
+ * This file is part of Airpad.
+ *
+ * Airpad is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Airpad is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Airpad.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#include <glib/gi18n.h>
+#include <gtk/gtk.h>
+#include "const.h"
+#include "window.h"
+
+static GKeyFile *key_file;
+
+// Returns the filename of the configuration file.
+// Caller is responsible for freeing.
+static inline char *airpad_options_get_config_filename()
+{
+    char *config_filename_base = g_filename_from_utf8(AIRPAD_EXEC_NAME ".ini", -1, NULL, NULL, NULL);
+    char *config_filename = g_build_filename(g_get_user_config_dir(), config_filename_base, NULL);
+    g_free(config_filename_base);
+
+    return config_filename;
+}
+
+// Updates the "Text Wrap" option.
+void airpad_options_update_text_wrap(GtkWidget *widget, const struct AirpadDataApplication *data_application)
+{
+    if (widget == data_application->data_window->data_menu_bar->menu_item_options_text_wrap_none)
+        data_application->data_options->text_wrap = GTK_WRAP_NONE;
+    else if (widget == data_application->data_window->data_menu_bar->menu_item_options_text_wrap_on_char)
+        data_application->data_options->text_wrap = GTK_WRAP_CHAR;
+    else if (widget == data_application->data_window->data_menu_bar->menu_item_options_text_wrap_on_word)
+        data_application->data_options->text_wrap = GTK_WRAP_WORD;
+    else if (widget == data_application->data_window->data_menu_bar->menu_item_options_text_wrap_on_char_and_word)
+        data_application->data_options->text_wrap = GTK_WRAP_WORD_CHAR;
+
+    airpad_window_set_text_wrap_mode(data_application->data_window, data_application->data_options->text_wrap);
+}
+
+// Updates the "Overlay Scrollbars" option.
+void airpad_options_update_overlay_scrolling(GtkWidget *widget, const struct AirpadDataApplication *data_application)
+{
+    data_application->data_options->overlay_scrolling = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget));
+    airpad_window_set_overlay_scrolling(data_application->data_window, data_application->data_options->overlay_scrolling);
+}
+
+// Updates the "Scrollbar Policy" option.
+void airpad_options_update_scrollbar_policy(GtkWidget *widget, const struct AirpadDataApplication *data_application)
+{
+    if (widget == data_application->data_window->data_menu_bar->menu_item_options_scrollbar_policy_auto)
+        data_application->data_options->scrollbar_policy = GTK_POLICY_AUTOMATIC;
+    else if (widget == data_application->data_window->data_menu_bar->menu_item_options_scrollbar_policy_always)
+        data_application->data_options->scrollbar_policy = GTK_POLICY_ALWAYS;
+    else if (widget == data_application->data_window->data_menu_bar->menu_item_options_scrollbar_policy_never)
+        data_application->data_options->scrollbar_policy = GTK_POLICY_NEVER;
+
+    airpad_window_set_scrollbar_policy(data_application->data_window, data_application->data_options->scrollbar_policy);
+}
+
+// Creates the keyfile object and loads the configuration file.
+void airpad_options_open()
+{
+    key_file = g_key_file_new();
+
+    char *config_filename = airpad_options_get_config_filename();
+
+    GError *error = NULL;
+    if (!g_key_file_load_from_file(key_file, config_filename, G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS, &error))
+    {
+        g_printerr(_("Configuration file could not be loaded: %s\n"), error->message);
+        g_error_free(error);
+    }
+
+    g_free(config_filename);
+}
+
+// Saves the current options to the configuration file and frees the keyfile object.
+void airpad_options_close()
+{
+    char *config_filename = airpad_options_get_config_filename();
+
+    GError *error = NULL;
+    if (!g_key_file_save_to_file(key_file, config_filename, &error))
+    {
+        g_printerr(_("Could not save configuration file: %s\n"), error->message);
+        g_error_free(error);
+    }
+
+    g_free(config_filename);
+    g_key_file_free(key_file);
+}
+
+// Sets the `data_options` fields to the data stored in the keyfile.
+void airpad_options_read(struct AirpadDataOptions *data_options)
+{
+#define AIRPAD_OPTIONS_READ_VALUE(type, value, key, def)  value = g_key_file_has_key(key_file, "general", key, NULL) ? g_key_file_get_ ## type(key_file, "general", key, NULL) : def;
+
+    AIRPAD_OPTIONS_READ_VALUE(string, data_options->font, "font", NULL)
+    AIRPAD_OPTIONS_READ_VALUE(boolean, data_options->overlay_scrolling, "overlay-scrolling", TRUE)
+    AIRPAD_OPTIONS_READ_VALUE(integer, data_options->text_wrap, "text-wrap", GTK_WRAP_NONE)
+    AIRPAD_OPTIONS_READ_VALUE(integer, data_options->scrollbar_policy, "scrollbar-policy", GTK_POLICY_AUTOMATIC)
+
+#undef AIRPAD_OPTIONS_READ_VALUE
+}
+
+// Writes the data stored in `data_options` to the keyfile.
+void airpad_options_write(const struct AirpadDataOptions *data_options)
+{
+#define AIRPAD_OPTIONS_WRITE_VALUE(setter, cond, value, key)    if (cond)                                   \
+                                                                    setter(key_file, "general", key, value);
+
+    AIRPAD_OPTIONS_WRITE_VALUE(g_key_file_set_string, data_options->font, data_options->font, "font")
+    AIRPAD_OPTIONS_WRITE_VALUE(g_key_file_set_boolean, TRUE, data_options->overlay_scrolling, "overlay-scrolling")
+    AIRPAD_OPTIONS_WRITE_VALUE(g_key_file_set_integer, TRUE, data_options->text_wrap, "text-wrap")
+    AIRPAD_OPTIONS_WRITE_VALUE(g_key_file_set_integer, TRUE, data_options->scrollbar_policy, "scrollbar-policy")
+
+#undef AIRPAD_OPTIONS_WRITE_VALUE
+}
+
+== OPTIONS INIT/FREE USERS ==
+src/font.c:32:    if (data_application->data_options->font)
+src/font.c:33:        gtk_font_chooser_set_font(GTK_FONT_CHOOSER(dialog), data_application->data_options->font);
+src/font.c:37:        g_free(data_application->data_options->font);
+src/font.c:38:        data_application->data_options->font = gtk_font_chooser_get_font(GTK_FONT_CHOOSER(dialog));
+src/font.c:40:        airpad_window_set_font(data_application->data_window, data_application->data_options->font);
+src/stilus_commands.c:369:    const char *current_font = data_application->data_options->font != NULL ?
+src/stilus_commands.c:370:        data_application->data_options->font :
+src/stilus_commands.c:386:    g_free(data_application->data_options->font);
+src/stilus_commands.c:387:    data_application->data_options->font = pango_font_description_to_string(font_desc);
+src/stilus_commands.c:389:    airpad_window_set_font(data_application->data_window, data_application->data_options->font);
+src/stilus_commands.c:406:    const char *current_font = data_application->data_options->font != NULL ?
+src/stilus_commands.c:407:        data_application->data_options->font :
+src/stilus_commands.c:423:    g_free(data_application->data_options->font);
+src/stilus_commands.c:424:    data_application->data_options->font = pango_font_description_to_string(font_desc);
+src/stilus_commands.c:426:    airpad_window_set_font(data_application->data_window, data_application->data_options->font);
+src/options.c:39:void airpad_options_update_text_wrap(GtkWidget *widget, const struct AirpadDataApplication *data_application)
+src/options.c:41:    if (widget == data_application->data_window->data_menu_bar->menu_item_options_text_wrap_none)
+src/options.c:42:        data_application->data_options->text_wrap = GTK_WRAP_NONE;
+src/options.c:43:    else if (widget == data_application->data_window->data_menu_bar->menu_item_options_text_wrap_on_char)
+src/options.c:44:        data_application->data_options->text_wrap = GTK_WRAP_CHAR;
+src/options.c:45:    else if (widget == data_application->data_window->data_menu_bar->menu_item_options_text_wrap_on_word)
+src/options.c:46:        data_application->data_options->text_wrap = GTK_WRAP_WORD;
+src/options.c:47:    else if (widget == data_application->data_window->data_menu_bar->menu_item_options_text_wrap_on_char_and_word)
+src/options.c:48:        data_application->data_options->text_wrap = GTK_WRAP_WORD_CHAR;
+src/options.c:50:    airpad_window_set_text_wrap_mode(data_application->data_window, data_application->data_options->text_wrap);
+src/options.c:54:void airpad_options_update_overlay_scrolling(GtkWidget *widget, const struct AirpadDataApplication *data_application)
+src/options.c:56:    data_application->data_options->overlay_scrolling = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget));
+src/options.c:57:    airpad_window_set_overlay_scrolling(data_application->data_window, data_application->data_options->overlay_scrolling);
+src/options.c:61:void airpad_options_update_scrollbar_policy(GtkWidget *widget, const struct AirpadDataApplication *data_application)
+src/options.c:63:    if (widget == data_application->data_window->data_menu_bar->menu_item_options_scrollbar_policy_auto)
+src/options.c:64:        data_application->data_options->scrollbar_policy = GTK_POLICY_AUTOMATIC;
+src/options.c:65:    else if (widget == data_application->data_window->data_menu_bar->menu_item_options_scrollbar_policy_always)
+src/options.c:66:        data_application->data_options->scrollbar_policy = GTK_POLICY_ALWAYS;
+src/options.c:67:    else if (widget == data_application->data_window->data_menu_bar->menu_item_options_scrollbar_policy_never)
+src/options.c:68:        data_application->data_options->scrollbar_policy = GTK_POLICY_NEVER;
+src/options.c:70:    airpad_window_set_scrollbar_policy(data_application->data_window, data_application->data_options->scrollbar_policy);
+src/options.c:111:    AIRPAD_OPTIONS_READ_VALUE(string, data_options->font, "font", NULL)
+src/options.c:112:    AIRPAD_OPTIONS_READ_VALUE(boolean, data_options->overlay_scrolling, "overlay-scrolling", TRUE)
+src/options.c:113:    AIRPAD_OPTIONS_READ_VALUE(integer, data_options->text_wrap, "text-wrap", GTK_WRAP_NONE)
+src/options.c:114:    AIRPAD_OPTIONS_READ_VALUE(integer, data_options->scrollbar_policy, "scrollbar-policy", GTK_POLICY_AUTOMATIC)
+src/options.c:125:    AIRPAD_OPTIONS_WRITE_VALUE(g_key_file_set_string, data_options->font, data_options->font, "font")
+src/options.c:126:    AIRPAD_OPTIONS_WRITE_VALUE(g_key_file_set_boolean, TRUE, data_options->overlay_scrolling, "overlay-scrolling")
+src/options.c:127:    AIRPAD_OPTIONS_WRITE_VALUE(g_key_file_set_integer, TRUE, data_options->text_wrap, "text-wrap")
+src/options.c:128:    AIRPAD_OPTIONS_WRITE_VALUE(g_key_file_set_integer, TRUE, data_options->scrollbar_policy, "scrollbar-policy")
+src/const.h:63:    GtkWidget *menu_options_text_wrap;          // "Options -> Text Wrap" menu.
+src/const.h:64:    GtkWidget *menu_options_scrollbar_policy;   // "Options -> Scrollbar Policy" menu.
+src/const.h:107:    GtkWidget *menu_item_options_text_wrap;                     // "Options -> Text Wrap" menu item.
+src/const.h:108:    GtkWidget *menu_item_options_text_wrap_none;                // "Options -> Text Wrap -> None" menu item.
+src/const.h:109:    GtkWidget *menu_item_options_text_wrap_on_char;             // "Options -> Text Wrap -> On Character" menu item.
+src/const.h:110:    GtkWidget *menu_item_options_text_wrap_on_word;             // "Options -> Text Wrap -> On Word" menu item.
+src/const.h:111:    GtkWidget *menu_item_options_text_wrap_on_char_and_word;    // "Options -> Text Wrap -> On Character and Word " menu item.
+src/const.h:112:    GtkWidget *menu_item_options_overlay_scrolling;             // "Options -> Overlay Scrolling" menu item.
+src/const.h:113:    GtkWidget *menu_item_options_scrollbar_policy;              // "Options -> Scrollbar Policy" menu item.
+src/const.h:114:    GtkWidget *menu_item_options_scrollbar_policy_auto;         // "Options -> Scrollbar Policy -> Automatic" menu item.
+src/const.h:115:    GtkWidget *menu_item_options_scrollbar_policy_always;       // "Options -> Scrollbar Policy -> Always" menu item.
+src/const.h:116:    GtkWidget *menu_item_options_scrollbar_policy_never;        // "Options -> Scrollbar Policy -> Never" menu item.
+src/const.h:182:    gulong menu_item_options_text_wrap_none_toggled;                // "Options -> Text Wrap -> None": "toggled"
+src/const.h:183:    gulong menu_item_options_text_wrap_on_word_toggled;             // "Options -> Text Wrap -> On Word": "toggled"
+src/const.h:184:    gulong menu_item_options_text_wrap_on_char_toggled;             // "Options -> Text Wrap -> On Character": "toggled"
+src/const.h:185:    gulong menu_item_options_text_wrap_on_char_and_word_toggled;    // "Options -> Text Wrap -> On Character and Word": "toggled"
+src/const.h:186:    gulong menu_item_options_overlay_scrolling_toggled;             // "Options -> Overlay Scrollbars": "toggled"
+src/const.h:187:    gulong menu_item_options_scrollbar_policy_auto_toggled;         // "Options -> Scrollbar Policy -> Automatic": "toggled"
+src/const.h:188:    gulong menu_item_options_scrollbar_policy_always_toggled;       // "Options -> Scrollbar Policy -> Always": "toggled"
+src/const.h:189:    gulong menu_item_options_scrollbar_policy_never_toggled;        // "Options -> Scrollbar Policy -> Never": "toggled"
+src/const.h:222:    gboolean overlay_scrolling;
+src/const.h:223:    GtkWrapMode text_wrap;
+src/const.h:224:    GtkPolicyType scrollbar_policy;
+src/options.h:25:void airpad_options_update_overlay_scrolling(GtkWidget *widget, const struct AirpadDataApplication *data_application);
+src/options.h:26:void airpad_options_update_text_wrap(GtkWidget *widget, const struct AirpadDataApplication *data_application);
+src/options.h:27:void airpad_options_update_scrollbar_policy(GtkWidget *widget, const struct AirpadDataApplication *data_application);
+src/window.h:35:void airpad_window_set_text_wrap_mode(const struct AirpadDataWindow *data_window, GtkWrapMode wrap_mode);
+src/window.h:36:void airpad_window_set_overlay_scrolling(const struct AirpadDataWindow *data_window, gboolean state);
+src/window.h:37:void airpad_window_set_scrollbar_policy(const struct AirpadDataWindow *data_window, GtkPolicyType policy);
+src/window.c:46:    data_menu_bar->menu_options_text_wrap = gtk_menu_new();
+src/window.c:47:    data_menu_bar->menu_options_scrollbar_policy = gtk_menu_new();
+src/window.c:108:    data_menu_bar->menu_item_options_text_wrap = gtk_menu_item_new_with_mnemonic(_("Text _Wrap"));
+src/window.c:109:    data_menu_bar->menu_item_options_text_wrap_none = gtk_radio_menu_item_new_with_mnemonic(NULL, _("_None"));
+src/window.c:110:    radio_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(data_menu_bar->menu_item_options_text_wrap_none));
+src/window.c:111:    data_menu_bar->menu_item_options_text_wrap_on_char = gtk_radio_menu_item_new_with_mnemonic(radio_group, _("On _Character"));
+src/window.c:112:    data_menu_bar->menu_item_options_text_wrap_on_word = gtk_radio_menu_item_new_with_mnemonic(radio_group, _("On _Word"));
+src/window.c:113:    data_menu_bar->menu_item_options_text_wrap_on_char_and_word = gtk_radio_menu_item_new_with_mnemonic(radio_group, _("On Character _And Word"));
+src/window.c:114:    data_menu_bar->menu_item_options_overlay_scrolling = gtk_check_menu_item_new_with_mnemonic(_("_Overlay Scrolling"));
+src/window.c:115:    data_menu_bar->menu_item_options_scrollbar_policy = gtk_menu_item_new_with_mnemonic(_("Scrollbar _Policy"));
+src/window.c:116:    data_menu_bar->menu_item_options_scrollbar_policy_auto = gtk_radio_menu_item_new_with_mnemonic(NULL, _("_Automatic"));
+src/window.c:117:    radio_group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(data_menu_bar->menu_item_options_scrollbar_policy_auto));
+src/window.c:118:    data_menu_bar->menu_item_options_scrollbar_policy_always = gtk_radio_menu_item_new_with_mnemonic(radio_group, _("A_lways"));
+src/window.c:119:    data_menu_bar->menu_item_options_scrollbar_policy_never = gtk_radio_menu_item_new_with_mnemonic(radio_group, _("_Never"));
+src/window.c:138:    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_options_text_wrap), data_menu_bar->menu_options_text_wrap);
+src/window.c:139:    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_options_scrollbar_policy), data_menu_bar->menu_options_scrollbar_policy);
+src/window.c:179:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_view), data_menu_bar->menu_item_options_text_wrap);
+src/window.c:180:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_options_text_wrap), data_menu_bar->menu_item_options_text_wrap_none);
+src/window.c:181:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_options_text_wrap), data_menu_bar->menu_item_options_text_wrap_on_char);
+src/window.c:182:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_options_text_wrap), data_menu_bar->menu_item_options_text_wrap_on_word);
+src/window.c:183:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_options_text_wrap), data_menu_bar->menu_item_options_text_wrap_on_char_and_word);
+src/window.c:184:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_view), data_menu_bar->menu_item_options_overlay_scrolling);
+src/window.c:185:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_view), data_menu_bar->menu_item_options_scrollbar_policy);
+src/window.c:186:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_options_scrollbar_policy), data_menu_bar->menu_item_options_scrollbar_policy_auto);
+src/window.c:187:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_options_scrollbar_policy), data_menu_bar->menu_item_options_scrollbar_policy_always);
+src/window.c:188:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_options_scrollbar_policy), data_menu_bar->menu_item_options_scrollbar_policy_never);
+src/window.c:206:    switch (data_options->text_wrap)
+src/window.c:209:            gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data_menu_bar->menu_item_options_text_wrap_none), TRUE);
+src/window.c:212:            gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data_menu_bar->menu_item_options_text_wrap_on_char), TRUE);
+src/window.c:215:            gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data_menu_bar->menu_item_options_text_wrap_on_word), TRUE);
+src/window.c:218:            gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data_menu_bar->menu_item_options_text_wrap_on_char_and_word), TRUE);
+src/window.c:221:    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data_menu_bar->menu_item_options_overlay_scrolling), data_options->overlay_scrolling);
+src/window.c:222:    switch (data_options->scrollbar_policy)
+src/window.c:225:            gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data_menu_bar->menu_item_options_scrollbar_policy_auto), TRUE);
+src/window.c:228:            gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data_menu_bar->menu_item_options_scrollbar_policy_always), TRUE);
+src/window.c:231:            gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data_menu_bar->menu_item_options_scrollbar_policy_never), TRUE);
+src/window.c:494:void airpad_window_set_overlay_scrolling(const struct AirpadDataWindow *data_window, gboolean state)
+src/window.c:496:    gtk_scrolled_window_set_overlay_scrolling(GTK_SCROLLED_WINDOW(data_window->data_text_view->scrolled_window), state);
+src/window.c:500:void airpad_window_set_text_wrap_mode(const struct AirpadDataWindow *data_window, GtkWrapMode wrap_mode)
+src/window.c:506:void airpad_window_set_scrollbar_policy(const struct AirpadDataWindow *data_window, GtkPolicyType policy)
+src/main.c:279:    data_application->data_signals->menu_item_options_text_wrap_none_toggled = g_signal_connect_after(data_application->data_window->data_menu_bar->menu_item_options_text_wrap_none, "toggled", G_CALLBACK(&airpad_options_update_text_wrap), data_application);
+src/main.c:280:    data_application->data_signals->menu_item_options_text_wrap_on_char_toggled = g_signal_connect_after(data_application->data_window->data_menu_bar->menu_item_options_text_wrap_on_char, "toggled", G_CALLBACK(&airpad_options_update_text_wrap), data_application);
+src/main.c:281:    data_application->data_signals->menu_item_options_text_wrap_on_word_toggled = g_signal_connect_after(data_application->data_window->data_menu_bar->menu_item_options_text_wrap_on_word, "toggled", G_CALLBACK(&airpad_options_update_text_wrap), data_application);
+src/main.c:282:    data_application->data_signals->menu_item_options_text_wrap_on_char_and_word_toggled = g_signal_connect_after(data_application->data_window->data_menu_bar->menu_item_options_text_wrap_on_char_and_word, "toggled", G_CALLBACK(&airpad_options_update_text_wrap), data_application);
+src/main.c:283:    data_application->data_signals->menu_item_options_overlay_scrolling_toggled = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_options_overlay_scrolling, "toggled", G_CALLBACK(&airpad_options_update_overlay_scrolling), data_application);
+src/main.c:284:    data_application->data_signals->menu_item_options_scrollbar_policy_auto_toggled = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_options_scrollbar_policy_auto, "toggled", G_CALLBACK(&airpad_options_update_scrollbar_policy), data_application);
+src/main.c:285:    data_application->data_signals->menu_item_options_scrollbar_policy_always_toggled = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_options_scrollbar_policy_always, "toggled", G_CALLBACK(&airpad_options_update_scrollbar_policy), data_application);
+src/main.c:286:    data_application->data_signals->menu_item_options_scrollbar_policy_never_toggled = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_options_scrollbar_policy_never, "toggled", G_CALLBACK(&airpad_options_update_scrollbar_policy), data_application);
+src/main.c:367:    if (data_application->data_options->font)
+src/main.c:368:        airpad_window_set_font(data_application->data_window, data_application->data_options->font);
+src/main.c:369:    airpad_window_set_overlay_scrolling(data_application->data_window, data_application->data_options->overlay_scrolling);
+src/main.c:370:    airpad_window_set_text_wrap_mode(data_application->data_window, data_application->data_options->text_wrap);
+src/main.c:371:    airpad_window_set_scrollbar_policy(data_application->data_window, data_application->data_options->scrollbar_policy);
+src/main.c:443:    g_free(data_application->data_options->font);
+
+== COMMAND FLAGS ==
+#ifndef STILUS_COMMANDS_H
+#define STILUS_COMMANDS_H
+
+#include <gtk/gtk.h>
+
+typedef enum
+{
+    STILUS_CMD_UI_ONLY            = 1 << 0,
+    STILUS_CMD_TEXT_MUTATION      = 1 << 1,
+    STILUS_CMD_FILE_LIFECYCLE     = 1 << 2,
+    STILUS_CMD_REQUIRES_SELECTION = 1 << 3,
+    STILUS_CMD_NAVIGATION         = 1 << 4,
+    STILUS_CMD_DIALOG             = 1 << 5,
+    STILUS_CMD_PERSISTENCE        = 1 << 6,
+    STILUS_CMD_READ_ONLY          = 1 << 7
+} StilusCommandFlags;
+
+typedef struct
+{
+    const char *id;
+    const char *label;
+    const char *menu_path;
+    const char *shortcut;
+    unsigned int flags;
+    void (*callback)(GtkWidget *widget, gpointer data);
+
+== WRITING STATISTICS REFERENCE ==
+src/const.h:73:    GtkWidget *menu_item_writing_statistics;                    // "Writing -> Writing Statistics" menu item.
+src/const.h:160:    gulong menu_item_writing_statistics_activate;              // "Writing -> Writing Statistics" menu item: "activate"
+src/window.c:60:    data_menu_bar->menu_item_writing_statistics = gtk_menu_item_new_with_mnemonic(_("Writing _Statistics"));
+src/window.c:153:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_writing), data_menu_bar->menu_item_writing_statistics);
+src/main.c:257:    data_application->data_signals->menu_item_writing_statistics_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_writing_statistics, "activate", G_CALLBACK(&stilus_cmd_writing_statistics), data_application);
+src/stilus_commands.h:33:void stilus_cmd_writing_statistics(GtkWidget *widget, gpointer data);
+src/stilus_commands.c:18:        "writing.statistics",
+src/stilus_commands.c:23:        stilus_cmd_writing_statistics,
+src/stilus_commands.c:24:        "Show document writing statistics."
+src/stilus_commands.c:136:stilus_cmd_writing_statistics(GtkWidget *widget, gpointer data)

@@ -1,0 +1,185 @@
+P10-002 WORD GOAL AUDIT
+DATE: 2026-06-13T09:11:06+02:00
+
+== WRITING MENU CANONICAL CLASSIFICATION ==
+35-====================================================
+36-
+37-Writing Statistics
+38-
+39-Reason:
+40-Uses already available document metrics.
+41-Requires dialog/presentation layer.
+42-
+43-----------------------------------------------------
+44-
+45:Word Goal
+46-
+47-Reason:
+48-Can be implemented as simple numeric target.
+49-No TextBuffer mutation.
+50-No undo impact.
+51-No file lifecycle impact.
+52-
+53-----------------------------------------------------
+54-
+55:Clear Word Goal
+56-
+57-Reason:
+58-Clears stored numeric target.
+59-No document mutation.
+60-
+61-====================================================
+62-LOW / MEDIUM RISK
+63-====================================================
+64-
+65-Reading Layout
+66-
+67-Reason:
+68-Can reuse existing font, wrap and scroll policy infrastructure.
+69-Requires UI policy but not document mutation.
+70-
+71-====================================================
+72-MEDIUM RISK
+73-====================================================
+74-
+75-Focus Mode
+76-
+77-Reason:
+78-Requires temporary UI hiding/showing policy:
+79-menu bar
+80-status bar
+81-future panels.
+82-
+83-No file lifecycle impact.
+84-
+85-----------------------------------------------------
+86-
+87-Typewriter Mode
+88-
+89-Reason:
+90-Requires cursor tracking and scroll synchronization.
+91-Source already uses scroll_to_mark patterns.
+92-
+93-====================================================
+94-MEDIUM / HIGH RISK
+95-====================================================
+96-
+97-Focus Paragraph
+98-
+99-Reason:
+100-Requires paragraph detection, highlight/dimming policy and redraw behavior.
+101-GtkTextView does not provide this for free.
+102-
+103-====================================================
+104-HIGH RISK
+105-====================================================
+106-
+107-None currently classified as HIGH in Writing Menu Phase 1.
+108-
+109-====================================================
+110-IMPLEMENTATION ORDER
+111-====================================================
+112-
+113-Phase 1
+114-
+115-Writing Statistics
+116:Word Goal
+117:Clear Word Goal
+118-
+119-----------------------------------------------------
+120-
+121-Phase 2
+122-
+123-Reading Layout
+124-
+125-----------------------------------------------------
+126-
+127-Phase 3
+128-
+129-Focus Mode
+130-
+131-----------------------------------------------------
+132-
+133-Phase 4
+134-
+135-Typewriter Mode
+136-
+137-----------------------------------------------------
+138-
+139-Deferred
+140-
+141-Focus Paragraph
+142-
+143-====================================================
+144-POLICY
+145-====================================================
+146-
+147-No Writing Menu implementation may bypass this classification.
+148-
+149-Writing features must not mutate document text unless explicitly designed to insert text.
+150-
+151-Writing features must preserve:
+152-file lifecycle
+153-save lifecycle
+154-undo/redo behavior
+155-TextBuffer integrity
+
+== CURRENT WRITING MENU ==
+src/const.h:72:    GtkWidget *menu_item_writing;                               // "Writing" menu item.
+src/const.h:73:    GtkWidget *menu_item_writing_statistics;                    // "Writing -> Writing Statistics" menu item.
+src/const.h:160:    gulong menu_item_writing_statistics_activate;              // "Writing -> Writing Statistics" menu item: "activate"
+src/window.c:59:    data_menu_bar->menu_item_writing = gtk_menu_item_new_with_mnemonic(_("_Writing"));
+src/window.c:60:    data_menu_bar->menu_item_writing_statistics = gtk_menu_item_new_with_mnemonic(_("Writing _Statistics"));
+src/window.c:132:    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_writing), data_menu_bar->menu_writing);
+src/window.c:153:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_writing), data_menu_bar->menu_item_writing_statistics);
+src/window.c:199:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_bar), data_menu_bar->menu_item_writing);
+src/main.c:257:    data_application->data_signals->menu_item_writing_statistics_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_writing_statistics, "activate", G_CALLBACK(&stilus_cmd_writing_statistics), data_application);
+
+== OPTIONS STORAGE ==
+214-    GFile *file;    // File itself.
+215-    char *encoding; // Encoding of the file.
+216-};
+217-
+218-// Program options, read from the configuration file.
+219:struct AirpadDataOptions
+220-{
+221-    char *font;
+222-    gboolean overlay_scrolling;
+223-    GtkWrapMode text_wrap;
+224-    GtkPolicyType scrollbar_policy;
+225-};
+226-
+227-// Holds command-line option values.
+228-struct AirpadDataArguments
+229-{
+230-    // File options.
+231-    char *file_encoding;
+232-};
+233-
+234-// Application data.
+235-struct AirpadDataApplication
+236-{
+237-    GtkApplication *application;                // Application itself.
+238-    struct AirpadDataArguments *data_arguments; // Argument holder.
+239:    struct AirpadDataOptions *data_options;     // Configuration options.
+240-    struct AirpadDataFile *data_file;           // Currently opened file.
+241-    struct AirpadDataSearch *data_search;       // Options used for find/replace.
+242-    struct AirpadDataSignals *data_signals;     // Signal connections.
+243-    struct AirpadDataWindow *data_window;       // Application window.
+244-};
+245-
+246-#endif
+
+== PERSISTENCE LAYER ==
+109:#define AIRPAD_OPTIONS_READ_VALUE(type, value, key, def)  value = g_key_file_has_key(key_file, "general", key, NULL) ? g_key_file_get_ ## type(key_file, "general", key, NULL) : def;
+111:    AIRPAD_OPTIONS_READ_VALUE(string, data_options->font, "font", NULL)
+112:    AIRPAD_OPTIONS_READ_VALUE(boolean, data_options->overlay_scrolling, "overlay-scrolling", TRUE)
+113:    AIRPAD_OPTIONS_READ_VALUE(integer, data_options->text_wrap, "text-wrap", GTK_WRAP_NONE)
+114:    AIRPAD_OPTIONS_READ_VALUE(integer, data_options->scrollbar_policy, "scrollbar-policy", GTK_POLICY_AUTOMATIC)
+116:#undef AIRPAD_OPTIONS_READ_VALUE
+122:#define AIRPAD_OPTIONS_WRITE_VALUE(setter, cond, value, key)    if (cond)                                   \
+125:    AIRPAD_OPTIONS_WRITE_VALUE(g_key_file_set_string, data_options->font, data_options->font, "font")
+126:    AIRPAD_OPTIONS_WRITE_VALUE(g_key_file_set_boolean, TRUE, data_options->overlay_scrolling, "overlay-scrolling")
+127:    AIRPAD_OPTIONS_WRITE_VALUE(g_key_file_set_integer, TRUE, data_options->text_wrap, "text-wrap")
+128:    AIRPAD_OPTIONS_WRITE_VALUE(g_key_file_set_integer, TRUE, data_options->scrollbar_policy, "scrollbar-policy")
+130:#undef AIRPAD_OPTIONS_WRITE_VALUE

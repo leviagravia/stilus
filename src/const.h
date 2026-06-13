@@ -71,6 +71,7 @@ struct AirpadDataMenuBar
     GtkWidget *menu_item_navigate;                              // "Navigate" menu item.
     GtkWidget *menu_item_writing;                               // "Writing" menu item.
     GtkWidget *menu_item_writing_statistics;                    // "Writing -> Writing Statistics" menu item.
+    GtkWidget *menu_item_writing_word_goal;                     // "Writing -> Word Goal..." menu item.
     GtkWidget *menu_item_revise;                                // "Revise" menu item.
     GtkWidget *menu_item_search;                                // "Search" menu item.
     GtkWidget *menu_item_view;                                  // "View" menu item.
@@ -158,6 +159,7 @@ struct AirpadDataSignals
     gulong menu_item_file_close_activate;                           // "File -> Close" menu item: "activate"
     gulong menu_item_navigate_go_to_line_activate;             // "Navigate -> Go To Line..." menu item: "activate"
     gulong menu_item_writing_statistics_activate;              // "Writing -> Writing Statistics" menu item: "activate"
+    gulong menu_item_writing_word_goal_activate;               // "Writing -> Word Goal..." menu item: "activate"
     gulong menu_item_revise_uppercase_activate;                // "Revise -> UPPERCASE" menu item: "activate"
     gulong menu_item_revise_lowercase_activate;                // "Revise -> Lowercase" menu item: "activate"
     gulong menu_item_revise_remove_trailing_spaces_activate;   // "Revise -> Remove Trailing Spaces" menu item: "activate"
@@ -222,6 +224,7 @@ struct AirpadDataOptions
     gboolean overlay_scrolling;
     GtkWrapMode text_wrap;
     GtkPolicyType scrollbar_policy;
+    gint word_goal;
 };
 
 // Holds command-line option values.
