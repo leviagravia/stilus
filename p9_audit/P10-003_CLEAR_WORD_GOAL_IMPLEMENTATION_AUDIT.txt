@@ -1,0 +1,133 @@
+P10-003 CLEAR WORD GOAL IMPLEMENTATION AUDIT
+DATE: 2026-06-13T09:36:10+02:00
+
+== GIT STATUS ==
+ M src/const.h
+ M src/main.c
+ M src/stilus_commands.c
+ M src/stilus_commands.h
+ M src/window.c
+?? p9_audit/P10-003_CLEAR_WORD_GOAL_IMPLEMENTATION_AUDIT.txt
+?? p9_audit/P10-003_IMPLEMENTATION_READINESS.txt
+
+== CLEAR WORD GOAL SYMBOLS ==
+src/const.h:75:    GtkWidget *menu_item_writing_clear_word_goal;               // "Writing -> Clear Word Goal" menu item.
+src/const.h:164:    gulong menu_item_writing_clear_word_goal_activate;         // "Writing -> Clear Word Goal" menu item: "activate"
+src/window.c:62:    data_menu_bar->menu_item_writing_clear_word_goal = gtk_menu_item_new_with_mnemonic(_("_Clear Word Goal"));
+src/window.c:157:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_writing), data_menu_bar->menu_item_writing_clear_word_goal);
+src/main.c:259:    data_application->data_signals->menu_item_writing_clear_word_goal_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_writing_clear_word_goal, "activate", G_CALLBACK(&stilus_cmd_writing_clear_word_goal), data_application);
+src/stilus_commands.h:35:void stilus_cmd_writing_clear_word_goal(GtkWidget *widget, gpointer data);
+src/stilus_commands.c:36:        "writing.clear-word-goal",
+src/stilus_commands.c:37:        "Clear Word Goal",
+src/stilus_commands.c:38:        "Writing/Clear Word Goal",
+src/stilus_commands.c:41:        stilus_cmd_writing_clear_word_goal,
+src/stilus_commands.c:168:stilus_cmd_writing_clear_word_goal(GtkWidget *widget, gpointer data)
+src/stilus_commands.c:178:    data_application->data_options->word_goal = 0;
+
+== DIFF ==
+diff --git a/src/const.h b/src/const.h
+index 213d35a..afdd4b4 100644
+--- a/src/const.h
++++ b/src/const.h
+@@ -72,6 +72,7 @@ struct AirpadDataMenuBar
+     GtkWidget *menu_item_writing;                               // "Writing" menu item.
+     GtkWidget *menu_item_writing_statistics;                    // "Writing -> Writing Statistics" menu item.
+     GtkWidget *menu_item_writing_word_goal;                     // "Writing -> Word Goal..." menu item.
++    GtkWidget *menu_item_writing_clear_word_goal;               // "Writing -> Clear Word Goal" menu item.
+     GtkWidget *menu_item_revise;                                // "Revise" menu item.
+     GtkWidget *menu_item_search;                                // "Search" menu item.
+     GtkWidget *menu_item_view;                                  // "View" menu item.
+@@ -160,6 +161,7 @@ struct AirpadDataSignals
+     gulong menu_item_navigate_go_to_line_activate;             // "Navigate -> Go To Line..." menu item: "activate"
+     gulong menu_item_writing_statistics_activate;              // "Writing -> Writing Statistics" menu item: "activate"
+     gulong menu_item_writing_word_goal_activate;               // "Writing -> Word Goal..." menu item: "activate"
++    gulong menu_item_writing_clear_word_goal_activate;         // "Writing -> Clear Word Goal" menu item: "activate"
+     gulong menu_item_revise_uppercase_activate;                // "Revise -> UPPERCASE" menu item: "activate"
+     gulong menu_item_revise_lowercase_activate;                // "Revise -> Lowercase" menu item: "activate"
+     gulong menu_item_revise_remove_trailing_spaces_activate;   // "Revise -> Remove Trailing Spaces" menu item: "activate"
+diff --git a/src/main.c b/src/main.c
+index c7e73cd..18ac27a 100644
+--- a/src/main.c
++++ b/src/main.c
+@@ -256,6 +256,7 @@ static void airpad_connect_signals(struct AirpadDataApplication *data_applicatio
+     data_application->data_signals->menu_item_navigate_go_to_line_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_navigate_go_to_line, "activate", G_CALLBACK(&stilus_cmd_navigate_go_to_line), data_application);
+     data_application->data_signals->menu_item_writing_statistics_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_writing_statistics, "activate", G_CALLBACK(&stilus_cmd_writing_statistics), data_application);
+     data_application->data_signals->menu_item_writing_word_goal_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_writing_word_goal, "activate", G_CALLBACK(&stilus_cmd_writing_word_goal), data_application);
++    data_application->data_signals->menu_item_writing_clear_word_goal_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_writing_clear_word_goal, "activate", G_CALLBACK(&stilus_cmd_writing_clear_word_goal), data_application);
+     data_application->data_signals->menu_item_revise_uppercase_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_revise_uppercase, "activate", G_CALLBACK(&stilus_cmd_revise_uppercase), data_application);
+     data_application->data_signals->menu_item_revise_lowercase_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_revise_lowercase, "activate", G_CALLBACK(&stilus_cmd_revise_lowercase), data_application);
+     data_application->data_signals->menu_item_revise_remove_trailing_spaces_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_revise_remove_trailing_spaces, "activate", G_CALLBACK(&stilus_cmd_revise_remove_trailing_spaces), data_application);
+diff --git a/src/stilus_commands.c b/src/stilus_commands.c
+index dd18d7c..68972cf 100644
+--- a/src/stilus_commands.c
++++ b/src/stilus_commands.c
+@@ -32,6 +32,15 @@ static const StilusCommand stilus_commands[] =
+         stilus_cmd_writing_word_goal,
+         "Set the document word goal."
+     },
++    {
++        "writing.clear-word-goal",
++        "Clear Word Goal",
++        "Writing/Clear Word Goal",
++        NULL,
++        STILUS_CMD_UI_ONLY | STILUS_CMD_PERSISTENCE,
++        stilus_cmd_writing_clear_word_goal,
++        "Clear the document word goal."
++    },
+     {
+         "revise.uppercase",
+         "UPPERCASE",
+@@ -154,6 +163,21 @@ stilus_cmd_writing_word_goal(GtkWidget *widget, gpointer data)
+     gtk_widget_destroy(dialog);
+ }
+ 
++
++void
++stilus_cmd_writing_clear_word_goal(GtkWidget *widget, gpointer data)
++{
++    struct AirpadDataApplication *data_application = data;
++
++    (void)widget;
++
++    if (data_application == NULL ||
++        data_application->data_options == NULL)
++        return;
++
++    data_application->data_options->word_goal = 0;
++}
++
+ static guint
+ stilus_count_words_in_text(const char *text)
+ {
+diff --git a/src/stilus_commands.h b/src/stilus_commands.h
+index 1282b88..220acaa 100644
+--- a/src/stilus_commands.h
++++ b/src/stilus_commands.h
+@@ -32,6 +32,7 @@ const StilusCommand *stilus_commands_find_by_id(const char *id);
+ void stilus_cmd_navigate_go_to_line(GtkWidget *widget, gpointer data);
+ void stilus_cmd_writing_statistics(GtkWidget *widget, gpointer data);
+ void stilus_cmd_writing_word_goal(GtkWidget *widget, gpointer data);
++void stilus_cmd_writing_clear_word_goal(GtkWidget *widget, gpointer data);
+ void stilus_cmd_revise_uppercase(GtkWidget *widget, gpointer data);
+ void stilus_cmd_revise_lowercase(GtkWidget *widget, gpointer data);
+ void stilus_cmd_revise_remove_trailing_spaces(GtkWidget *widget, gpointer data);
+diff --git a/src/window.c b/src/window.c
+index a10228d..24f5186 100644
+--- a/src/window.c
++++ b/src/window.c
+@@ -59,6 +59,7 @@ static void airpad_window_menu_bar_create(struct AirpadDataMenuBar *data_menu_ba
+     data_menu_bar->menu_item_writing = gtk_menu_item_new_with_mnemonic(_("_Writing"));
+     data_menu_bar->menu_item_writing_statistics = gtk_menu_item_new_with_mnemonic(_("Writing _Statistics"));
+     data_menu_bar->menu_item_writing_word_goal = gtk_menu_item_new_with_mnemonic(_("Word _Goal..."));
++    data_menu_bar->menu_item_writing_clear_word_goal = gtk_menu_item_new_with_mnemonic(_("_Clear Word Goal"));
+     data_menu_bar->menu_item_revise = gtk_menu_item_new_with_mnemonic(_("Re_vise"));
+     data_menu_bar->menu_item_search = gtk_menu_item_new_with_mnemonic(_("_Search"));
+     data_menu_bar->menu_item_view = gtk_menu_item_new_with_mnemonic(_("_View"));
+@@ -153,6 +154,7 @@ static void airpad_window_menu_bar_create(struct AirpadDataMenuBar *data_menu_ba
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_navigate), data_menu_bar->menu_item_navigate_go_to_line);
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_writing), data_menu_bar->menu_item_writing_statistics);
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_writing), data_menu_bar->menu_item_writing_word_goal);
++    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_writing), data_menu_bar->menu_item_writing_clear_word_goal);
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_revise), data_menu_bar->menu_item_revise_uppercase);
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_revise), data_menu_bar->menu_item_revise_lowercase);
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_revise), data_menu_bar->menu_item_revise_remove_trailing_spaces);

@@ -33,6 +33,15 @@ static const StilusCommand stilus_commands[] =
         "Set the document word goal."
     },
     {
+        "writing.clear-word-goal",
+        "Clear Word Goal",
+        "Writing/Clear Word Goal",
+        NULL,
+        STILUS_CMD_UI_ONLY | STILUS_CMD_PERSISTENCE,
+        stilus_cmd_writing_clear_word_goal,
+        "Clear the document word goal."
+    },
+    {
         "revise.uppercase",
         "UPPERCASE",
         "Revise/Case/UPPERCASE",
@@ -152,6 +161,21 @@ stilus_cmd_writing_word_goal(GtkWidget *widget, gpointer data)
         data_application->data_options->word_goal = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spin_button));
 
     gtk_widget_destroy(dialog);
+}
+
+
+void
+stilus_cmd_writing_clear_word_goal(GtkWidget *widget, gpointer data)
+{
+    struct AirpadDataApplication *data_application = data;
+
+    (void)widget;
+
+    if (data_application == NULL ||
+        data_application->data_options == NULL)
+        return;
+
+    data_application->data_options->word_goal = 0;
 }
 
 static guint

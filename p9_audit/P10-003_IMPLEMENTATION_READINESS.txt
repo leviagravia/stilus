@@ -1,0 +1,19 @@
+P10-003 CLEAR WORD GOAL IMPLEMENTATION READINESS
+DATE: 2026-06-13T09:33:45+02:00
+
+src/stilus_commands.c:27:        "writing.word-goal",
+src/stilus_commands.c:32:        stilus_cmd_writing_word_goal,
+src/stilus_commands.c:111:stilus_cmd_writing_word_goal(GtkWidget *widget, gpointer data)
+src/stilus_commands.c:136:        data_application->data_options->word_goal,
+src/stilus_commands.c:152:        data_application->data_options->word_goal = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spin_button));
+src/stilus_commands.h:34:void stilus_cmd_writing_word_goal(GtkWidget *widget, gpointer data);
+src/options.c:115:    AIRPAD_OPTIONS_READ_VALUE(integer, data_options->word_goal, "word-goal", 0)
+src/options.c:130:    AIRPAD_OPTIONS_WRITE_VALUE(g_key_file_set_integer, TRUE, data_options->word_goal, "word-goal")
+src/const.h:74:    GtkWidget *menu_item_writing_word_goal;                     // "Writing -> Word Goal..." menu item.
+src/const.h:162:    gulong menu_item_writing_word_goal_activate;               // "Writing -> Word Goal..." menu item: "activate"
+src/const.h:227:    gint word_goal;
+src/window.c:61:    data_menu_bar->menu_item_writing_word_goal = gtk_menu_item_new_with_mnemonic(_("Word _Goal..."));
+src/window.c:155:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_writing), data_menu_bar->menu_item_writing_word_goal);
+src/main.c:258:    data_application->data_signals->menu_item_writing_word_goal_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_writing_word_goal, "activate", G_CALLBACK(&stilus_cmd_writing_word_goal), data_application);
+
+READY FOR IMPLEMENTATION
