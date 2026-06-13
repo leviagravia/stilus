@@ -1,0 +1,107 @@
+P9-004D2 FONT SMALLER AUDIT
+DATE: 2026-06-13T06:49:16+02:00
+
+== GIT STATE ==
+42f3d77 (HEAD -> p9-004-command-layer-foundation, origin/p9-004-command-layer-foundation) P9-004D1 Implement font bigger command
+e67248e P9-004C3 Implement remove trailing spaces command
+56c4476 P9-004C2 Implement lowercase command
+b17d697 P9-004C1 Implement uppercase command
+e27d738 P9-004B2B Implement Go To Line behavior
+3dee8fa P9-004B2A Align command metadata
+6faf169 P9-004B1 Wire Go To Line menu infrastructure
+b826ada P9-004A Command Layer Foundation
+b1b3288 (origin/p2-code-cleanup-audit, p2-code-cleanup-audit) Migrate menu ownership to frozen architecture
+4e68fdf Add source gap audit
+?? p9_audit/P9-004D2_FONT_SMALLER_AUDIT.txt
+
+== REGISTRY ENTRY ==
+52-    },
+53-    {
+54:        "view.font-smaller",
+55-        "Font Smaller",
+56-        "View/Font Smaller",
+57-        "<Control>minus",
+58-        STILUS_CMD_UI_ONLY | STILUS_CMD_PERSISTENCE,
+59-        stilus_cmd_view_font_smaller,
+60-        "Decrease the editor font size."
+61-    }
+62-};
+
+== CALLBACK STUB ==
+57-        "<Control>minus",
+58-        STILUS_CMD_UI_ONLY | STILUS_CMD_PERSISTENCE,
+59:        stilus_cmd_view_font_smaller,
+60-        "Decrease the editor font size."
+61-    }
+62-};
+63-
+64-const StilusCommand *
+65-stilus_commands_get_all(gsize *count)
+66-{
+67-    if (count != NULL)
+68-        *count = G_N_ELEMENTS(stilus_commands);
+69-
+70-    return stilus_commands;
+71-}
+--
+296-
+297-void
+298:stilus_cmd_view_font_smaller(GtkWidget *widget, gpointer data)
+299-{
+300-    (void)widget;
+301-    (void)data;
+302-}
+
+== FONT BIGGER REFERENCE ==
+void
+stilus_cmd_view_font_bigger(GtkWidget *widget, gpointer data)
+{
+    struct AirpadDataApplication *data_application = data;
+
+    (void)widget;
+
+    if (data_application == NULL ||
+        data_application->data_window == NULL ||
+        data_application->data_options == NULL)
+        return;
+
+    const char *current_font = data_application->data_options->font != NULL ?
+        data_application->data_options->font :
+        "Monospace 12";
+
+    PangoFontDescription *font_desc = pango_font_description_from_string(current_font);
+    gint size = pango_font_description_get_size(font_desc);
+
+    if (size <= 0)
+        size = 12 * PANGO_SCALE;
+
+    size += PANGO_SCALE;
+
+    if (size > 72 * PANGO_SCALE)
+        size = 72 * PANGO_SCALE;
+
+    pango_font_description_set_size(font_desc, size);
+
+    g_free(data_application->data_options->font);
+    data_application->data_options->font = pango_font_description_to_string(font_desc);
+
+    airpad_window_set_font(data_application->data_window, data_application->data_options->font);
+
+    pango_font_description_free(font_desc);
+}
+
+void
+stilus_cmd_view_font_smaller(GtkWidget *widget, gpointer data)
+{
+    (void)widget;
+    (void)data;
+}
+
+== FONT MENU WIRING ==
+src/const.h:103:    GtkWidget *menu_item_view_font_bigger;                      // "View -> Font Bigger" menu item.
+src/const.h:176:    gulong menu_item_view_font_bigger_activate;                   // "View -> Font Bigger" menu item: "activate"
+src/window.c:102:    data_menu_bar->menu_item_view_font_bigger = gtk_menu_item_new_with_mnemonic(_("Font _Bigger"));
+src/window.c:174:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_view), data_menu_bar->menu_item_view_font_bigger);
+src/main.c:276:    data_application->data_signals->menu_item_view_font_bigger_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_view_font_bigger, "activate", G_CALLBACK(&stilus_cmd_view_font_bigger), data_application);
+src/stilus_commands.c:59:        stilus_cmd_view_font_smaller,
+src/stilus_commands.c:298:stilus_cmd_view_font_smaller(GtkWidget *widget, gpointer data)

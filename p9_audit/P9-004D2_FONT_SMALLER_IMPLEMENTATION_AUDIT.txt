@@ -1,0 +1,121 @@
+P9-004D2 FONT SMALLER IMPLEMENTATION AUDIT
+DATE: 2026-06-13T06:51:29+02:00
+
+== GIT STATUS ==
+ M src/const.h
+ M src/main.c
+ M src/stilus_commands.c
+ M src/window.c
+?? p9_audit/P9-004D2_FONT_SMALLER_AUDIT.txt
+?? p9_audit/P9-004D2_FONT_SMALLER_IMPLEMENTATION_AUDIT.txt
+
+== FONT SMALLER SYMBOLS ==
+src/const.h:104:    GtkWidget *menu_item_view_font_smaller;                     // "View -> Font Smaller" menu item.
+src/const.h:178:    gulong menu_item_view_font_smaller_activate;                  // "View -> Font Smaller" menu item: "activate"
+src/window.c:103:    data_menu_bar->menu_item_view_font_smaller = gtk_menu_item_new_with_mnemonic(_("Font _Smaller"));
+src/window.c:176:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_view), data_menu_bar->menu_item_view_font_smaller);
+src/window.c:484:void airpad_window_set_font(const struct AirpadDataWindow *data_window, const char *font)
+src/main.c:277:    data_application->data_signals->menu_item_view_font_smaller_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_view_font_smaller, "activate", G_CALLBACK(&stilus_cmd_view_font_smaller), data_application);
+src/main.c:367:        airpad_window_set_font(data_application->data_window, data_application->data_options->font);
+src/stilus_commands.c:59:        stilus_cmd_view_font_smaller,
+src/stilus_commands.c:287:    pango_font_description_set_size(font_desc, size);
+src/stilus_commands.c:292:    airpad_window_set_font(data_application->data_window, data_application->data_options->font);
+src/stilus_commands.c:298:stilus_cmd_view_font_smaller(GtkWidget *widget, gpointer data)
+src/stilus_commands.c:324:    pango_font_description_set_size(font_desc, size);
+src/stilus_commands.c:329:    airpad_window_set_font(data_application->data_window, data_application->data_options->font);
+
+== DIFF ==
+diff --git a/src/const.h b/src/const.h
+index 7503d6c..bbba759 100644
+--- a/src/const.h
++++ b/src/const.h
+@@ -101,6 +101,7 @@ struct AirpadDataMenuBar
+     GtkWidget *menu_item_view_fullscreen;                       // "View -> Fullscreen" menu item.
+     GtkWidget *menu_item_view_always_on_top;                    // "View -> Always on Top" menu item.
+     GtkWidget *menu_item_view_font_bigger;                      // "View -> Font Bigger" menu item.
++    GtkWidget *menu_item_view_font_smaller;                     // "View -> Font Smaller" menu item.
+     GtkWidget *menu_item_options_font;                          // "Options-> Font..." menu item.
+     GtkWidget *menu_item_options_text_wrap;                     // "Options -> Text Wrap" menu item.
+     GtkWidget *menu_item_options_text_wrap_none;                // "Options -> Text Wrap -> None" menu item.
+@@ -174,6 +175,7 @@ struct AirpadDataSignals
+     gulong menu_item_view_fullscreen_activate;                      // "View -> Fullscreen" menu item: "activate"
+     gulong menu_item_view_always_on_top_activate;                 // "View -> Always on Top" menu item: "activate"
+     gulong menu_item_view_font_bigger_activate;                   // "View -> Font Bigger" menu item: "activate"
++    gulong menu_item_view_font_smaller_activate;                  // "View -> Font Smaller" menu item: "activate"
+     gulong menu_item_options_font_activate;                         // "Options -> Font" menu item: "activate"
+     gulong menu_item_options_text_wrap_none_toggled;                // "Options -> Text Wrap -> None": "toggled"
+     gulong menu_item_options_text_wrap_on_word_toggled;             // "Options -> Text Wrap -> On Word": "toggled"
+diff --git a/src/main.c b/src/main.c
+index 4682bdb..4d45bc5 100644
+--- a/src/main.c
++++ b/src/main.c
+@@ -274,6 +274,7 @@ static void airpad_connect_signals(struct AirpadDataApplication *data_applicatio
+     data_application->data_signals->menu_item_view_always_on_top_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_view_always_on_top, "activate", G_CALLBACK(&airpad_view_always_on_top), data_application->data_window->window);
+     data_application->data_signals->menu_item_options_font_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_options_font, "activate", G_CALLBACK(&airpad_font_choose_font), data_application);
+     data_application->data_signals->menu_item_view_font_bigger_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_view_font_bigger, "activate", G_CALLBACK(&stilus_cmd_view_font_bigger), data_application);
++    data_application->data_signals->menu_item_view_font_smaller_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_view_font_smaller, "activate", G_CALLBACK(&stilus_cmd_view_font_smaller), data_application);
+     data_application->data_signals->menu_item_options_text_wrap_none_toggled = g_signal_connect_after(data_application->data_window->data_menu_bar->menu_item_options_text_wrap_none, "toggled", G_CALLBACK(&airpad_options_update_text_wrap), data_application);
+     data_application->data_signals->menu_item_options_text_wrap_on_char_toggled = g_signal_connect_after(data_application->data_window->data_menu_bar->menu_item_options_text_wrap_on_char, "toggled", G_CALLBACK(&airpad_options_update_text_wrap), data_application);
+     data_application->data_signals->menu_item_options_text_wrap_on_word_toggled = g_signal_connect_after(data_application->data_window->data_menu_bar->menu_item_options_text_wrap_on_word, "toggled", G_CALLBACK(&airpad_options_update_text_wrap), data_application);
+diff --git a/src/stilus_commands.c b/src/stilus_commands.c
+index ef932ab..4f5a027 100644
+--- a/src/stilus_commands.c
++++ b/src/stilus_commands.c
+@@ -297,6 +297,36 @@ stilus_cmd_view_font_bigger(GtkWidget *widget, gpointer data)
+ void
+ stilus_cmd_view_font_smaller(GtkWidget *widget, gpointer data)
+ {
++    struct AirpadDataApplication *data_application = data;
++
+     (void)widget;
+-    (void)data;
++
++    if (data_application == NULL ||
++        data_application->data_window == NULL ||
++        data_application->data_options == NULL)
++        return;
++
++    const char *current_font = data_application->data_options->font != NULL ?
++        data_application->data_options->font :
++        "Monospace 12";
++
++    PangoFontDescription *font_desc = pango_font_description_from_string(current_font);
++    gint size = pango_font_description_get_size(font_desc);
++
++    if (size <= 0)
++        size = 12 * PANGO_SCALE;
++
++    size -= PANGO_SCALE;
++
++    if (size < 6 * PANGO_SCALE)
++        size = 6 * PANGO_SCALE;
++
++    pango_font_description_set_size(font_desc, size);
++
++    g_free(data_application->data_options->font);
++    data_application->data_options->font = pango_font_description_to_string(font_desc);
++
++    airpad_window_set_font(data_application->data_window, data_application->data_options->font);
++
++    pango_font_description_free(font_desc);
+ }
+diff --git a/src/window.c b/src/window.c
+index 4ece83e..d8c6e35 100644
+--- a/src/window.c
++++ b/src/window.c
+@@ -100,6 +100,7 @@ static void airpad_window_menu_bar_create(struct AirpadDataMenuBar *data_menu_ba
+     data_menu_bar->menu_item_view_fullscreen = gtk_check_menu_item_new_with_mnemonic(_("_Fullscreen"));
+     data_menu_bar->menu_item_view_always_on_top = gtk_check_menu_item_new_with_mnemonic(_("_Always on Top"));
+     data_menu_bar->menu_item_view_font_bigger = gtk_menu_item_new_with_mnemonic(_("Font _Bigger"));
++    data_menu_bar->menu_item_view_font_smaller = gtk_menu_item_new_with_mnemonic(_("Font _Smaller"));
+ 
+     // "Options" buttons.
+     data_menu_bar->menu_item_options_font = gtk_menu_item_new_with_mnemonic(_("_Font\u2026"));
+@@ -172,6 +173,7 @@ static void airpad_window_menu_bar_create(struct AirpadDataMenuBar *data_menu_ba
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_view), gtk_separator_menu_item_new());
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_view), data_menu_bar->menu_item_options_font);
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_view), data_menu_bar->menu_item_view_font_bigger);
++    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_view), data_menu_bar->menu_item_view_font_smaller);
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_view), data_menu_bar->menu_item_options_text_wrap);
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_options_text_wrap), data_menu_bar->menu_item_options_text_wrap_none);
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_options_text_wrap), data_menu_bar->menu_item_options_text_wrap_on_char);

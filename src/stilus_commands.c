@@ -297,6 +297,36 @@ stilus_cmd_view_font_bigger(GtkWidget *widget, gpointer data)
 void
 stilus_cmd_view_font_smaller(GtkWidget *widget, gpointer data)
 {
+    struct AirpadDataApplication *data_application = data;
+
     (void)widget;
-    (void)data;
+
+    if (data_application == NULL ||
+        data_application->data_window == NULL ||
+        data_application->data_options == NULL)
+        return;
+
+    const char *current_font = data_application->data_options->font != NULL ?
+        data_application->data_options->font :
+        "Monospace 12";
+
+    PangoFontDescription *font_desc = pango_font_description_from_string(current_font);
+    gint size = pango_font_description_get_size(font_desc);
+
+    if (size <= 0)
+        size = 12 * PANGO_SCALE;
+
+    size -= PANGO_SCALE;
+
+    if (size < 6 * PANGO_SCALE)
+        size = 6 * PANGO_SCALE;
+
+    pango_font_description_set_size(font_desc, size);
+
+    g_free(data_application->data_options->font);
+    data_application->data_options->font = pango_font_description_to_string(font_desc);
+
+    airpad_window_set_font(data_application->data_window, data_application->data_options->font);
+
+    pango_font_description_free(font_desc);
 }
