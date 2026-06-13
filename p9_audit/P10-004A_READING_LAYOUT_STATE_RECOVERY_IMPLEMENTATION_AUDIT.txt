@@ -1,0 +1,186 @@
+P10-004A READING LAYOUT STATE OWNERSHIP RECOVERY IMPLEMENTATION AUDIT
+DATE: 2026-06-13T21:56:32+02:00
+
+== GIT STATUS ==
+ M src/const.h
+ M src/main.c
+ M src/stilus_commands.c
+ M src/stilus_commands.h
+ M src/window.c
+?? p9_audit/P10-004A_READING_LAYOUT_STATE_RECOVERY_IMPLEMENTATION_AUDIT.txt
+?? p9_audit/P10-004_READING_LAYOUT_AUDIT.txt
+?? p9_audit/P10-004_READING_LAYOUT_IMPLEMENTATION_AUDIT.txt
+?? p9_audit/P10-004_READING_LAYOUT_STATE_RECOVERY_AUDIT.txt
+
+== STATIC STATE CHECK ==
+
+== APPLICATION OWNED STATE CHECK ==
+src/const.h:251:    gboolean reading_layout_enabled;              // Writing -> Reading Layout state.
+src/const.h:252:    char *reading_layout_saved_font;              // Previous font before Reading Layout.
+src/const.h:253:    GtkWrapMode reading_layout_saved_wrap;        // Previous wrap mode before Reading Layout.
+src/const.h:254:    GtkPolicyType reading_layout_saved_scrollbar; // Previous scrollbar policy before Reading Layout.
+src/main.c:69:        g_free(data_application->reading_layout_saved_font);
+src/stilus_commands.c:229:    if (!data_application->reading_layout_enabled)
+src/stilus_commands.c:231:        g_free(data_application->reading_layout_saved_font);
+src/stilus_commands.c:232:        data_application->reading_layout_saved_font = g_strdup(data_application->data_options->font);
+src/stilus_commands.c:233:        data_application->reading_layout_saved_wrap = data_application->data_options->text_wrap;
+src/stilus_commands.c:234:        data_application->reading_layout_saved_scrollbar = data_application->data_options->scrollbar_policy;
+src/stilus_commands.c:247:        data_application->reading_layout_enabled = TRUE;
+src/stilus_commands.c:252:        data_application->data_options->font = g_strdup(data_application->reading_layout_saved_font);
+src/stilus_commands.c:253:        data_application->data_options->text_wrap = data_application->reading_layout_saved_wrap;
+src/stilus_commands.c:254:        data_application->data_options->scrollbar_policy = data_application->reading_layout_saved_scrollbar;
+src/stilus_commands.c:260:        data_application->reading_layout_enabled = FALSE;
+
+== DIFF ==
+diff --git a/src/const.h b/src/const.h
+index afdd4b4..488a056 100644
+--- a/src/const.h
++++ b/src/const.h
+@@ -73,6 +73,7 @@ struct AirpadDataMenuBar
+     GtkWidget *menu_item_writing_statistics;                    // "Writing -> Writing Statistics" menu item.
+     GtkWidget *menu_item_writing_word_goal;                     // "Writing -> Word Goal..." menu item.
+     GtkWidget *menu_item_writing_clear_word_goal;               // "Writing -> Clear Word Goal" menu item.
++    GtkWidget *menu_item_writing_reading_layout;                // "Writing -> Reading Layout" menu item.
+     GtkWidget *menu_item_revise;                                // "Revise" menu item.
+     GtkWidget *menu_item_search;                                // "Search" menu item.
+     GtkWidget *menu_item_view;                                  // "View" menu item.
+@@ -162,6 +163,7 @@ struct AirpadDataSignals
+     gulong menu_item_writing_statistics_activate;              // "Writing -> Writing Statistics" menu item: "activate"
+     gulong menu_item_writing_word_goal_activate;               // "Writing -> Word Goal..." menu item: "activate"
+     gulong menu_item_writing_clear_word_goal_activate;         // "Writing -> Clear Word Goal" menu item: "activate"
++    gulong menu_item_writing_reading_layout_activate;          // "Writing -> Reading Layout" menu item: "activate"
+     gulong menu_item_revise_uppercase_activate;                // "Revise -> UPPERCASE" menu item: "activate"
+     gulong menu_item_revise_lowercase_activate;                // "Revise -> Lowercase" menu item: "activate"
+     gulong menu_item_revise_remove_trailing_spaces_activate;   // "Revise -> Remove Trailing Spaces" menu item: "activate"
+@@ -246,6 +248,10 @@ struct AirpadDataApplication
+     struct AirpadDataSearch *data_search;       // Options used for find/replace.
+     struct AirpadDataSignals *data_signals;     // Signal connections.
+     struct AirpadDataWindow *data_window;       // Application window.
++    gboolean reading_layout_enabled;              // Writing -> Reading Layout state.
++    char *reading_layout_saved_font;              // Previous font before Reading Layout.
++    GtkWrapMode reading_layout_saved_wrap;        // Previous wrap mode before Reading Layout.
++    GtkPolicyType reading_layout_saved_scrollbar; // Previous scrollbar policy before Reading Layout.
+ };
+ 
+ #endif
+diff --git a/src/main.c b/src/main.c
+index 18ac27a..10137c1 100644
+--- a/src/main.c
++++ b/src/main.c
+@@ -66,6 +66,7 @@ static void airpad_data_application_free(struct AirpadDataApplication *data_appl
+         g_free(data_application->data_signals);
+         g_free(data_application->data_search);
+         g_free(data_application->data_file);
++        g_free(data_application->reading_layout_saved_font);
+         g_free(data_application->data_options);
+         g_free(data_application->data_arguments);
+         g_free(data_application);
+@@ -257,6 +258,7 @@ static void airpad_connect_signals(struct AirpadDataApplication *data_applicatio
+     data_application->data_signals->menu_item_writing_statistics_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_writing_statistics, "activate", G_CALLBACK(&stilus_cmd_writing_statistics), data_application);
+     data_application->data_signals->menu_item_writing_word_goal_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_writing_word_goal, "activate", G_CALLBACK(&stilus_cmd_writing_word_goal), data_application);
+     data_application->data_signals->menu_item_writing_clear_word_goal_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_writing_clear_word_goal, "activate", G_CALLBACK(&stilus_cmd_writing_clear_word_goal), data_application);
++    data_application->data_signals->menu_item_writing_reading_layout_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_writing_reading_layout, "activate", G_CALLBACK(&stilus_cmd_writing_reading_layout), data_application);
+     data_application->data_signals->menu_item_revise_uppercase_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_revise_uppercase, "activate", G_CALLBACK(&stilus_cmd_revise_uppercase), data_application);
+     data_application->data_signals->menu_item_revise_lowercase_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_revise_lowercase, "activate", G_CALLBACK(&stilus_cmd_revise_lowercase), data_application);
+     data_application->data_signals->menu_item_revise_remove_trailing_spaces_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_revise_remove_trailing_spaces, "activate", G_CALLBACK(&stilus_cmd_revise_remove_trailing_spaces), data_application);
+diff --git a/src/stilus_commands.c b/src/stilus_commands.c
+index 68972cf..2e5476c 100644
+--- a/src/stilus_commands.c
++++ b/src/stilus_commands.c
+@@ -41,6 +41,15 @@ static const StilusCommand stilus_commands[] =
+         stilus_cmd_writing_clear_word_goal,
+         "Clear the document word goal."
+     },
++    {
++        "writing.reading-layout",
++        "Reading Layout",
++        "Writing/Reading Layout",
++        NULL,
++        STILUS_CMD_UI_ONLY,
++        stilus_cmd_writing_reading_layout,
++        "Toggle a comfortable reading layout for the editor."
++    },
+     {
+         "revise.uppercase",
+         "UPPERCASE",
+@@ -178,6 +187,80 @@ stilus_cmd_writing_clear_word_goal(GtkWidget *widget, gpointer data)
+     data_application->data_options->word_goal = 0;
+ }
+ 
++
++static char *
++stilus_font_with_delta(const char *font, gint delta_points)
++{
++    const char *base_font = font != NULL ? font : "Monospace 12";
++    PangoFontDescription *font_desc = pango_font_description_from_string(base_font);
++    gint size = pango_font_description_get_size(font_desc);
++
++    if (size <= 0)
++        size = 12 * PANGO_SCALE;
++
++    size += delta_points * PANGO_SCALE;
++
++    if (size < 6 * PANGO_SCALE)
++        size = 6 * PANGO_SCALE;
++
++    if (size > 72 * PANGO_SCALE)
++        size = 72 * PANGO_SCALE;
++
++    pango_font_description_set_size(font_desc, size);
++
++    char *new_font = pango_font_description_to_string(font_desc);
++    pango_font_description_free(font_desc);
++
++    return new_font;
++}
++
++void
++stilus_cmd_writing_reading_layout(GtkWidget *widget, gpointer data)
++{
++    struct AirpadDataApplication *data_application = data;
++
++    (void)widget;
++
++    if (data_application == NULL ||
++        data_application->data_window == NULL ||
++        data_application->data_options == NULL)
++        return;
++
++    if (!data_application->reading_layout_enabled)
++    {
++        g_free(data_application->reading_layout_saved_font);
++        data_application->reading_layout_saved_font = g_strdup(data_application->data_options->font);
++        data_application->reading_layout_saved_wrap = data_application->data_options->text_wrap;
++        data_application->reading_layout_saved_scrollbar = data_application->data_options->scrollbar_policy;
++
++        char *reading_font = stilus_font_with_delta(data_application->data_options->font, 2);
++
++        g_free(data_application->data_options->font);
++        data_application->data_options->font = reading_font;
++        data_application->data_options->text_wrap = GTK_WRAP_WORD;
++        data_application->data_options->scrollbar_policy = GTK_POLICY_AUTOMATIC;
++
++        airpad_window_set_font(data_application->data_window, data_application->data_options->font);
++        airpad_window_set_text_wrap_mode(data_application->data_window, data_application->data_options->text_wrap);
++        airpad_window_set_scrollbar_policy(data_application->data_window, data_application->data_options->scrollbar_policy);
++
++        data_application->reading_layout_enabled = TRUE;
++    }
++    else
++    {
++        g_free(data_application->data_options->font);
++        data_application->data_options->font = g_strdup(data_application->reading_layout_saved_font);
++        data_application->data_options->text_wrap = data_application->reading_layout_saved_wrap;
++        data_application->data_options->scrollbar_policy = data_application->reading_layout_saved_scrollbar;
++
++        airpad_window_set_font(data_application->data_window, data_application->data_options->font);
++        airpad_window_set_text_wrap_mode(data_application->data_window, data_application->data_options->text_wrap);
++        airpad_window_set_scrollbar_policy(data_application->data_window, data_application->data_options->scrollbar_policy);
++
++        data_application->reading_layout_enabled = FALSE;
++    }
++}
++
+ static guint
+ stilus_count_words_in_text(const char *text)
+ {

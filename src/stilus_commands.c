@@ -42,6 +42,15 @@ static const StilusCommand stilus_commands[] =
         "Clear the document word goal."
     },
     {
+        "writing.reading-layout",
+        "Reading Layout",
+        "Writing/Reading Layout",
+        NULL,
+        STILUS_CMD_UI_ONLY,
+        stilus_cmd_writing_reading_layout,
+        "Toggle a comfortable reading layout for the editor."
+    },
+    {
         "revise.uppercase",
         "UPPERCASE",
         "Revise/Case/UPPERCASE",
@@ -176,6 +185,80 @@ stilus_cmd_writing_clear_word_goal(GtkWidget *widget, gpointer data)
         return;
 
     data_application->data_options->word_goal = 0;
+}
+
+
+static char *
+stilus_font_with_delta(const char *font, gint delta_points)
+{
+    const char *base_font = font != NULL ? font : "Monospace 12";
+    PangoFontDescription *font_desc = pango_font_description_from_string(base_font);
+    gint size = pango_font_description_get_size(font_desc);
+
+    if (size <= 0)
+        size = 12 * PANGO_SCALE;
+
+    size += delta_points * PANGO_SCALE;
+
+    if (size < 6 * PANGO_SCALE)
+        size = 6 * PANGO_SCALE;
+
+    if (size > 72 * PANGO_SCALE)
+        size = 72 * PANGO_SCALE;
+
+    pango_font_description_set_size(font_desc, size);
+
+    char *new_font = pango_font_description_to_string(font_desc);
+    pango_font_description_free(font_desc);
+
+    return new_font;
+}
+
+void
+stilus_cmd_writing_reading_layout(GtkWidget *widget, gpointer data)
+{
+    struct AirpadDataApplication *data_application = data;
+
+    (void)widget;
+
+    if (data_application == NULL ||
+        data_application->data_window == NULL ||
+        data_application->data_options == NULL)
+        return;
+
+    if (!data_application->reading_layout_enabled)
+    {
+        g_free(data_application->reading_layout_saved_font);
+        data_application->reading_layout_saved_font = g_strdup(data_application->data_options->font);
+        data_application->reading_layout_saved_wrap = data_application->data_options->text_wrap;
+        data_application->reading_layout_saved_scrollbar = data_application->data_options->scrollbar_policy;
+
+        char *reading_font = stilus_font_with_delta(data_application->data_options->font, 2);
+
+        g_free(data_application->data_options->font);
+        data_application->data_options->font = reading_font;
+        data_application->data_options->text_wrap = GTK_WRAP_WORD;
+        data_application->data_options->scrollbar_policy = GTK_POLICY_AUTOMATIC;
+
+        airpad_window_set_font(data_application->data_window, data_application->data_options->font);
+        airpad_window_set_text_wrap_mode(data_application->data_window, data_application->data_options->text_wrap);
+        airpad_window_set_scrollbar_policy(data_application->data_window, data_application->data_options->scrollbar_policy);
+
+        data_application->reading_layout_enabled = TRUE;
+    }
+    else
+    {
+        g_free(data_application->data_options->font);
+        data_application->data_options->font = g_strdup(data_application->reading_layout_saved_font);
+        data_application->data_options->text_wrap = data_application->reading_layout_saved_wrap;
+        data_application->data_options->scrollbar_policy = data_application->reading_layout_saved_scrollbar;
+
+        airpad_window_set_font(data_application->data_window, data_application->data_options->font);
+        airpad_window_set_text_wrap_mode(data_application->data_window, data_application->data_options->text_wrap);
+        airpad_window_set_scrollbar_policy(data_application->data_window, data_application->data_options->scrollbar_policy);
+
+        data_application->reading_layout_enabled = FALSE;
+    }
 }
 
 static guint

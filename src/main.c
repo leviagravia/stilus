@@ -66,6 +66,7 @@ static void airpad_data_application_free(struct AirpadDataApplication *data_appl
         g_free(data_application->data_signals);
         g_free(data_application->data_search);
         g_free(data_application->data_file);
+        g_free(data_application->reading_layout_saved_font);
         g_free(data_application->data_options);
         g_free(data_application->data_arguments);
         g_free(data_application);
@@ -257,6 +258,7 @@ static void airpad_connect_signals(struct AirpadDataApplication *data_applicatio
     data_application->data_signals->menu_item_writing_statistics_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_writing_statistics, "activate", G_CALLBACK(&stilus_cmd_writing_statistics), data_application);
     data_application->data_signals->menu_item_writing_word_goal_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_writing_word_goal, "activate", G_CALLBACK(&stilus_cmd_writing_word_goal), data_application);
     data_application->data_signals->menu_item_writing_clear_word_goal_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_writing_clear_word_goal, "activate", G_CALLBACK(&stilus_cmd_writing_clear_word_goal), data_application);
+    data_application->data_signals->menu_item_writing_reading_layout_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_writing_reading_layout, "activate", G_CALLBACK(&stilus_cmd_writing_reading_layout), data_application);
     data_application->data_signals->menu_item_revise_uppercase_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_revise_uppercase, "activate", G_CALLBACK(&stilus_cmd_revise_uppercase), data_application);
     data_application->data_signals->menu_item_revise_lowercase_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_revise_lowercase, "activate", G_CALLBACK(&stilus_cmd_revise_lowercase), data_application);
     data_application->data_signals->menu_item_revise_remove_trailing_spaces_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_revise_remove_trailing_spaces, "activate", G_CALLBACK(&stilus_cmd_revise_remove_trailing_spaces), data_application);

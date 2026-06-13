@@ -73,6 +73,7 @@ struct AirpadDataMenuBar
     GtkWidget *menu_item_writing_statistics;                    // "Writing -> Writing Statistics" menu item.
     GtkWidget *menu_item_writing_word_goal;                     // "Writing -> Word Goal..." menu item.
     GtkWidget *menu_item_writing_clear_word_goal;               // "Writing -> Clear Word Goal" menu item.
+    GtkWidget *menu_item_writing_reading_layout;                // "Writing -> Reading Layout" menu item.
     GtkWidget *menu_item_revise;                                // "Revise" menu item.
     GtkWidget *menu_item_search;                                // "Search" menu item.
     GtkWidget *menu_item_view;                                  // "View" menu item.
@@ -162,6 +163,7 @@ struct AirpadDataSignals
     gulong menu_item_writing_statistics_activate;              // "Writing -> Writing Statistics" menu item: "activate"
     gulong menu_item_writing_word_goal_activate;               // "Writing -> Word Goal..." menu item: "activate"
     gulong menu_item_writing_clear_word_goal_activate;         // "Writing -> Clear Word Goal" menu item: "activate"
+    gulong menu_item_writing_reading_layout_activate;          // "Writing -> Reading Layout" menu item: "activate"
     gulong menu_item_revise_uppercase_activate;                // "Revise -> UPPERCASE" menu item: "activate"
     gulong menu_item_revise_lowercase_activate;                // "Revise -> Lowercase" menu item: "activate"
     gulong menu_item_revise_remove_trailing_spaces_activate;   // "Revise -> Remove Trailing Spaces" menu item: "activate"
@@ -246,6 +248,10 @@ struct AirpadDataApplication
     struct AirpadDataSearch *data_search;       // Options used for find/replace.
     struct AirpadDataSignals *data_signals;     // Signal connections.
     struct AirpadDataWindow *data_window;       // Application window.
+    gboolean reading_layout_enabled;              // Writing -> Reading Layout state.
+    char *reading_layout_saved_font;              // Previous font before Reading Layout.
+    GtkWrapMode reading_layout_saved_wrap;        // Previous wrap mode before Reading Layout.
+    GtkPolicyType reading_layout_saved_scrollbar; // Previous scrollbar policy before Reading Layout.
 };
 
 #endif
