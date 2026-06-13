@@ -30,6 +30,7 @@ const StilusCommand *stilus_commands_get_all(gsize *count);
 const StilusCommand *stilus_commands_find_by_id(const char *id);
 
 void stilus_cmd_navigate_go_to_line(GtkWidget *widget, gpointer data);
+void stilus_cmd_writing_statistics(GtkWidget *widget, gpointer data);
 void stilus_cmd_revise_uppercase(GtkWidget *widget, gpointer data);
 void stilus_cmd_revise_lowercase(GtkWidget *widget, gpointer data);
 void stilus_cmd_revise_remove_trailing_spaces(GtkWidget *widget, gpointer data);

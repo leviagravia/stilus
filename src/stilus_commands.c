@@ -15,6 +15,15 @@ static const StilusCommand stilus_commands[] =
         "Move the cursor to a specific line number."
     },
     {
+        "writing.statistics",
+        "Writing Statistics",
+        "Writing/Writing Statistics",
+        NULL,
+        STILUS_CMD_UI_ONLY | STILUS_CMD_DIALOG | STILUS_CMD_READ_ONLY,
+        stilus_cmd_writing_statistics,
+        "Show document writing statistics."
+    },
+    {
         "revise.uppercase",
         "UPPERCASE",
         "Revise/Case/UPPERCASE",
@@ -85,6 +94,94 @@ stilus_commands_find_by_id(const char *id)
     }
 
     return NULL;
+}
+
+
+static guint
+stilus_count_words_in_text(const char *text)
+{
+    guint words = 0;
+    gboolean in_word = FALSE;
+
+    for (const char *p = text; p != NULL && *p != '\0'; p = g_utf8_next_char(p))
+    {
+        gunichar ch = g_utf8_get_char(p);
+
+        if (g_unichar_isspace(ch))
+        {
+            in_word = FALSE;
+        }
+        else if (!in_word)
+        {
+            in_word = TRUE;
+            words++;
+        }
+    }
+
+    return words;
+}
+
+static guint
+stilus_count_characters_in_text(const char *text)
+{
+    guint characters = 0;
+
+    for (const char *p = text; p != NULL && *p != '\0'; p = g_utf8_next_char(p))
+        characters++;
+
+    return characters;
+}
+
+void
+stilus_cmd_writing_statistics(GtkWidget *widget, gpointer data)
+{
+    struct AirpadDataApplication *data_application = data;
+
+    (void)widget;
+
+    if (data_application == NULL ||
+        data_application->data_window == NULL ||
+        data_application->data_window->data_text_view == NULL ||
+        data_application->data_window->data_text_view->text_view == NULL)
+        return;
+
+    GtkWidget *text_view = data_application->data_window->data_text_view->text_view;
+    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
+    GtkTextIter start;
+    GtkTextIter end;
+
+    gtk_text_buffer_get_start_iter(text_buffer, &start);
+    gtk_text_buffer_get_end_iter(text_buffer, &end);
+
+    char *text = gtk_text_buffer_get_text(text_buffer, &start, &end, FALSE);
+
+    const guint words = stilus_count_words_in_text(text);
+    const guint characters = stilus_count_characters_in_text(text);
+    const gint lines = gtk_text_buffer_get_line_count(text_buffer);
+    const gsize bytes = strlen(text);
+    const guint kb = (bytes + 1023) / 1024;
+
+    char *message = g_strdup_printf(
+        "Words: %u\nLines: %d\nCharacters: %u\nSize: %u KB",
+        words,
+        lines,
+        characters,
+        kb);
+
+    GtkWidget *dialog = gtk_message_dialog_new(
+        GTK_WINDOW(data_application->data_window->window),
+        GTK_DIALOG_MODAL,
+        GTK_MESSAGE_INFO,
+        GTK_BUTTONS_OK,
+        "%s",
+        message);
+
+    gtk_window_set_title(GTK_WINDOW(dialog), _("Writing Statistics"));
+    gtk_dialog_run(GTK_DIALOG(dialog));
+    gtk_widget_destroy(dialog);
+
+    g_free(message);
+    g_free(text);
 }
 
 void

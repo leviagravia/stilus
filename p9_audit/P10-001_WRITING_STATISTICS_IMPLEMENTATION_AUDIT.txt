@@ -1,0 +1,215 @@
+P10-001 WRITING STATISTICS IMPLEMENTATION AUDIT
+DATE: 2026-06-13T08:58:37+02:00
+
+== GIT STATUS ==
+ M src/const.h
+ M src/main.c
+ M src/stilus_commands.c
+ M src/stilus_commands.h
+ M src/window.c
+?? p9_audit/CANONICAL_ROADMAP_AUDIT.txt
+?? p9_audit/P10-000_CANONICAL_NEXT_BLOCK_AUDIT.txt
+?? p9_audit/P10-001_WRITING_STATISTICS_AUDIT.txt
+?? p9_audit/P10-001_WRITING_STATISTICS_IMPLEMENTATION_AUDIT.txt
+?? p9_audit/P9-004E_COMMAND_LAYER_INTEGRATION_AUDIT.txt
+?? p9_audit/P9-005_COMMAND_LAYER_HARDENING_AUDIT.txt
+
+== WRITING STATISTICS SYMBOLS ==
+src/const.h:73:    GtkWidget *menu_item_writing_statistics;                    // "Writing -> Writing Statistics" menu item.
+src/const.h:160:    gulong menu_item_writing_statistics_activate;              // "Writing -> Writing Statistics" menu item: "activate"
+src/window.c:60:    data_menu_bar->menu_item_writing_statistics = gtk_menu_item_new_with_mnemonic(_("Writing _Statistics"));
+src/window.c:153:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_writing), data_menu_bar->menu_item_writing_statistics);
+src/main.c:257:    data_application->data_signals->menu_item_writing_statistics_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_writing_statistics, "activate", G_CALLBACK(&stilus_cmd_writing_statistics), data_application);
+src/stilus_commands.h:33:void stilus_cmd_writing_statistics(GtkWidget *widget, gpointer data);
+src/stilus_commands.c:18:        "writing.statistics",
+src/stilus_commands.c:19:        "Writing Statistics",
+src/stilus_commands.c:20:        "Writing/Writing Statistics",
+src/stilus_commands.c:23:        stilus_cmd_writing_statistics,
+src/stilus_commands.c:24:        "Show document writing statistics."
+src/stilus_commands.c:101:stilus_count_words_in_text(const char *text)
+src/stilus_commands.c:125:stilus_count_characters_in_text(const char *text)
+src/stilus_commands.c:136:stilus_cmd_writing_statistics(GtkWidget *widget, gpointer data)
+src/stilus_commands.c:158:    const guint words = stilus_count_words_in_text(text);
+src/stilus_commands.c:159:    const guint characters = stilus_count_characters_in_text(text);
+src/stilus_commands.c:179:    gtk_window_set_title(GTK_WINDOW(dialog), _("Writing Statistics"));
+
+== DIFF ==
+diff --git a/src/const.h b/src/const.h
+index bbba759..b4f37f6 100644
+--- a/src/const.h
++++ b/src/const.h
+@@ -70,6 +70,7 @@ struct AirpadDataMenuBar
+     GtkWidget *menu_item_research;                              // "Research" menu item.
+     GtkWidget *menu_item_navigate;                              // "Navigate" menu item.
+     GtkWidget *menu_item_writing;                               // "Writing" menu item.
++    GtkWidget *menu_item_writing_statistics;                    // "Writing -> Writing Statistics" menu item.
+     GtkWidget *menu_item_revise;                                // "Revise" menu item.
+     GtkWidget *menu_item_search;                                // "Search" menu item.
+     GtkWidget *menu_item_view;                                  // "View" menu item.
+@@ -156,6 +157,7 @@ struct AirpadDataSignals
+     gulong menu_item_file_save_as_activate;                         // "File -> Save As" menu item: "activate"
+     gulong menu_item_file_close_activate;                           // "File -> Close" menu item: "activate"
+     gulong menu_item_navigate_go_to_line_activate;             // "Navigate -> Go To Line..." menu item: "activate"
++    gulong menu_item_writing_statistics_activate;              // "Writing -> Writing Statistics" menu item: "activate"
+     gulong menu_item_revise_uppercase_activate;                // "Revise -> UPPERCASE" menu item: "activate"
+     gulong menu_item_revise_lowercase_activate;                // "Revise -> Lowercase" menu item: "activate"
+     gulong menu_item_revise_remove_trailing_spaces_activate;   // "Revise -> Remove Trailing Spaces" menu item: "activate"
+diff --git a/src/main.c b/src/main.c
+index 4d45bc5..16f74e5 100644
+--- a/src/main.c
++++ b/src/main.c
+@@ -254,6 +254,7 @@ static void airpad_connect_signals(struct AirpadDataApplication *data_applicatio
+     data_application->data_signals->menu_item_file_save_as_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_file_save_as, "activate", G_CALLBACK(&airpad_file_save_as), data_application);
+     data_application->data_signals->menu_item_file_close_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_file_close, "activate", G_CALLBACK(&airpad_file_close), data_application);
+     data_application->data_signals->menu_item_navigate_go_to_line_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_navigate_go_to_line, "activate", G_CALLBACK(&stilus_cmd_navigate_go_to_line), data_application);
++    data_application->data_signals->menu_item_writing_statistics_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_writing_statistics, "activate", G_CALLBACK(&stilus_cmd_writing_statistics), data_application);
+     data_application->data_signals->menu_item_revise_uppercase_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_revise_uppercase, "activate", G_CALLBACK(&stilus_cmd_revise_uppercase), data_application);
+     data_application->data_signals->menu_item_revise_lowercase_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_revise_lowercase, "activate", G_CALLBACK(&stilus_cmd_revise_lowercase), data_application);
+     data_application->data_signals->menu_item_revise_remove_trailing_spaces_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_revise_remove_trailing_spaces, "activate", G_CALLBACK(&stilus_cmd_revise_remove_trailing_spaces), data_application);
+diff --git a/src/stilus_commands.c b/src/stilus_commands.c
+index 4f5a027..5fa4716 100644
+--- a/src/stilus_commands.c
++++ b/src/stilus_commands.c
+@@ -14,6 +14,15 @@ static const StilusCommand stilus_commands[] =
+         stilus_cmd_navigate_go_to_line,
+         "Move the cursor to a specific line number."
+     },
++    {
++        "writing.statistics",
++        "Writing Statistics",
++        "Writing/Writing Statistics",
++        NULL,
++        STILUS_CMD_UI_ONLY | STILUS_CMD_DIALOG | STILUS_CMD_READ_ONLY,
++        stilus_cmd_writing_statistics,
++        "Show document writing statistics."
++    },
+     {
+         "revise.uppercase",
+         "UPPERCASE",
+@@ -87,6 +96,94 @@ stilus_commands_find_by_id(const char *id)
+     return NULL;
+ }
+ 
++
++static guint
++stilus_count_words_in_text(const char *text)
++{
++    guint words = 0;
++    gboolean in_word = FALSE;
++
++    for (const char *p = text; p != NULL && *p != '\0'; p = g_utf8_next_char(p))
++    {
++        gunichar ch = g_utf8_get_char(p);
++
++        if (g_unichar_isspace(ch))
++        {
++            in_word = FALSE;
++        }
++        else if (!in_word)
++        {
++            in_word = TRUE;
++            words++;
++        }
++    }
++
++    return words;
++}
++
++static guint
++stilus_count_characters_in_text(const char *text)
++{
++    guint characters = 0;
++
++    for (const char *p = text; p != NULL && *p != '\0'; p = g_utf8_next_char(p))
++        characters++;
++
++    return characters;
++}
++
++void
++stilus_cmd_writing_statistics(GtkWidget *widget, gpointer data)
++{
++    struct AirpadDataApplication *data_application = data;
++
++    (void)widget;
++
++    if (data_application == NULL ||
++        data_application->data_window == NULL ||
++        data_application->data_window->data_text_view == NULL ||
++        data_application->data_window->data_text_view->text_view == NULL)
++        return;
++
++    GtkWidget *text_view = data_application->data_window->data_text_view->text_view;
++    GtkTextBuffer *text_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
++    GtkTextIter start;
++    GtkTextIter end;
++
++    gtk_text_buffer_get_start_iter(text_buffer, &start);
++    gtk_text_buffer_get_end_iter(text_buffer, &end);
++
++    char *text = gtk_text_buffer_get_text(text_buffer, &start, &end, FALSE);
++
++    const guint words = stilus_count_words_in_text(text);
++    const guint characters = stilus_count_characters_in_text(text);
++    const gint lines = gtk_text_buffer_get_line_count(text_buffer);
++    const gsize bytes = strlen(text);
++    const guint kb = (bytes + 1023) / 1024;
++
++    char *message = g_strdup_printf(
++        "Words: %u\nLines: %d\nCharacters: %u\nSize: %u KB",
++        words,
++        lines,
++        characters,
++        kb);
++
++    GtkWidget *dialog = gtk_message_dialog_new(
++        GTK_WINDOW(data_application->data_window->window),
++        GTK_DIALOG_MODAL,
++        GTK_MESSAGE_INFO,
++        GTK_BUTTONS_OK,
++        "%s",
++        message);
++
++    gtk_window_set_title(GTK_WINDOW(dialog), _("Writing Statistics"));
++    gtk_dialog_run(GTK_DIALOG(dialog));
++    gtk_widget_destroy(dialog);
++
++    g_free(message);
++    g_free(text);
++}
++
+ void
+ stilus_cmd_navigate_go_to_line(GtkWidget *widget, gpointer data)
+ {
+diff --git a/src/stilus_commands.h b/src/stilus_commands.h
+index 8d4664a..f5cb4ba 100644
+--- a/src/stilus_commands.h
++++ b/src/stilus_commands.h
+@@ -30,6 +30,7 @@ const StilusCommand *stilus_commands_get_all(gsize *count);
+ const StilusCommand *stilus_commands_find_by_id(const char *id);
+ 
+ void stilus_cmd_navigate_go_to_line(GtkWidget *widget, gpointer data);
++void stilus_cmd_writing_statistics(GtkWidget *widget, gpointer data);
+ void stilus_cmd_revise_uppercase(GtkWidget *widget, gpointer data);
+ void stilus_cmd_revise_lowercase(GtkWidget *widget, gpointer data);
+ void stilus_cmd_revise_remove_trailing_spaces(GtkWidget *widget, gpointer data);
+diff --git a/src/window.c b/src/window.c
+index d8c6e35..335aff9 100644
+--- a/src/window.c
++++ b/src/window.c
+@@ -57,6 +57,7 @@ static void airpad_window_menu_bar_create(struct AirpadDataMenuBar *data_menu_ba
+     data_menu_bar->menu_item_research = gtk_menu_item_new_with_mnemonic(_("_Research"));
+     data_menu_bar->menu_item_navigate = gtk_menu_item_new_with_mnemonic(_("_Navigate"));
+     data_menu_bar->menu_item_writing = gtk_menu_item_new_with_mnemonic(_("_Writing"));
++    data_menu_bar->menu_item_writing_statistics = gtk_menu_item_new_with_mnemonic(_("Writing _Statistics"));
+     data_menu_bar->menu_item_revise = gtk_menu_item_new_with_mnemonic(_("Re_vise"));
+     data_menu_bar->menu_item_search = gtk_menu_item_new_with_mnemonic(_("_Search"));
+     data_menu_bar->menu_item_view = gtk_menu_item_new_with_mnemonic(_("_View"));
+@@ -149,6 +150,7 @@ static void airpad_window_menu_bar_create(struct AirpadDataMenuBar *data_menu_ba
+ 
+ 
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_navigate), data_menu_bar->menu_item_navigate_go_to_line);
++    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_writing), data_menu_bar->menu_item_writing_statistics);
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_revise), data_menu_bar->menu_item_revise_uppercase);
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_revise), data_menu_bar->menu_item_revise_lowercase);
+     gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_revise), data_menu_bar->menu_item_revise_remove_trailing_spaces);

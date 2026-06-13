@@ -1,0 +1,61 @@
+CANONICAL ROADMAP AUDIT
+DATE: 2026-06-13T07:13:37+02:00
+
+./docs/audits/P3-002_UI_IMPLEMENTATION_ROADMAP.txt
+./docs/canonical
+./docs/canonical/STILUS_BOOKMARKS_CANONICAL_POLICY.txt
+./docs/canonical/STILUS_CANONICAL_CORPUS_CLASSIFICATION.txt
+./docs/canonical/STILUS_CANONICAL_MENU_SPEC.txt
+./docs/canonical/STILUS_EDIT_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+./docs/canonical/STILUS_FAVORITES_CANONICAL_POLICY.txt
+./docs/canonical/STILUS_FILE_MENU_CANONICAL_AUDIT.txt
+./docs/canonical/STILUS_FILE_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+./docs/canonical/STILUS_HELP_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+./docs/canonical/STILUS_MENU_ARCHITECTURE_FROZEN_v1.txt
+./docs/canonical/STILUS_MENU_RECONCILIATION_NOTES.txt
+./docs/canonical/STILUS_MENU_RECONCILIATION_REGISTER.txt
+./docs/canonical/STILUS_NAVIGATE_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+./docs/canonical/STILUS_OPTIONS_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+./docs/canonical/STILUS_RESEARCH_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+./docs/canonical/STILUS_REVISE_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+./docs/canonical/STILUS_SIMPLEX_CANONICAL_FEATURES.md
+./docs/canonical/STILUS_SIMPLEX_CANONICAL_UI_SPEC.md
+./docs/canonical/STILUS_TOOLS_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+./docs/canonical/STILUS_VIEW_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+./docs/canonical/STILUS_WRITING_MENU_IMPLEMENTATION_CLASSIFICATION.txt
+./.git/logs/refs/heads/p9-004-command-layer-foundation
+./.git/logs/refs/remotes/origin/p9-004-command-layer-foundation
+./.git/refs/heads/p9-004-command-layer-foundation
+./.git/refs/remotes/origin/p9-004-command-layer-foundation
+./obj/stilus_commands.o
+./p9_audit/CANONICAL_ROADMAP_AUDIT.txt
+./p9_audit/P9-004B2A_COMMAND_METADATA_AUDIT.txt
+./p9_audit/P9-004E_COMMAND_LAYER_INTEGRATION_AUDIT.txt
+./p9_audit/P9-005_COMMAND_LAYER_HARDENING_AUDIT.txt
+./ROADMAP.md
+./src/stilus_commands.c
+./src/stilus_commands.h
+
+== P9 COMMANDS IMPLEMENTED ==
+src/stilus_commands.c:9:        "navigate.go-to-line",
+src/stilus_commands.c:18:        "revise.uppercase",
+src/stilus_commands.c:23:        stilus_cmd_revise_uppercase,
+src/stilus_commands.c:27:        "revise.lowercase",
+src/stilus_commands.c:32:        stilus_cmd_revise_lowercase,
+src/stilus_commands.c:36:        "revise.remove-trailing-spaces",
+src/stilus_commands.c:45:        "view.font-bigger",
+src/stilus_commands.c:54:        "view.font-smaller",
+src/stilus_commands.c:145:stilus_cmd_revise_uppercase(GtkWidget *widget, gpointer data)
+src/stilus_commands.c:176:stilus_cmd_revise_lowercase(GtkWidget *widget, gpointer data)
+src/stilus_commands.h:33:void stilus_cmd_revise_uppercase(GtkWidget *widget, gpointer data);
+src/stilus_commands.h:34:void stilus_cmd_revise_lowercase(GtkWidget *widget, gpointer data);
+src/const.h:85:    GtkWidget *menu_item_revise_uppercase;                    // "Revise -> UPPERCASE" menu item.
+src/const.h:86:    GtkWidget *menu_item_revise_lowercase;                    // "Revise -> Lowercase" menu item.
+src/const.h:159:    gulong menu_item_revise_uppercase_activate;                // "Revise -> UPPERCASE" menu item: "activate"
+src/const.h:160:    gulong menu_item_revise_lowercase_activate;                // "Revise -> Lowercase" menu item: "activate"
+src/window.c:78:    data_menu_bar->menu_item_revise_uppercase = gtk_menu_item_new_with_mnemonic(_("_UPPERCASE"));
+src/window.c:79:    data_menu_bar->menu_item_revise_lowercase = gtk_menu_item_new_with_mnemonic(_("_Lowercase"));
+src/window.c:152:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_revise), data_menu_bar->menu_item_revise_uppercase);
+src/window.c:153:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_revise), data_menu_bar->menu_item_revise_lowercase);
+src/main.c:257:    data_application->data_signals->menu_item_revise_uppercase_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_revise_uppercase, "activate", G_CALLBACK(&stilus_cmd_revise_uppercase), data_application);
+src/main.c:258:    data_application->data_signals->menu_item_revise_lowercase_activate = g_signal_connect(data_application->data_window->data_menu_bar->menu_item_revise_lowercase, "activate", G_CALLBACK(&stilus_cmd_revise_lowercase), data_application);

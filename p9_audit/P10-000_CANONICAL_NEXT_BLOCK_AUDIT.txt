@@ -1,0 +1,1124 @@
+P10-000 CANONICAL NEXT-BLOCK AUDIT
+DATE: 2026-06-13T07:15:00+02:00
+
+== GIT STATE ==
+e3a5331 (HEAD -> p9-004-command-layer-foundation, origin/p9-004-command-layer-foundation) P9-004D2 Implement font smaller command
+42f3d77 P9-004D1 Implement font bigger command
+e67248e P9-004C3 Implement remove trailing spaces command
+56c4476 P9-004C2 Implement lowercase command
+b17d697 P9-004C1 Implement uppercase command
+e27d738 P9-004B2B Implement Go To Line behavior
+3dee8fa P9-004B2A Align command metadata
+6faf169 P9-004B1 Wire Go To Line menu infrastructure
+?? p9_audit/CANONICAL_ROADMAP_AUDIT.txt
+?? p9_audit/P10-000_CANONICAL_NEXT_BLOCK_AUDIT.txt
+?? p9_audit/P9-004E_COMMAND_LAYER_INTEGRATION_AUDIT.txt
+?? p9_audit/P9-005_COMMAND_LAYER_HARDENING_AUDIT.txt
+
+== ROADMAP ==
+# Stilus Roadmap
+
+## Phase 0 — Foundation
+
+- repository foundation
+- canonical documents
+- AirPad source import
+- attribution
+
+## Phase 1 — Core Hardening
+
+- empty file save
+- Save As semantics
+- file lifecycle
+- undo / redo stress
+- close flow
+- large file behavior
+
+## Phase 2 — Classical Editor Features
+
+- print
+- print preview
+- recent files
+- preferences persistence
+- external file modification detection
+
+## Phase 3 — Editorial Layer
+
+- typography
+- statistics
+- templates
+- clips
+- bookmarks
+- references
+
+== SIMPLEX FEATURES ==
+# STILUS SIMPLEX — Canonical Features
+
+Version: Simplex v1
+
+## Scope
+
+Stilus Simplex raccoglie esclusivamente funzionalità:
+
+- writing-oriented
+- academic-writing-oriented
+- desktop-native
+- a bassa difficoltà tecnica
+- ad alto valore editoriale
+
+Le funzionalità devono produrre un beneficio concreto per la scrittura.
+
+## Supported Formats
+
+### Native
+
+- TXT
+- MD
+
+### Encoding
+
+- UTF-8
+
+## Document Operations
+
+### New
+
+- New Document
+
+### Open
+
+- Open File
+- Open Recent
+
+### Save
+
+- Save
+- Save As
+
+### Close
+
+- Close Document
+- Close Window
+
+## Multi Window
+
+Stilus supporta finestre indipendenti.
+
+Esempio:
+
+Window A:
+documento 1
+
+Window B:
+documento 2
+
+Window C:
+documento 3
+
+Le finestre possono essere affiancate dal window manager.
+
+## Tabs
+
+Supportati.
+
+Le tab rappresentano documenti.
+
+## Editing
+
+### Basic
+
+- Undo
+- Redo
+- Cut
+- Copy
+- Paste
+- Delete
+- Select All
+
+### Insert
+
+- Insert Date
+- Insert Time
+
+## Search
+
+### Find
+
+- Find
+
+### Replace
+
+- Replace
+- Replace All
+
+### Navigation
+
+- Go To Line
+- Go To Paragraph
+
+## Writing Features
+
+### Focus Mode
+
+Nasconde elementi non necessari.
+
+### Fullscreen
+
+Fullscreen nativo.
+
+### Typewriter Mode
+
+La riga corrente rimane in posizione stabile durante la scrittura.
+
+### Right Margin
+
+Margine visivo configurabile.
+
+### Highlight Current Line
+
+Opzionale.
+
+## Statistics
+
+### Mandatory
+
+- Word Count
+
+### Optional Display
+
+- Character Count
+- Selection Word Count
+
+## Spell Checking
+
+Supportato.
+
+Lingua selezionabile.
+
+Esempi:
+
+- IT
+- EN
+- FR
+- DE
+- ES
+
+## Notes
+
+### Footnotes
+
+Supportate.
+
+### Navigation
+
+- Next Footnote
+- Previous Footnote
+
+## Bookmarks
+
+### Commands
+
+- Toggle Bookmark
+- Next Bookmark
+- Previous Bookmark
+
+## Autosave
+
+Supportato.
+
+Configurabile.
+
+## Backup
+
+Supportato.
+
+Backup automatici locali.
+
+## Recovery
+
+Supportato.
+
+Ripristino dopo crash.
+
+## External File Changes
+
+Supportato.
+
+Rilevamento modifiche esterne.
+
+## Status Bar Information
+
+Mandatory:
+
+- Saved / Unsaved
+- Writable / Protected
+- Language
+- Word Count
+- Line
+- Column
+- UTF-8
+- TXT / MD
+- File Size
+
+## Explicitly Excluded
+
+### AI
+
+- AI Assistant
+- LLM
+- Copilot
+
+### Cloud
+
+- Cloud Sync
+- Collaboration
+
+### IDE
+
+- LSP
+- Debugger
+- Terminal Integration
+- Build Systems
+
+### Project Management
+
+- Workspace Manager
+- Project Tree
+- Scene Manager
+- Character Database
+
+### Plugin Ecosystem
+
+- Plugin Runtime
+- Extension Marketplace
+
+
+== BOOKMARKS POLICY ==
+STILUS BOOKMARKS CANONICAL POLICY
+
+Status: CANONICAL
+Phase: P4-005B
+Scope: File Menu / Bookmarks
+
+MEANING
+
+Bookmarks are labeled document-position markers.
+
+They are not file favorites.
+
+PURPOSE
+
+A bookmark identifies a relevant point inside a document and stores an editorial instruction.
+
+DISPLAY FORMAT
+
+Bookmark #N
+Line X
+Label
+
+REQUIRED DATA
+
+bookmark_id
+line_number
+char_offset
+label
+timestamp
+
+LABEL POLICY
+
+Label is mandatory.
+
+Label may contain long editorial instructions.
+
+Examples:
+
+Add citation here from Augustine Confessions Book X.
+Rewrite this paragraph because the transition is weak.
+Verify source before final proofreading.
+Expand section using bibliography item #14.
+Check whether this claim needs a footnote.
+
+PERSISTENCE POLICY
+
+Bookmarks belong to the document.
+
+Storage must not be global config.
+
+Preferred storage:
+
+<document>.stilus-bookmarks
+
+RUNTIME POLICY
+
+GtkTextMark may be used at runtime.
+
+GtkTextMark must not be the only stored reference.
+
+Persistence must include line_number and char_offset.
+
+DIFFICULTY
+
+MEDIUM
+
+IMPLEMENTATION STATUS
+
+Not authorized yet.
+
+BOOKMARK LABEL ARCHITECTURE
+
+Status:
+CANONICAL
+
+Bookmark structure:
+
+bookmark_id
+line_number
+char_offset
+label
+
+LABEL DEFINITION
+
+The label is a single string.
+
+The label is mandatory.
+
+The label may be long.
+
+The label is intended to contain editorial instructions.
+
+Examples:
+
+Add citation here from Augustine Confessions Book X.
+
+Rewrite this paragraph because the argument is weak and needs stronger evidence.
+
+Verify source before final proofreading and compare with bibliography item 14.
+
+Expand this section using material from chapter 3 and add footnotes.
+
+ARCHITECTURAL LIMITS
+
+The label remains a single string.
+
+Bookmarks are not an annotation system.
+
+Bookmarks do not contain:
+
+title
+body
+priority
+status
+tags
+attachments
+rich text
+multiple text fields
+
+RATIONALE
+
+This provides most of the editorial value of annotations while keeping implementation complexity significantly lower.
+
+Phase 1 target:
+
+Bookmark
+=
+position
++
+line reference
++
+long editorial label
+
+Complexity:
+
+LOW / MEDIUM
+
+Implementation status:
+
+Not authorized yet.
+
+== NAVIGATE MENU CLASSIFICATION ==
+STILUS NAVIGATE MENU IMPLEMENTATION CLASSIFICATION
+
+Status: CANONICAL
+Phase: P8-005
+Scope: Navigate Menu
+
+Prerequisite:
+
+Navigate Menu Audit Complete
+
+====================================================
+EXISTING
+====================================================
+
+Navigate top-level menu skeleton
+
+Reason:
+Source contains menu_navigate and menu_item_navigate.
+No Navigate commands are currently attached.
+
+====================================================
+LOW RISK
+====================================================
+
+Go to Beginning
+Go to End
+
+Reason:
+Cursor movement only.
+No document mutation.
+No undo impact.
+No file lifecycle impact.
+
+----------------------------------------------------
+
+Insert Bookmark
+Next Bookmark
+Previous Bookmark
+Remove Bookmark
+Clear Bookmarks
+
+Reason:
+Bookmark policy is already canonical.
+Cursor, line, offset and mark infrastructure already exist.
+
+====================================================
+LOW / MEDIUM RISK
+====================================================
+
+Manage Bookmarks
+
+Reason:
+Requires item list, selection model and management dialog.
+
+----------------------------------------------------
+
+Back
+Forward
+
+Reason:
+Requires cursor-position history but no document mutation.
+
+====================================================
+MEDIUM RISK
+====================================================
+
+Revision Marks
+Next Mark
+Previous Mark
+
+Reason:
+Can be implemented as textual marker navigation:
+[REV]
+[CITE]
+[CHECK]
+
+Requires scan/navigation policy.
+
+====================================================
+MEDIUM / HIGH RISK
+====================================================
+
+Go to Section
+Document Outline
+Refresh Outline
+Next Heading
+Previous Heading
+
+Reason:
+Requires lightweight heading parser and outline generation.
+
+Document Outline must remain:
+navigation-only
+non-persistent
+non-binder
+non-project-tree
+non-workspace
+
+====================================================
+HIGH RISK
+====================================================
+
+None currently classified as HIGH in Navigate Menu Phase 1.
+
+====================================================
+IMPLEMENTATION ORDER
+====================================================
+
+Phase 1
+
+Go to Beginning
+Go to End
+
+----------------------------------------------------
+
+Phase 2
+
+Bookmarks:
+Insert Bookmark
+Next Bookmark
+Previous Bookmark
+Remove Bookmark
+Clear Bookmarks
+
+----------------------------------------------------
+
+Phase 3
+
+Manage Bookmarks
+
+Back
+Forward
+
+----------------------------------------------------
+
+Phase 4
+
+Revision Marks navigation:
+Next Mark
+Previous Mark
+
+----------------------------------------------------
+
+Phase 5
+
+Go to Section
+Document Outline
+Refresh Outline
+Next Heading
+Previous Heading
+
+====================================================
+POLICY
+====================================================
+
+No Navigate Menu implementation may bypass this classification.
+
+Navigate features must remain:
+document-local
+navigation-oriented
+non-project
+non-workspace
+non-binder
+
+Document Outline must not become:
+outliner engine
+binder
+project tree
+workspace tree
+graph
+
+== WRITING MENU CLASSIFICATION ==
+STILUS WRITING MENU IMPLEMENTATION CLASSIFICATION
+
+Status: CANONICAL
+Phase: P8-006
+Scope: Writing Menu
+
+Prerequisite:
+
+Writing Menu Audit Complete
+
+====================================================
+EXISTING / PARTIAL
+====================================================
+
+Word Count
+
+Reason:
+Word count already exists in status bar through airpad_window_count_words().
+
+----------------------------------------------------
+
+Document Statistics
+
+Reason:
+Base statistics already exist:
+word count
+line
+column
+file size
+
+A full dialog is not yet implemented.
+
+====================================================
+LOW RISK
+====================================================
+
+Writing Statistics
+
+Reason:
+Uses already available document metrics.
+Requires dialog/presentation layer.
+
+----------------------------------------------------
+
+Word Goal
+
+Reason:
+Can be implemented as simple numeric target.
+No TextBuffer mutation.
+No undo impact.
+No file lifecycle impact.
+
+----------------------------------------------------
+
+Clear Word Goal
+
+Reason:
+Clears stored numeric target.
+No document mutation.
+
+====================================================
+LOW / MEDIUM RISK
+====================================================
+
+Reading Layout
+
+Reason:
+Can reuse existing font, wrap and scroll policy infrastructure.
+Requires UI policy but not document mutation.
+
+====================================================
+MEDIUM RISK
+====================================================
+
+Focus Mode
+
+Reason:
+Requires temporary UI hiding/showing policy:
+menu bar
+status bar
+future panels.
+
+No file lifecycle impact.
+
+----------------------------------------------------
+
+Typewriter Mode
+
+Reason:
+Requires cursor tracking and scroll synchronization.
+Source already uses scroll_to_mark patterns.
+
+====================================================
+MEDIUM / HIGH RISK
+====================================================
+
+Focus Paragraph
+
+Reason:
+Requires paragraph detection, highlight/dimming policy and redraw behavior.
+GtkTextView does not provide this for free.
+
+====================================================
+HIGH RISK
+====================================================
+
+None currently classified as HIGH in Writing Menu Phase 1.
+
+====================================================
+IMPLEMENTATION ORDER
+====================================================
+
+Phase 1
+
+Writing Statistics
+Word Goal
+Clear Word Goal
+
+----------------------------------------------------
+
+Phase 2
+
+Reading Layout
+
+----------------------------------------------------
+
+Phase 3
+
+Focus Mode
+
+----------------------------------------------------
+
+Phase 4
+
+Typewriter Mode
+
+----------------------------------------------------
+
+Deferred
+
+Focus Paragraph
+
+====================================================
+POLICY
+====================================================
+
+No Writing Menu implementation may bypass this classification.
+
+Writing features must not mutate document text unless explicitly designed to insert text.
+
+Writing features must preserve:
+file lifecycle
+save lifecycle
+undo/redo behavior
+TextBuffer integrity
+
+== VIEW MENU CLASSIFICATION ==
+STILUS VIEW MENU IMPLEMENTATION CLASSIFICATION
+
+Status: CANONICAL
+Phase: P7-002
+Scope: View Menu
+
+Prerequisite:
+
+View Menu Full Audit Complete
+
+====================================================
+EXISTING
+====================================================
+
+Fullscreen
+Always on Top
+Select Font
+Word Wrap
+
+Notes:
+
+Select Font and Word Wrap currently live under Options in code,
+but they are visual/editor-view controls in the canonical UI model.
+
+====================================================
+LOW RISK
+====================================================
+
+Font Bigger
+
+Reason:
+
+Font selection and persistence already exist.
+Requires controlled font size increment.
+
+----------------------------------------------------
+
+Font Smaller
+
+Reason:
+
+Font selection and persistence already exist.
+Requires controlled font size decrement.
+
+====================================================
+LOW / MEDIUM RISK
+====================================================
+
+Transparent Mode
+
+Policy:
+
+Transparency applies to the entire window.
+
+Not editor-only.
+
+Reason:
+
+Does not touch TextBuffer, Undo, File lifecycle, Save/Open or encoding.
+Requires UI state and opacity application.
+
+----------------------------------------------------
+
+Opacity Presets
+
+Policy:
+
+Range:
+30% to 100%
+
+Preset values:
+30%
+40%
+50%
+60%
+70%
+80%
+90%
+100%
+
+No slider in Phase 1.
+
+Reason:
+
+Preset menu values are simpler and more testable than a slider.
+
+====================================================
+MEDIUM RISK
+====================================================
+
+Focus Mode
+
+Reason:
+
+Requires temporary UI hiding/showing policy:
+menu bar
+status bar
+possibly other panels later.
+
+Does not touch file lifecycle or text content.
+
+====================================================
+MEDIUM / HIGH RISK
+====================================================
+
+Distraction-Free Mode
+
+Reason:
+
+Likely combines fullscreen, focus mode and additional visual policy.
+Requires clear UX definition before implementation.
+
+====================================================
+HIGH RISK
+====================================================
+
+Line Numbers
+
+Reason:
+
+Current editor widget is GtkTextView, not GtkSourceView.
+Line numbers require custom gutter/drawing/scroll synchronization.
+
+----------------------------------------------------
+
+Highlight Current Line
+
+Reason:
+
+Current editor widget is GtkTextView, not GtkSourceView.
+Requires custom highlighting policy and redraw coordination.
+
+====================================================
+IMPLEMENTATION ORDER
+====================================================
+
+Phase 1
+
+Font Bigger
+Font Smaller
+
+----------------------------------------------------
+
+Phase 2
+
+Transparent Mode
+Opacity Presets
+
+----------------------------------------------------
+
+Phase 3
+
+Focus Mode
+
+----------------------------------------------------
+
+Phase 4
+
+Distraction-Free Mode
+
+----------------------------------------------------
+
+Deferred
+
+Line Numbers
+Highlight Current Line
+
+====================================================
+POLICY
+====================================================
+
+No View Menu implementation may bypass this classification.
+
+No Medium-Risk feature may be implemented before Low-Risk
+and Low/Medium-Risk features are completed and validated.
+
+Line Numbers and Highlight Current Line are deferred while Stilus
+uses GtkTextView rather than GtkSourceView.
+
+== REVISE MENU CLASSIFICATION ==
+STILUS REVISE MENU IMPLEMENTATION CLASSIFICATION
+
+Status: CANONICAL
+Phase: P8-007
+Scope: Revise Menu
+
+Prerequisite:
+
+Revise Menu Audit Complete
+
+====================================================
+EXISTING
+====================================================
+
+None
+
+Reason:
+Revise exists as a top-level menu skeleton, but no Revise commands are currently attached.
+
+====================================================
+LOW RISK
+====================================================
+
+UPPERCASE
+Lowercase
+Remove Trailing Spaces
+
+Reason:
+Local text transformations/cleanup.
+No file lifecycle impact.
+No persistence impact.
+Undo handled through existing TextBuffer mutation signals.
+
+====================================================
+LOW / MEDIUM RISK
+====================================================
+
+Title Case
+Sentence Case
+Remove Extra Spaces
+Remove Empty Paragraphs
+Remove Duplicate Lines
+
+Reason:
+Require local transformation policy, but no new architecture.
+
+====================================================
+MEDIUM RISK
+====================================================
+
+Sort A-Z
+Sort Z-A
+Join Lines
+Normalize Whitespace
+Remove Page Breaks
+Fix Hyphenation
+
+Reason:
+Require selection/line/paragraph handling and stable cleanup policies.
+
+----------------------------------------------------
+
+Revision Marks
+
+Commands:
+
+Mark Revision [REV]
+Mark Citation Needed [CITE]
+Mark Check [CHECK]
+Clear All Marks
+Next Mark
+Previous Mark
+
+Reason:
+Can be implemented as explicit textual markers.
+No database required.
+No semantic engine required.
+
+====================================================
+MEDIUM / HIGH RISK
+====================================================
+
+Reflow Paragraph
+
+Reason:
+Requires paragraph boundary detection and wrapping policy.
+
+----------------------------------------------------
+
+Smart Typography
+
+Reason:
+Requires canonical typographic policy:
+quotes
+apostrophes
+dashes
+ellipsis
+spacing
+
+----------------------------------------------------
+
+Clean Paste from PDF
+Clean Selected Text from PDF
+
+Reason:
+Requires PDF text repair policy:
+hard line breaks
+hyphen repair
+paragraph reconstruction
+space normalization
+
+====================================================
+HIGH RISK
+====================================================
+
+None currently classified as HIGH in Revise Menu Phase 1.
+
+====================================================
+IMPLEMENTATION ORDER
+====================================================
+
+Phase 1
+
+UPPERCASE
+Lowercase
+Remove Trailing Spaces
+
+----------------------------------------------------
+
+Phase 2
+
+Title Case
+Sentence Case
+Remove Extra Spaces
+Remove Empty Paragraphs
+
+----------------------------------------------------
+
+Phase 3
+
+Sort A-Z
+Sort Z-A
+Join Lines
+Normalize Whitespace
+Remove Page Breaks
+Fix Hyphenation
+Remove Duplicate Lines
+Revision Marks
+
+----------------------------------------------------
+
+Phase 4
+
+Reflow Paragraph
+Smart Typography
+Clean Paste from PDF
+Clean Selected Text from PDF
+
+====================================================
+POLICY
+====================================================
+
+No Revise Menu implementation may bypass this classification.
+
+Revise features must remain:
+text-oriented
+local
+non-AI
+non-cloud
+non-database
+non-PKM
+
+Revise features must preserve:
+file lifecycle
+save lifecycle
+undo/redo behavior
+TextBuffer integrity

@@ -1,0 +1,238 @@
+P10-001 WRITING STATISTICS AUDIT
+DATE: 2026-06-13T07:18:59+02:00
+
+== GIT STATE ==
+e3a5331 (HEAD -> p9-004-command-layer-foundation, origin/p9-004-command-layer-foundation) P9-004D2 Implement font smaller command
+42f3d77 P9-004D1 Implement font bigger command
+e67248e P9-004C3 Implement remove trailing spaces command
+56c4476 P9-004C2 Implement lowercase command
+b17d697 P9-004C1 Implement uppercase command
+e27d738 P9-004B2B Implement Go To Line behavior
+3dee8fa P9-004B2A Align command metadata
+6faf169 P9-004B1 Wire Go To Line menu infrastructure
+b826ada P9-004A Command Layer Foundation
+b1b3288 (origin/p2-code-cleanup-audit, p2-code-cleanup-audit) Migrate menu ownership to frozen architecture
+?? p9_audit/CANONICAL_ROADMAP_AUDIT.txt
+?? p9_audit/P10-000_CANONICAL_NEXT_BLOCK_AUDIT.txt
+?? p9_audit/P10-001_WRITING_STATISTICS_AUDIT.txt
+?? p9_audit/P9-004E_COMMAND_LAYER_INTEGRATION_AUDIT.txt
+?? p9_audit/P9-005_COMMAND_LAYER_HARDENING_AUDIT.txt
+
+== WRITING MENU CLASSIFICATION ==
+IMPLEMENTATION ORDER
+====================================================
+
+Phase 1
+
+Writing Statistics
+Word Goal
+Clear Word Goal
+
+----------------------------------------------------
+
+Phase 2
+
+Reading Layout
+
+----------------------------------------------------
+
+Phase 3
+
+Focus Mode
+
+----------------------------------------------------
+
+Phase 4
+
+Typewriter Mode
+
+----------------------------------------------------
+
+Deferred
+
+Focus Paragraph
+
+====================================================
+POLICY
+====================================================
+
+No Writing Menu implementation may bypass this classification.
+
+Writing features must not mutate document text unless explicitly designed to insert text.
+
+Writing features must preserve:
+file lifecycle
+save lifecycle
+undo/redo behavior
+TextBuffer integrity
+
+== CURRENT WRITING MENU SYMBOLS ==
+src/const.h:57:    GtkWidget *menu_writing;                    // "Writing" menu.
+src/const.h:72:    GtkWidget *menu_item_writing;                               // "Writing" menu item.
+src/window.c:40:    data_menu_bar->menu_writing = gtk_menu_new();
+src/window.c:59:    data_menu_bar->menu_item_writing = gtk_menu_item_new_with_mnemonic(_("_Writing"));
+src/window.c:131:    gtk_menu_item_set_submenu(GTK_MENU_ITEM(data_menu_bar->menu_item_writing), data_menu_bar->menu_writing);
+src/window.c:197:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_bar), data_menu_bar->menu_item_writing);
+
+== EXISTING WORD COUNT FUNCTIONS ==
+src/find.c:157:            gtk_text_iter_backward_chars(&iter_end, g_utf8_strlen(data_search->text_find, -1) - 1);
+src/find.c:162:            gtk_text_iter_forward_chars(&iter_end, g_utf8_strlen(data_search->text_find, -1) - 1);
+src/dialog.h:28:GFile *airpad_dialog_open(GtkWidget *parent, const char *default_encoding, struct AirpadDataFile *data_file);
+src/dialog.h:29:GFile *airpad_dialog_save(GtkWidget *parent, const char *default_encoding, struct AirpadDataFile *data_file);
+src/aux.c:39:gboolean airpad_aux_save_prompt(const struct AirpadDataWindow *data_window, struct AirpadDataFile *data_file, const char *default_encoding)
+src/aux.c:64:                char *contents = gtk_text_buffer_get_text(text_buffer, &start, &end, FALSE);
+src/aux.c:69:                    char * const contents_copy = contents;
+src/aux.c:75:                        char *filename = g_filename_to_utf8(g_file_peek_path(data_file->file), -1, NULL, NULL, NULL);
+src/aux.c:93:                    char *filename = g_filename_to_utf8(g_file_peek_path(data_file->file), -1, NULL, NULL, NULL);
+src/aux.c:109:                    char *filename = g_filename_to_utf8(g_file_peek_path(data_file->file), -1, NULL, NULL, NULL);
+src/edit.c:74:    char *text = gtk_clipboard_wait_for_text(gtk_clipboard_get(GDK_SELECTION_CLIPBOARD));
+src/edit.c:115:    char *date_time = g_date_time_format(now, "%Y-%m-%d %H:%M");
+src/aux.h:26:gboolean airpad_aux_save_prompt(const struct AirpadDataWindow *data_window, struct AirpadDataFile *data_file, const char *default_encoding);
+src/stilus_commands.c:74:stilus_commands_find_by_id(const char *id)
+src/stilus_commands.c:105:    const gint line_count = gtk_text_buffer_get_line_count(text_buffer);
+src/stilus_commands.c:120:    GtkAdjustment *adjustment = gtk_adjustment_new(1, 1, line_count, 1, 10, 0);
+src/stilus_commands.c:165:    char *selected_text = gtk_text_buffer_get_text(text_buffer, &start, &end, FALSE);
+src/stilus_commands.c:166:    char *upper_text = g_utf8_strup(selected_text, -1);
+src/stilus_commands.c:196:    char *selected_text = gtk_text_buffer_get_text(text_buffer, &start, &end, FALSE);
+src/stilus_commands.c:197:    char *lower_text = g_utf8_strdown(selected_text, -1);
+src/stilus_commands.c:222:    gint line_count = gtk_text_buffer_get_line_count(text_buffer);
+src/stilus_commands.c:224:    for (gint line = line_count - 1; line >= 0; line--)
+src/stilus_commands.c:242:            if (!gtk_text_iter_backward_char(&previous))
+src/stilus_commands.c:245:            gunichar ch = gtk_text_iter_get_char(&previous);
+src/stilus_commands.c:272:    const char *current_font = data_application->data_options->font != NULL ?
+src/stilus_commands.c:309:    const char *current_font = data_application->data_options->font != NULL ?
+src/stilus_commands.h:20:    const char *id;
+src/stilus_commands.h:21:    const char *label;
+src/stilus_commands.h:22:    const char *menu_path;
+src/stilus_commands.h:23:    const char *shortcut;
+src/stilus_commands.h:26:    const char *description;
+src/stilus_commands.h:30:const StilusCommand *stilus_commands_find_by_id(const char *id);
+src/options.c:29:static inline char *airpad_options_get_config_filename()
+src/options.c:31:    char *config_filename_base = g_filename_from_utf8(AIRPAD_EXEC_NAME ".ini", -1, NULL, NULL, NULL);
+src/options.c:32:    char *config_filename = g_build_filename(g_get_user_config_dir(), config_filename_base, NULL);
+src/options.c:43:    else if (widget == data_application->data_window->data_menu_bar->menu_item_options_text_wrap_on_char)
+src/options.c:47:    else if (widget == data_application->data_window->data_menu_bar->menu_item_options_text_wrap_on_char_and_word)
+src/options.c:78:    char *config_filename = airpad_options_get_config_filename();
+src/options.c:93:    char *config_filename = airpad_options_get_config_filename();
+src/undo.c:44:    char *text;                         // Text that was inserted/deleted.
+src/undo.c:64:// Returns whether the given text is made out of space characters.
+src/undo.c:65:static inline gboolean airpad_undo_is_space(const char *text)
+src/undo.c:67:    for (const char *i = text;*i;++i)
+src/undo.c:184:static void airpad_undo_update_current_action(enum AirpadUndoBufferItemType type, char *text, int pos_start, int pos_end, gboolean unit_marker)
+src/undo.c:195:                    char first_part[(pos_start - current_action.position[0]) * 4 + 1];
+src/undo.c:199:                    char * const current_text_copy = current_action.text;
+src/undo.c:214:                    char first_part[(current_action.position[0] - pos_start) * 4 + 1];
+src/undo.c:218:                    char * const current_text_copy = current_action.text;
+src/undo.c:317:void airpad_undo_add_on_insert(GtkTextBuffer *text_buffer, GtkTextIter *position, char *new_text, int new_text_length, const struct AirpadDataMenuBar *data_menu_bar)
+src/const.h:108:    GtkWidget *menu_item_options_text_wrap_on_char;             // "Options -> Text Wrap -> On Character" menu item.
+src/const.h:110:    GtkWidget *menu_item_options_text_wrap_on_char_and_word;    // "Options -> Text Wrap -> On Character and Word " menu item.
+src/const.h:182:    gulong menu_item_options_text_wrap_on_char_toggled;             // "Options -> Text Wrap -> On Character": "toggled"
+src/const.h:183:    gulong menu_item_options_text_wrap_on_char_and_word_toggled;    // "Options -> Text Wrap -> On Character and Word": "toggled"
+src/const.h:198:    char *text_find;    // Text to find.
+src/const.h:199:    char *text_replace; // Text to replace.
+src/const.h:213:    char *encoding; // Encoding of the file.
+src/const.h:219:    char *font;
+src/const.h:229:    char *file_encoding;
+src/undo.h:31:void airpad_undo_add_on_insert(GtkTextBuffer *text_buffer, GtkTextIter *position, char *new_text, int new_text_length, const struct AirpadDataMenuBar *data_menu_bar);
+src/window.h:34:void airpad_window_set_font(const struct AirpadDataWindow *data_window, const char *font);
+src/dialog.c:39:            const char *filename = va_arg(args, char *);
+src/dialog.c:40:            const char *detail = va_arg(args, char *);
+src/dialog.c:50:            const char *filename = va_arg(args, char *);
+src/dialog.c:51:            const char *detail = va_arg(args, char *);
+src/dialog.c:61:            const char *filename = va_arg(args, char *);
+src/dialog.c:71:            const char *filename = va_arg(args, char *);
+src/dialog.c:72:            const char *detail = va_arg(args, char *);
+src/dialog.c:138:gboolean airpad_dialog_open(GtkWidget *parent, const char *default_encoding, struct AirpadDataFile *data_file)
+src/dialog.c:208:gboolean airpad_dialog_save(GtkWidget *parent, const char *default_encoding, struct AirpadDataFile *data_file)
+src/dialog.c:284:static GtkWidget *airpad_dialog_create_text_label(const char *text)
+src/dialog.c:294:static GtkWidget *airpad_dialog_create_text_dialog(GtkWidget *parent, const char *title, const char *text)
+src/dialog.c:339:    static const char *credits =
+src/dialog.c:431:    static const char *text =
+src/dialog.c:467:    static const char *text =
+src/dialog.c:485:    static const char *text =
+src/file.c:34:    char *contents = gtk_text_buffer_get_text(text_buffer, &start, &end, FALSE);
+src/file.c:41:        char * const contents_copy = contents;
+src/file.c:47:            char *filename = g_filename_to_utf8(g_file_peek_path(data_file->file), -1, NULL, NULL, NULL);
+src/file.c:62:        char *path = g_file_get_path(data_file->file);
+src/file.c:66:            char *backup_path = g_strconcat(path, ".bak", NULL);
+src/file.c:83:        char *filename = g_filename_to_utf8(g_file_peek_path(data_file->file), -1, NULL, NULL, NULL);
+src/file.c:101:        char *filename = g_filename_to_utf8(g_file_peek_path(data_file->file), -1, NULL, NULL, NULL);
+src/file.c:204:    char * const current_encoding = data_application->data_file->encoding;
+src/file.c:211:    char *contents;
+src/file.c:217:        char *filename = g_filename_to_utf8(g_file_peek_path(data_application->data_file->file), -1, NULL, NULL, NULL);
+src/file.c:235:        char * const contents_copy = contents;
+src/file.c:241:            char *filename = g_filename_to_utf8(g_file_peek_path(data_application->data_file->file), -1, NULL, NULL, NULL);
+src/file.c:257:        char *filename = g_filename_to_utf8(g_file_peek_path(data_application->data_file->file), -1, NULL, NULL, NULL);
+src/file.c:345:    char * const current_encoding = data_application->data_file->encoding;
+src/window.c:110:    data_menu_bar->menu_item_options_text_wrap_on_char = gtk_radio_menu_item_new_with_mnemonic(radio_group, _("On _Character"));
+src/window.c:112:    data_menu_bar->menu_item_options_text_wrap_on_char_and_word = gtk_radio_menu_item_new_with_mnemonic(radio_group, _("On Character _And Word"));
+src/window.c:179:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_options_text_wrap), data_menu_bar->menu_item_options_text_wrap_on_char);
+src/window.c:181:    gtk_menu_shell_append(GTK_MENU_SHELL(data_menu_bar->menu_options_text_wrap), data_menu_bar->menu_item_options_text_wrap_on_char_and_word);
+src/window.c:210:            gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data_menu_bar->menu_item_options_text_wrap_on_char), TRUE);
+src/window.c:216:            gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data_menu_bar->menu_item_options_text_wrap_on_char_and_word), TRUE);
+src/window.c:319:    data_window->status_bar = gtk_label_new("Unsaved | Writable | 0 words | Ln 1 Col 1 | UTF-8 | 0 KB");
+src/window.c:346:        char *filename = g_filename_to_utf8(g_file_peek_path(current_file), -1, NULL, NULL, &error);
+src/window.c:365:static unsigned int airpad_window_count_words(GtkTextBuffer *text_buffer)
+src/window.c:371:    char *text = gtk_text_buffer_get_text(text_buffer, &start, &end, FALSE);
+src/window.c:373:    unsigned int words = 0;
+src/window.c:376:    for (const char *p = text; p && *p; p = g_utf8_next_char(p))
+src/window.c:378:        gunichar ch = g_utf8_get_char(p);
+src/window.c:380:        if (g_unichar_isspace(ch))
+src/window.c:387:            ++words;
+src/window.c:392:    return words;
+src/window.c:395:static char *airpad_window_format_text_size(GtkTextBuffer *text_buffer)
+src/window.c:401:    char *text = gtk_text_buffer_get_text(text_buffer, &start, &end, FALSE);
+src/window.c:405:    char *result = g_strdup_printf("%u KB", kb);
+src/window.c:415:    const unsigned int words = airpad_window_count_words(text_buffer);
+src/window.c:424:    char *text_size = airpad_window_format_text_size(text_buffer);
+src/window.c:426:    char *status = g_strdup_printf(
+src/window.c:429:        words,
+src/window.c:430:        words == 1 ? "word" : "words",
+src/window.c:458:    const char *title = gtk_window_get_title(GTK_WINDOW(data_window->window));
+src/window.c:463:    const char *suffix = " [Unsaved]";
+src/window.c:471:        char *new_title = g_strconcat(title, suffix, NULL);
+src/window.c:477:        char *new_title = g_strndup(title, title_len - suffix_len);
+src/window.c:484:void airpad_window_set_font(const struct AirpadDataWindow *data_window, const char *font)
+src/main.c:164:    char *contents;
+src/main.c:175:        char *filename = g_filename_to_utf8(g_file_peek_path(data_file->file), -1, NULL, NULL, NULL);
+src/main.c:189:        char * const contents_copy = contents;
+src/main.c:195:            char *filename = g_filename_to_utf8(g_file_peek_path(data_file->file), -1, NULL, NULL, NULL);
+src/main.c:206:        char *filename = g_filename_to_utf8(g_file_peek_path(data_file->file), -1, NULL, NULL, NULL);
+src/main.c:279:    data_application->data_signals->menu_item_options_text_wrap_on_char_toggled = g_signal_connect_after(data_application->data_window->data_menu_bar->menu_item_options_text_wrap_on_char, "toggled", G_CALLBACK(&airpad_options_update_text_wrap), data_application);
+src/main.c:281:    data_application->data_signals->menu_item_options_text_wrap_on_char_and_word_toggled = g_signal_connect_after(data_application->data_window->data_menu_bar->menu_item_options_text_wrap_on_char_and_word, "toggled", G_CALLBACK(&airpad_options_update_text_wrap), data_application);
+src/main.c:316:static void airpad_open(GApplication *application, GFile **files, gint n_files, gchar *hint, GFile **current_file)
+src/main.c:323:    char * const exec_name = n_files > 1 ? g_filename_from_utf8(AIRPAD_EXEC_NAME, -1, NULL, NULL, NULL) : NULL;
+src/main.c:327:        char *argv[3] = {exec_name, g_file_get_path(files[i]), NULL};    // Here we prefer a macro to getting the program name dynamically.
+src/main.c:387:static inline void airpad_i18n(const char *locale_dir, const char *text_domain, const char *codeset)
+src/main.c:389:    char *_locale_dir = g_filename_from_utf8(locale_dir, -1, NULL, NULL, NULL);
+src/main.c:390:    char *_text_domain = g_filename_from_utf8(text_domain, -1, NULL, NULL, NULL);
+src/main.c:391:    char *_codeset = g_filename_from_utf8(codeset, -1, NULL, NULL, NULL);
+src/main.c:402:int main(int argc, char *argv[])
+
+== STATUS BAR FUNCTIONS ==
+src/window.c:319:    data_window->status_bar = gtk_label_new("Unsaved | Writable | 0 words | Ln 1 Col 1 | UTF-8 | 0 KB");
+src/window.c:325:    gtk_grid_attach(GTK_GRID(data_window->content), data_window->status_bar, 0, 2, 1, 1);
+src/window.c:412:void airpad_window_update_status_bar(GtkTextBuffer *text_buffer, const struct AirpadDataWindow *data_window)
+src/window.c:438:    gtk_label_set_text(GTK_LABEL(data_window->status_bar), status);
+src/window.c:451:    airpad_window_update_status_bar(text_buffer, data_window);
+src/main.c:246:    g_signal_connect(text_buffer, "changed", G_CALLBACK(&airpad_window_update_status_bar), data_application->data_window);
+src/main.c:380:    airpad_window_update_status_bar(gtk_text_view_get_buffer(GTK_TEXT_VIEW(data_application->data_window->data_text_view->text_view)), data_application->data_window);
+src/const.h:135:    GtkWidget *status_bar;                      // Status bar.
+
+== DIALOG PATTERNS ==
+src/find.c:53:    GtkWidget *dialog = gtk_dialog_new_with_buttons(_("Find"), GTK_WINDOW(parent), GTK_DIALOG_MODAL, _("Cancel"), GTK_RESPONSE_CANCEL, _("Find"), GTK_RESPONSE_ACCEPT, NULL);
+src/stilus_commands.c:107:    GtkWidget *dialog = gtk_dialog_new_with_buttons(
+src/replace.c:55:    GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(parent), GTK_DIALOG_MODAL, GTK_MESSAGE_QUESTION, GTK_BUTTONS_NONE, _("Replace this instance?"));
+src/replace.c:74:    GtkWidget *dialog = gtk_dialog_new_with_buttons(_("Replace"), GTK_WINDOW(parent), GTK_DIALOG_MODAL, _("Cancel"), GTK_RESPONSE_CANCEL, _("Replace"), GTK_RESPONSE_ACCEPT, NULL);
+src/dialog.c:43:                dialog = gtk_message_dialog_new(GTK_WINDOW(parent), GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, _("Reading from file \"%s\" failed: %s"), filename, detail);
+src/dialog.c:45:                dialog = gtk_message_dialog_new(GTK_WINDOW(parent), GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, _("Reading from file (name unknown) failed: %s"), detail);
+src/dialog.c:54:                dialog = gtk_message_dialog_new(GTK_WINDOW(parent), GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, _("Writing to file \"%s\" failed: %s"), filename, detail);
+src/dialog.c:56:                dialog = gtk_message_dialog_new(GTK_WINDOW(parent), GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, _("Writing to file (name unknown) failed: %s"), detail);
+src/dialog.c:64:                dialog = gtk_message_dialog_new(GTK_WINDOW(parent), GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, _("File \"%s\" does not have valid UTF-8 content."), filename);
+src/dialog.c:66:                dialog = gtk_message_dialog_new(GTK_WINDOW(parent), GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, _("File (name unknown) does not have valid UTF-8 content."));
+src/dialog.c:75:                dialog = gtk_message_dialog_new(GTK_WINDOW(parent), GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, _("Converting contents of file \"%s\" failed: %s"), filename, detail);
+src/dialog.c:77:                dialog = gtk_message_dialog_new(GTK_WINDOW(parent), GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK, _("Converting contents of file (name unknown) failed: %s"), detail);
+src/dialog.c:104:    GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(parent), GTK_DIALOG_MODAL, GTK_MESSAGE_INFO, GTK_BUTTONS_OK, _("No matches found."));
+src/dialog.c:120:    GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(parent), GTK_DIALOG_MODAL, GTK_MESSAGE_QUESTION, GTK_BUTTONS_NONE, _("The file was modified. Do you want to save it?"));
+src/dialog.c:296:    GtkWidget *dialog = gtk_dialog_new_with_buttons(
+src/dialog.c:357:    GtkWidget *dialog = gtk_dialog_new_with_buttons(
